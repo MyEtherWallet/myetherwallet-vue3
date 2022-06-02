@@ -1,0 +1,224 @@
+/* Set maximum size for "wallet-container" */
+@media (min-width: 1904px) {
+  .wallet-content-container {
+    max-width: 1603px !important;
+  }
+}
+
+/* Limit minimum width */
+html {
+  min-width: 320px !important;
+  font-size: 14px !important;
+}
+
+/* Limit maximum width */
+.container {
+  max-width: 1185px !important;
+}
+
+/* ========== CSS Style Reset ========== */
+.monospace {
+  font-family: monospace !important;
+}
+
+i {
+  font-family: 'Material Icons' !important;
+}
+
+div {
+  padding: 0;
+  margin: 0;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+p {
+  /* size - 14px,  height - 19px, normal */
+  @extend .mew-body;
+}
+
+h1 {
+  /* size - 30px,  height - 36px, bold */
+  @extend .mew-subtitle;
+}
+
+h2 {
+  /* size - 22px,  height - 26px, bold */
+  @extend .mew-heading-2;
+}
+
+h3 {
+  /* size - 16px,  height - 22px, bold */
+  @extend .mew-heading-3;
+}
+
+h4 {
+  /* size - 16px,  height - 22px, normal */
+  @extend .mew-heading-4;
+
+  font-weight: 400;
+}
+
+h5 {
+  @extend .mew-body;
+}
+
+h6 {
+  /* size - 12px,  height - 14px, normal */
+  @extend .mew-label;
+}
+
+/* ========== Text ========== */
+.color--inherit {
+  color: inherit !important;
+}
+
+.text-transform--initial {
+  text-transform: initial !important;
+}
+
+.text-decoration--none {
+  text-decoration: none !important;
+}
+
+.text-decoration--underline {
+  text-decoration: underline;
+}
+
+.word-break--break-all {
+  word-break: break-all;
+}
+
+.white-space--nowrap {
+  white-space: nowrap !important;
+}
+
+.letter-spacing--none {
+  letter-spacing: 0 !important;
+}
+
+/* ========== Cursor ========== */
+.pointer-event--none {
+  pointer-events: none;
+}
+
+.user-select--none {
+  user-select: none;
+}
+
+.cursor--pointer {
+  cursor: pointer !important;
+}
+
+/* ========== Border ========== */
+.border-radius--12px {
+  border-radius: 12px !important;
+}
+.border-radius--10px {
+  border-radius: 10px !important;
+}
+
+.border-radius--8px {
+  border-radius: 8px !important;
+}
+
+.border-radius--5px {
+  border-radius: 5px !important;
+}
+
+/* ========== Other ========== */
+.overflow--hidden {
+  overflow: hidden !important;
+}
+
+.position--relative {
+  position: relative;
+}
+
+.width--full {
+  width: 100% !important;
+}
+
+.height--full {
+  height: 100% !important;
+}
+
+.vertical-align--middle {
+  vertical-align: middle;
+}
+
+.display--block {
+  display: block !important;
+}
+
+.spacer-y-medium {
+  height: 5rem;
+}
+
+.rotate {
+  &.transition {
+    transition: all 1200ms ease;
+  }
+
+  &.r180 {
+    transform: rotate(180deg);
+  }
+
+  &.r90 {
+    transform: rotate(90deg);
+  }
+}
+
+.btn-circle {
+  cursor: pointer;
+  transition: filter 0.2s linear;
+  height: 30px;
+
+  &:hover {
+    filter: brightness(90%);
+  }
+}
+
+// temp addition, remove once stakewise promo is done
+
+.snackbar-border {
+  .v-snack__wrapper {
+    border-radius: 8px !important;
+    border: 1px solid var(--v-greenPrimary-base) !important;
+    background-color: var(--v-whiteBackground-base) !important;
+  }
+  // .white {
+  //   border: 1px solid var(--v-greenPrimary-base) !important;
+  // }
+
+  // .application .white {
+  //   border: 1px solid var(--v-greenPrimary-base) !important;
+  // }
+}
+
+/* ========= Convert SVG to white ========= */
+.make-white-svg {
+  filter: brightness(10);
+}
+
+/* ===== Custom Scrollbar ===== */
+/* Firefox */
+* {
+  scrollbar-width: auto;
+  scrollbar-color: var(--v-greenPrimary-base) #d6d6d6;
+}
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #d6d6d6;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #949494;
+  border-radius: 0px;
+  border: 0px solid #ffffff;
+}

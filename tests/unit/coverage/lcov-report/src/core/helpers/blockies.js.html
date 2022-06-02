@@ -1,0 +1,376 @@
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Code coverage report for src/core/helpers/blockies.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+    
+<body>
+<div class='wrapper'>
+    <div class='pad1'>
+        <h1><a href="../../../index.html">All files</a> / <a href="index.html">src/core/helpers</a> blockies.js</h1>
+        <div class='clearfix'>
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Statements</span>
+                <span class='fraction'>0/62</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>0/18</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>0/6</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Lines</span>
+                <span class='fraction'>0/56</span>
+            </div>
+        
+            
+        </div>
+        <p class="quiet">
+            Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
+        </p>
+    </div>
+    <div class='status-line low'></div>
+    <pre><table class="coverage">
+<tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
+<a name='L2'></a><a href='#L2'>2</a>
+<a name='L3'></a><a href='#L3'>3</a>
+<a name='L4'></a><a href='#L4'>4</a>
+<a name='L5'></a><a href='#L5'>5</a>
+<a name='L6'></a><a href='#L6'>6</a>
+<a name='L7'></a><a href='#L7'>7</a>
+<a name='L8'></a><a href='#L8'>8</a>
+<a name='L9'></a><a href='#L9'>9</a>
+<a name='L10'></a><a href='#L10'>10</a>
+<a name='L11'></a><a href='#L11'>11</a>
+<a name='L12'></a><a href='#L12'>12</a>
+<a name='L13'></a><a href='#L13'>13</a>
+<a name='L14'></a><a href='#L14'>14</a>
+<a name='L15'></a><a href='#L15'>15</a>
+<a name='L16'></a><a href='#L16'>16</a>
+<a name='L17'></a><a href='#L17'>17</a>
+<a name='L18'></a><a href='#L18'>18</a>
+<a name='L19'></a><a href='#L19'>19</a>
+<a name='L20'></a><a href='#L20'>20</a>
+<a name='L21'></a><a href='#L21'>21</a>
+<a name='L22'></a><a href='#L22'>22</a>
+<a name='L23'></a><a href='#L23'>23</a>
+<a name='L24'></a><a href='#L24'>24</a>
+<a name='L25'></a><a href='#L25'>25</a>
+<a name='L26'></a><a href='#L26'>26</a>
+<a name='L27'></a><a href='#L27'>27</a>
+<a name='L28'></a><a href='#L28'>28</a>
+<a name='L29'></a><a href='#L29'>29</a>
+<a name='L30'></a><a href='#L30'>30</a>
+<a name='L31'></a><a href='#L31'>31</a>
+<a name='L32'></a><a href='#L32'>32</a>
+<a name='L33'></a><a href='#L33'>33</a>
+<a name='L34'></a><a href='#L34'>34</a>
+<a name='L35'></a><a href='#L35'>35</a>
+<a name='L36'></a><a href='#L36'>36</a>
+<a name='L37'></a><a href='#L37'>37</a>
+<a name='L38'></a><a href='#L38'>38</a>
+<a name='L39'></a><a href='#L39'>39</a>
+<a name='L40'></a><a href='#L40'>40</a>
+<a name='L41'></a><a href='#L41'>41</a>
+<a name='L42'></a><a href='#L42'>42</a>
+<a name='L43'></a><a href='#L43'>43</a>
+<a name='L44'></a><a href='#L44'>44</a>
+<a name='L45'></a><a href='#L45'>45</a>
+<a name='L46'></a><a href='#L46'>46</a>
+<a name='L47'></a><a href='#L47'>47</a>
+<a name='L48'></a><a href='#L48'>48</a>
+<a name='L49'></a><a href='#L49'>49</a>
+<a name='L50'></a><a href='#L50'>50</a>
+<a name='L51'></a><a href='#L51'>51</a>
+<a name='L52'></a><a href='#L52'>52</a>
+<a name='L53'></a><a href='#L53'>53</a>
+<a name='L54'></a><a href='#L54'>54</a>
+<a name='L55'></a><a href='#L55'>55</a>
+<a name='L56'></a><a href='#L56'>56</a>
+<a name='L57'></a><a href='#L57'>57</a>
+<a name='L58'></a><a href='#L58'>58</a>
+<a name='L59'></a><a href='#L59'>59</a>
+<a name='L60'></a><a href='#L60'>60</a>
+<a name='L61'></a><a href='#L61'>61</a>
+<a name='L62'></a><a href='#L62'>62</a>
+<a name='L63'></a><a href='#L63'>63</a>
+<a name='L64'></a><a href='#L64'>64</a>
+<a name='L65'></a><a href='#L65'>65</a>
+<a name='L66'></a><a href='#L66'>66</a>
+<a name='L67'></a><a href='#L67'>67</a>
+<a name='L68'></a><a href='#L68'>68</a>
+<a name='L69'></a><a href='#L69'>69</a>
+<a name='L70'></a><a href='#L70'>70</a>
+<a name='L71'></a><a href='#L71'>71</a>
+<a name='L72'></a><a href='#L72'>72</a>
+<a name='L73'></a><a href='#L73'>73</a>
+<a name='L74'></a><a href='#L74'>74</a>
+<a name='L75'></a><a href='#L75'>75</a>
+<a name='L76'></a><a href='#L76'>76</a>
+<a name='L77'></a><a href='#L77'>77</a>
+<a name='L78'></a><a href='#L78'>78</a>
+<a name='L79'></a><a href='#L79'>79</a>
+<a name='L80'></a><a href='#L80'>80</a>
+<a name='L81'></a><a href='#L81'>81</a>
+<a name='L82'></a><a href='#L82'>82</a>
+<a name='L83'></a><a href='#L83'>83</a>
+<a name='L84'></a><a href='#L84'>84</a>
+<a name='L85'></a><a href='#L85'>85</a>
+<a name='L86'></a><a href='#L86'>86</a>
+<a name='L87'></a><a href='#L87'>87</a>
+<a name='L88'></a><a href='#L88'>88</a>
+<a name='L89'></a><a href='#L89'>89</a>
+<a name='L90'></a><a href='#L90'>90</a>
+<a name='L91'></a><a href='#L91'>91</a>
+<a name='L92'></a><a href='#L92'>92</a>
+<a name='L93'></a><a href='#L93'>93</a>
+<a name='L94'></a><a href='#L94'>94</a>
+<a name='L95'></a><a href='#L95'>95</a>
+<a name='L96'></a><a href='#L96'>96</a>
+<a name='L97'></a><a href='#L97'>97</a>
+<a name='L98'></a><a href='#L98'>98</a>
+<a name='L99'></a><a href='#L99'>99</a>
+<a name='L100'></a><a href='#L100'>100</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const randseed = <span class="cstat-no" title="statement not covered" >new Array(4);</span> // Xorshift: [x, y, z, w] 32 bit values
+&nbsp;
+function <span class="fstat-no" title="function not covered" >seedrand(</span>seed) {
+<span class="cstat-no" title="statement not covered" >  for (let i = <span class="cstat-no" title="statement not covered" >0;</span> i &lt; randseed.length; i++) {</span>
+<span class="cstat-no" title="statement not covered" >    randseed[i] = 0;</span>
+  }
+<span class="cstat-no" title="statement not covered" >  for (let j = <span class="cstat-no" title="statement not covered" >0;</span> j &lt; seed.length; j++) {</span>
+<span class="cstat-no" title="statement not covered" >    randseed[j % 4] =</span>
+      (randseed[j % 4] &lt;&lt; 5) - randseed[j % 4] + seed.charCodeAt(j);
+  }
+}
+&nbsp;
+function <span class="fstat-no" title="function not covered" >rand(</span>) {
+  // based on Java's String.hashCode(), expanded to 4 32bit values
+  const t = <span class="cstat-no" title="statement not covered" >randseed[0] ^ (randseed[0] &lt;&lt; 11);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  randseed[0] = randseed[1];</span>
+<span class="cstat-no" title="statement not covered" >  randseed[1] = randseed[2];</span>
+<span class="cstat-no" title="statement not covered" >  randseed[2] = randseed[3];</span>
+<span class="cstat-no" title="statement not covered" >  randseed[3] = randseed[3] ^ (randseed[3] &gt;&gt; 19) ^ t ^ (t &gt;&gt; 8);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  return (randseed[3] &gt;&gt;&gt; 0) / ((1 &lt;&lt; 31) &gt;&gt;&gt; 0);</span>
+}
+&nbsp;
+function <span class="fstat-no" title="function not covered" >createColor(</span>) {
+  // saturation is the whole color spectrum
+  const h = <span class="cstat-no" title="statement not covered" >Math.floor(rand() * 360);</span>
+  // saturation goes from 40 to 100, it avoids greyish colors
+  const s = <span class="cstat-no" title="statement not covered" >rand() * 60 + 40 + '%';</span>
+  // lightness can be anything from 0 to 100, but probabilities are a bell curve around 50%
+  const l = <span class="cstat-no" title="statement not covered" >(rand() + rand() + rand() + rand()) * 25 + '%';</span>
+&nbsp;
+  const color = <span class="cstat-no" title="statement not covered" >'hsl(' + h + ',' + s + ',' + l + ')';</span>
+<span class="cstat-no" title="statement not covered" >  return color;</span>
+}
+&nbsp;
+function <span class="fstat-no" title="function not covered" >createImageData(</span>size) {
+  const width = <span class="cstat-no" title="statement not covered" >size;</span> // Only support square icons for now
+  const height = <span class="cstat-no" title="statement not covered" >size;</span>
+&nbsp;
+  const dataWidth = <span class="cstat-no" title="statement not covered" >Math.ceil(width / 2);</span>
+  const mirrorWidth = <span class="cstat-no" title="statement not covered" >width - dataWidth;</span>
+&nbsp;
+  const data = <span class="cstat-no" title="statement not covered" >[];</span>
+<span class="cstat-no" title="statement not covered" >  for (let y = <span class="cstat-no" title="statement not covered" >0;</span> y &lt; height; y++) {</span>
+    let row = <span class="cstat-no" title="statement not covered" >[];</span>
+<span class="cstat-no" title="statement not covered" >    for (let x = <span class="cstat-no" title="statement not covered" >0;</span> x &lt; dataWidth; x++) {</span>
+      // this makes foreground and background color to have a 43% (1/2.3) probability
+      // spot color has 13% chance
+<span class="cstat-no" title="statement not covered" >      row[x] = Math.floor(rand() * 2.3);</span>
+    }
+    const r = <span class="cstat-no" title="statement not covered" >row.slice(0, mirrorWidth);</span>
+<span class="cstat-no" title="statement not covered" >    r.reverse();</span>
+<span class="cstat-no" title="statement not covered" >    row = row.concat(r);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    for (let i = <span class="cstat-no" title="statement not covered" >0;</span> i &lt; row.length; i++) {</span>
+<span class="cstat-no" title="statement not covered" >      data.push(row[i]);</span>
+    }
+  }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  return data;</span>
+}
+&nbsp;
+function <span class="fstat-no" title="function not covered" >createCanvas(</span>imageData, color, scale, bgcolor, spotcolor) {
+  const width = <span class="cstat-no" title="statement not covered" >Math.sqrt(imageData.length);</span>
+  const c = <span class="cstat-no" title="statement not covered" >document.createElement('canvas');</span>
+<span class="cstat-no" title="statement not covered" >  c.width = c.height = width * scale;</span>
+  const cc = <span class="cstat-no" title="statement not covered" >c.getContext('2d');</span>
+<span class="cstat-no" title="statement not covered" >  cc.fillStyle = bgcolor;</span>
+<span class="cstat-no" title="statement not covered" >  cc.fillRect(0, 0, c.width, c.height);</span>
+<span class="cstat-no" title="statement not covered" >  cc.fillStyle = color;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  for (let i = <span class="cstat-no" title="statement not covered" >0;</span> i &lt; imageData.length; i++) {</span>
+    const row = <span class="cstat-no" title="statement not covered" >Math.floor(i / width);</span>
+    const col = <span class="cstat-no" title="statement not covered" >i % width;</span>
+<span class="cstat-no" title="statement not covered" >    cc.fillStyle = imageData[i] === 1 ? color : spotcolor;</span>
+<span class="cstat-no" title="statement not covered" >    if (imageData[i]) {</span>
+<span class="cstat-no" title="statement not covered" >      cc.fillRect(col * scale, row * scale, scale, scale);</span>
+    }
+  }
+<span class="cstat-no" title="statement not covered" >  return c;</span>
+}
+&nbsp;
+function <span class="fstat-no" title="function not covered" >createIcon(</span>opts) {
+<span class="cstat-no" title="statement not covered" >  opts = opts || {};</span>
+  const size = <span class="cstat-no" title="statement not covered" >opts.size || 8;</span>
+  const scale = <span class="cstat-no" title="statement not covered" >opts.scale || 4;</span>
+  const seed =
+<span class="cstat-no" title="statement not covered" >    opts.seed || Math.floor(Math.random() * Math.pow(10, 16)).toString(16);</span>
+<span class="cstat-no" title="statement not covered" >  seedrand(seed);</span>
+  const color = <span class="cstat-no" title="statement not covered" >opts.color || createColor();</span>
+  const bgcolor = <span class="cstat-no" title="statement not covered" >opts.bgcolor || createColor();</span>
+  const spotcolor = <span class="cstat-no" title="statement not covered" >opts.spotcolor || createColor();</span>
+  const imageData = <span class="cstat-no" title="statement not covered" >createImageData(size);</span>
+  const canvas = <span class="cstat-no" title="statement not covered" >createCanvas(imageData, color, scale, bgcolor, spotcolor);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  return canvas;</span>
+}
+export default createIcon;
+&nbsp;</pre></td></tr></table></pre>
+
+                <div class='push'></div><!-- for sticky footer -->
+            </div><!-- /wrapper -->
+            <div class='footer quiet pad2 space-top1 center small'>
+                Code coverage generated by
+                <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
+                at Thu May 12 2022 12:04:50 GMT-0700 (Pacific Daylight Time)
+            </div>
+        </div>
+        <script src="../../../prettify.js"></script>
+        <script>
+            window.onload = function () {
+                prettyPrint();
+            };
+        </script>
+        <script src="../../../sorter.js"></script>
+        <script src="../../../block-navigation.js"></script>
+    </body>
+</html>
+    
