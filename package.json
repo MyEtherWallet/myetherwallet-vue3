@@ -7,7 +7,8 @@
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "vue-cli-service test:e2e",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "preinstall": "find node_modules -name \".git\" -exec rm -rf {} \\; || true && npx npm-force-resolutions"
   },
   "dependencies": {
     "@mdi/font": "5.9.55",
@@ -55,6 +56,9 @@
   },
   "gitHooks": {
     "pre-commit": "lint-staged"
+  },
+  "resolutions": {
+    "autoprefixer": "^10.4.8"
   },
   "lint-staged": {
     "*.{js,jsx,vue,ts,tsx}": [
