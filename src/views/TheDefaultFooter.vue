@@ -1,150 +1,168 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref, watch, computed } from 'vue';
+import { ROUTES_HOME } from '@/core/configs/configRoutes.js';
+import { loadLanguageAsync } from '@/main/i18n.js';
+import { usePopupStore } from '@/stores/popups';
+import { useGlobalStore } from '@/stores/global';
+import { LocationQueryRaw } from 'vue-router';
+const globalStore = computed(() => useGlobalStore());
+const popupStore = computed(() => usePopupStore());
+const ethDonationAddress = '';
+const btcDonationAddress = '';
 
-import { ROUTES_HOME } from "@/core/configs/configRoutes.js";
-import { loadLanguageAsync } from "@/main/i18n.js";
+const version = '7.0.0';
 
-const select = ref("en_US");
-const ethDonationAddress = "";
-const btcDonationAddress = "";
-const version = "7.0.0";
 const languages = [
   {
-    name: "English",
-    value: "en_US",
-    flag: require("@/assets/images/flags/uk.png"),
+    name: 'English',
+    value: 'en_US',
+    flag: require('@/assets/images/flags/uk.png')
   },
   {
-    name: "Russian",
-    value: "ru_RU",
-    flag: require("@/assets/images/flags/russia.png"),
-  },
+    name: 'Russian',
+    value: 'ru_RU',
+    flag: require('@/assets/images/flags/russia.png')
+  }
 ];
+const select = ref(
+  globalStore.value.locale === 'en_US' ? languages[0] : languages[1]
+);
 const socialIcons = [
   {
-    link: "https://www.facebook.com/MyEtherWallet",
-    icon: "facebook",
+    link: 'https://www.facebook.com/MyEtherWallet',
+    icon: 'facebook'
   },
   {
-    link: "https://twitter.com/myetherwallet",
-    icon: "twitter",
+    link: 'https://twitter.com/myetherwallet',
+    icon: 'twitter'
   },
   {
-    link: "https://www.instagram.com/myetherwallet/",
-    icon: "instagram",
+    link: 'https://www.instagram.com/myetherwallet/',
+    icon: 'instagram'
   },
   {
-    link: "https://www.linkedin.com/company/myetherwallet",
-    icon: "linkedin",
+    link: 'https://www.linkedin.com/company/myetherwallet',
+    icon: 'linkedin'
   },
   {
-    link: "https://github.com/myetherwallet",
-    icon: "github",
+    link: 'https://github.com/myetherwallet',
+    icon: 'github'
   },
   {
-    link: "https://www.reddit.com/r/MyEtherWallet/",
-    icon: "reddit",
+    link: 'https://www.reddit.com/r/MyEtherWallet/',
+    icon: 'reddit'
   },
   {
-    link: "https://www.youtube.com/channel/UCQU5QbObwmaHNEMsuX3uQKA",
-    icon: "youtube",
+    link: 'https://www.youtube.com/channel/UCQU5QbObwmaHNEMsuX3uQKA',
+    icon: 'youtube'
   },
   {
-    link: "https://medium.com/@myetherwallet",
-    icon: "medium",
+    link: 'https://medium.com/@myetherwallet',
+    icon: 'medium'
   },
   {
-    link: "https://t.me/myetherwallet",
-    iconImage: require("@/assets/images/icons/icon-telegram.svg"),
-  },
+    link: 'https://t.me/myetherwallet',
+    iconImage: require('@/assets/images/icons/icon-telegram.svg')
+  }
 ];
-const footers = [
+const footers: Array<FooterItem> = [
   {
-    title: "Affiliate Hardware Wallets",
+    title: 'Affiliate Hardware Wallets',
     data: [
-      { label: "Ledger", link: "https://www.ledger.com/?r=fa4b" },
-      { label: "BitBox02", link: "https://shiftcrypto.ch/?ref=mew" },
+      { label: 'Ledger', link: 'https://www.ledger.com/?r=fa4b' },
+      { label: 'BitBox02', link: 'https://shiftcrypto.ch/?ref=mew' },
       {
-        label: "Ether Cards",
-        link: "https://ether.cards/?utm_source=mew&utm_medium=cpm&utm_campaign=site",
+        label: 'Ether Cards',
+        link: 'https://ether.cards/?utm_source=mew&utm_medium=cpm&utm_campaign=site'
       },
-      { label: "Trezor", link: "https://trezor.io/" },
-      { label: "KeepKey", link: "http://lddy.no/a4im" },
+      { label: 'Trezor', link: 'https://trezor.io/' },
+      { label: 'KeepKey', link: 'http://lddy.no/a4im' },
       {
-        label: "Finney",
-        link: "http://shop.sirinlabs.com/?rfsn=2397639.54fdf&utm_source=refersion&utm_medium=affiliate&utm_campaign=2397639.54fdf",
-      },
-      {
-        label: "CoolWallet",
-        link: "https://www.coolwallet.io/mew/?ref=myetherwallet1",
+        label: 'Finney',
+        link: 'http://shop.sirinlabs.com/?rfsn=2397639.54fdf&utm_source=refersion&utm_medium=affiliate&utm_campaign=2397639.54fdf'
       },
       {
-        label: "Billfodl",
-        link: "https://billfodl.com/?afmc=2j&utm_campaign=2j&utm_source=leaddyno&utm_medium=affiliate",
+        label: 'CoolWallet',
+        link: 'https://www.coolwallet.io/mew/?ref=myetherwallet1'
       },
-    ],
+      {
+        label: 'Billfodl',
+        link: 'https://billfodl.com/?afmc=2j&utm_campaign=2j&utm_source=leaddyno&utm_medium=affiliate'
+      }
+    ]
   },
   {
-    title: "MEW",
+    title: 'MEW',
     data: [
-      { label: "About us", routerLink: "AboutPage" },
-      { label: "Careers", routerLink: "Careers" },
-      { label: "How it works", routerLink: "HowItWorks" },
-      { label: "Team", routerLink: "TeamPage" },
-      { label: "Help center", link: "https://help.myetherwallet.com/en/" },
+      { label: 'About us', routerLink: 'AboutPage' },
+      { label: 'Careers', routerLink: 'Careers' },
+      { label: 'How it works', routerLink: 'HowItWorks' },
+      { label: 'Team', routerLink: 'TeamPage' },
+      { label: 'Help center', link: 'https://help.myetherwallet.com/en/' },
       {
-        label: "Customer support",
-        link: "mailto:support@myetherwallet.com",
+        label: 'Customer support',
+        link: 'mailto:support@myetherwallet.com'
       },
-      { label: "MEWtopia", link: "https://www.mewtopia.com/" },
-      { label: "Press Kit", routerLink: "PressKit" },
-      { label: "Security Policy", routerLink: "SecurityPolicy" },
-      { label: "Submit DApp", routerLink: "DappSubmission" },
-    ],
+      { label: 'MEWtopia', link: 'https://www.mewtopia.com/' },
+      { label: 'Press Kit', routerLink: 'PressKit' },
+      { label: 'Security Policy', routerLink: 'SecurityPolicy' },
+      { label: 'Submit DApp', routerLink: 'DappSubmission' }
+    ]
   },
   {
-    title: "Tools",
+    title: 'Tools',
     data: [
       {
-        label: "MEW wallet",
-        class: "FooterMEWTool",
-        link: "https://www.mewwallet.com/",
+        label: 'MEW wallet',
+        class: 'FooterMEWTool',
+        link: 'https://www.mewwallet.com/'
       },
       {
-        label: "Enkrypt",
-        class: "FooterCXTool",
-        link: "https://chrome.google.com/webstore/detail/enkrypt/kkpllkodjeloidieedojogacfhpaihoh?hl=en",
+        label: 'Enkrypt',
+        class: 'FooterCXTool',
+        link: 'https://chrome.google.com/webstore/detail/enkrypt/kkpllkodjeloidieedojogacfhpaihoh?hl=en'
       },
       {
-        label: "Verify message",
-        class: "FooterVerifyTool",
-        routerLink: "Tools",
-        query: { tool: "verify" },
+        label: 'Verify message',
+        class: 'FooterVerifyTool',
+        routerLink: 'Tools',
+        query: { tool: 'verify' }
       },
       {
-        label: "Convert units",
-        class: "FooterConvertTool",
-        routerLink: "Tools",
-        query: { tool: "convert" },
+        label: 'Convert units',
+        class: 'FooterConvertTool',
+        routerLink: 'Tools',
+        query: { tool: 'convert' }
       },
       {
-        label: "Generate keystore file",
-        class: "FooterKeystoreTool",
-        routerLink: "Tools",
-        query: { tool: "keystore" },
+        label: 'Generate keystore file',
+        class: 'FooterKeystoreTool',
+        routerLink: 'Tools',
+        query: { tool: 'keystore' }
       },
       {
-        label: "Send Offline Helper",
-        class: "FooterOfflineTool",
-        routerLink: "Tools",
-        query: { tool: "offline" },
-      },
-    ],
-  },
+        label: 'Send Offline Helper',
+        class: 'FooterOfflineTool',
+        routerLink: 'Tools',
+        query: { tool: 'offline' }
+      }
+    ]
+  }
 ];
-
-watch(select, (select) => {
-  loadLanguageAsync(select);
+interface FooterData {
+  label: string;
+  class?: string;
+  link?: string;
+  routerLink?: string;
+  query?: LocationQueryRaw;
+}
+interface FooterItem {
+  title: string;
+  data: Array<FooterData>;
+}
+watch(select, select => {
+  if (select.value === 'en_US' || select.value === 'ru_RU')
+    loadLanguageAsync(select.value);
 });
 </script>
 
@@ -177,9 +195,9 @@ watch(select, (select) => {
           </v-col>
           <v-col cols="3">
             <div class="subtitle-1 font-weight-bold mb-5 d-flex align-center">
-              {{ $t("footer.donation.heading") }}
+              {{ $t('footer.donation.heading') }}
             </div>
-            <p>{{ $t("footer.donation.text") }}</p>
+            <p>{{ $t('footer.donation.text') }}</p>
             <a
               class="color--inherit d-flex align-center mb-3"
               target="_blank"
@@ -192,7 +210,7 @@ watch(select, (select) => {
                 class="mr-2"
               />
               <div>
-                <div>{{ $t("footer.donation.ether") }}</div>
+                <div>{{ $t('footer.donation.ether') }}</div>
                 <div v-show="false" class="overline">
                   Address: {{ ethDonationAddress }}
                 </div>
@@ -210,7 +228,7 @@ watch(select, (select) => {
                 class="mr-2"
               />
               <div>
-                <div>{{ $t("footer.donation.bitcoin") }}</div>
+                <div>{{ $t('footer.donation.bitcoin') }}</div>
                 <div v-show="false" class="overline">
                   Address: {{ btcDonationAddress }}
                 </div>
@@ -227,29 +245,34 @@ watch(select, (select) => {
                   href="mailto:support@myetherwallet.com"
                   target="_blank"
                 >
-                  {{ $t("footer.feedback") }}
+                  {{ $t('footer.feedback') }}
                 </a>
               </div>
               <div class="px-6 border-right">
                 <router-link :to="{ name: ROUTES_HOME.PRIVACY_POLICY.NAME }">
-                  {{ $t("footer.privacy") }}
+                  {{ $t('footer.privacy') }}
                 </router-link>
               </div>
               <div class="px-6">
                 <router-link :to="{ name: ROUTES_HOME.TERMS_OF_SERVICE.NAME }">
-                  {{ $t("footer.tos") }}
+                  {{ $t('footer.tos') }}
                 </router-link>
               </div>
             </div>
           </div>
-          <div v-if="displayedTrackingPopup" class="matomo-tracking-switch">
+          <div
+            v-if="popupStore.displayedTrackingPopup"
+            class="matomo-tracking-switch"
+          >
             <v-switch
-              :input-value="consentToTrack"
+              :input-value="popupStore.consentToTrack"
               inset
-              :label="`Data Tracking ${consentToTrack ? 'On' : 'Off'}`"
+              :label="`Data Tracking ${
+                popupStore.consentToTrack ? 'On' : 'Off'
+              }`"
               color="greenPrimary"
               off-icon="mdi-alert-circle"
-              @change="setConsent"
+              @change="popupStore.setTrackingConsent(true)"
             />
           </div>
           <div class="social-icons d-flex align-center">
@@ -282,12 +305,12 @@ watch(select, (select) => {
             >
             <v-spacer />
             <p class="teal--text text--lighten-1 ma-0">
-              {{ $t("footer.copyright", { year: new Date().getFullYear() }) }}
+              {{ $t('footer.copyright', { year: new Date().getFullYear() }) }}
               <a
                 class="cyan--text text--lighten-3"
                 href="https://www.coingecko.com/en"
                 target="_blank"
-                >{{ $t("footer.coingecko") }}</a
+                >{{ $t('footer.coingecko') }}</a
               >.
             </p>
             <v-spacer />
@@ -344,9 +367,9 @@ watch(select, (select) => {
         <v-sheet color="transparent" max-width="500px" class="mx-auto">
           <div>
             <h3 class="mb-3 d-flex align-center">
-              {{ $t("footer.donation.heading") }}
+              {{ $t('footer.donation.heading') }}
             </h3>
-            <p>{{ $t("footer.donation.text") }}</p>
+            <p>{{ $t('footer.donation.text') }}</p>
             <a
               class="color--inherit d-flex align-center mb-1"
               target="_blank"
@@ -359,7 +382,7 @@ watch(select, (select) => {
                 class="mr-2"
               />
               <div>
-                <div>{{ $t("footer.donation.ether") }}</div>
+                <div>{{ $t('footer.donation.ether') }}</div>
                 <div v-show="false" class="overline">
                   Address: {{ ethDonationAddress }}
                 </div>
@@ -377,7 +400,7 @@ watch(select, (select) => {
                 class="mr-2"
               />
               <div>
-                <div>{{ $t("footer.donation.bitcoin") }}</div>
+                <div>{{ $t('footer.donation.bitcoin') }}</div>
                 <div v-show="false" class="overline">
                   Address: {{ btcDonationAddress }}
                 </div>
@@ -414,7 +437,7 @@ watch(select, (select) => {
                   href="mailto:support@myetherwallet.com"
                   target="_blank"
                 >
-                  {{ $t("footer.feedback") }}
+                  {{ $t('footer.feedback') }}
                 </a>
               </div>
               <div class="px-4 px-lg-6 border-right">
@@ -447,8 +470,6 @@ watch(select, (select) => {
                   v-model="select"
                   append-icon="mdi-chevron-down"
                   :items="languages"
-                  item-text="name"
-                  item-value="value"
                   return-object
                   single-line
                   dark
@@ -457,12 +478,12 @@ watch(select, (select) => {
             </div>
             <v-sheet color="transparent" max-width="300px" class="mx-auto">
               <p class="teal--text text--lighten-1 mt-6 mb-0 text-center">
-                {{ $t("footer.copyright", { year: new Date().getFullYear() }) }}
+                {{ $t('footer.copyright', { year: new Date().getFullYear() }) }}
                 <a
                   class="cyan--text text--lighten-3"
                   href="https://www.coingecko.com/en"
                   target="_blank"
-                  >{{ $t("footer.coingecko") }}</a
+                  >{{ $t('footer.coingecko') }}</a
                 >.
               </p>
             </v-sheet>

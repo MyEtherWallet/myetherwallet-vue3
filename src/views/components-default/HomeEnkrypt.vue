@@ -41,12 +41,12 @@
                 href="href=https://chrome.google.com/webstore/detail/enkrypt/kkpllkodjeloidieedojogacfhpaihoh?hl=en"
                 target="_blank"
               >
-                <mew-button
+                <!-- <mew-button
                   class="extension-btn"
                   color-theme="#7E44F2"
                   style="border-radius: 100px !important"
                   btn-size="large"
-                  @click.native="openEnkrypt"
+                  @click="openEnkrypt"
                 >
                   <img
                     :src="browserLogo"
@@ -55,7 +55,7 @@
                     class="mr-2"
                   />
                   <span class="font-weight-bold"> Install for Chrome </span>
-                </mew-button>
+                </mew-button> -->
               </a>
               <a
                 class="text-decoration-underline textSecondary--text ml-5"
@@ -86,28 +86,22 @@
   </div>
 </template>
 
-<script>
-import enkryptMarketing from "@/core/mixins/enkryptMarketing.mixin.js";
-export default {
-  name: "HomeEnkrypt",
-  components: {},
-  mixins: [enkryptMarketing],
-  data: () => ({}),
-  computed: {
-    bgStyle() {
-      if (
-        this.$vuetify.breakpoint.mdAndUp &&
-        this.$vuetify.breakpoint.width < 2300
-      ) {
-        return "bgLarge";
-      }
-      if (this.$vuetify.breakpoint.width >= 2300) {
-        return "bgXLarge";
-      }
-      return "bgSmall";
-    },
-  },
-};
+<script setup lang="ts">
+//import enkryptMarketing from '@/core/mixins/enkryptMarketing.mixin.js';
+import { computed } from 'vue';
+const isMobile = true;
+const bgStyle = computed(function (this: any) {
+  if (
+    this.$vuetify.breakpoint.mdAndUp &&
+    this.$vuetify.breakpoint.width < 2300
+  ) {
+    return 'bgLarge';
+  }
+  if (this.$vuetify.breakpoint.width >= 2300) {
+    return 'bgXLarge';
+  }
+  return 'bgSmall';
+});
 </script>
 
 <style lang="css">
@@ -131,17 +125,17 @@ export default {
 .home--enkrypt {
   background-color: #eeeeee;
   &.bgSmall {
-    background-image: url("~@/assets/images/snippets/snippet-circle-blue.svg");
+    background-image: url('~@/assets/images/snippets/snippet-circle-blue.svg');
     background-position: top 191px right calc(50% - 415px);
     background-size: 725px;
   }
   &.bgLarge {
-    background-image: url("~@/assets/images/snippets/snippet-circle-blue.svg");
+    background-image: url('~@/assets/images/snippets/snippet-circle-blue.svg');
     background-position: top -933px right calc(50% - 717px);
     background-size: 1468px;
   }
   &.bgXLarge {
-    background-image: url("~@/assets/images/snippets/snippet-circle-blue.svg");
+    background-image: url('~@/assets/images/snippets/snippet-circle-blue.svg');
     background-position: top -515px right calc(50% - 550px);
     background-size: 994px;
   }

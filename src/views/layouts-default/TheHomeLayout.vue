@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<script setup lang="ts">
 import HomeEnkrypt from "../components-default/HomeEnkrypt.vue";
 import HomeLanding from "../components-default/HomeLanding.vue";
 import HomeFeatures from "../components-default/HomeFeatures.vue";

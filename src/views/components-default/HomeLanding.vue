@@ -7,14 +7,14 @@
         <v-card color="transparent" flat tile max-width="430px">
           <div class="white--text mew-title">
             <span>
-              {{ $t("home.tagline1") | lokalise("home.tagline1") }}
+              {{ $t('home.tagline1') | lokalise('home.tagline1') }}
             </span>
             <span>
-              {{ $t("home.tagline2") | lokalise("home.tagline2") }}
+              {{ $t('home.tagline2') | lokalise('home.tagline2') }}
             </span>
           </div>
           <p class="white--text mt-3">
-            {{ $t("home.subheading") | lokalise("home.subheading") }}
+            {{ $t('home.subheading') | lokalise('home.subheading') }}
           </p>
           <div class="mt-9 d-flex">
             <mew-button
@@ -25,7 +25,7 @@
               @click.native="
                 $router.push({
                   name: ROUTES_HOME.CREATE_WALLET.NAME,
-                  params: {},
+                  params: {}
                 })
               "
             />
@@ -38,7 +38,7 @@
               @click.native="
                 $router.push({
                   name: ROUTES_HOME.ACCESS_WALLET.NAME,
-                  params: {},
+                  params: {}
                 })
               "
             />
@@ -88,14 +88,14 @@
             style="font-size: 3rem; line-height: 3.3rem"
           >
             <span>
-              {{ $t("home.tagline1") | lokalise("home.tagline2") }}
+              {{ $t('home.tagline1') | lokalise('home.tagline2') }}
             </span>
             <span>
-              {{ $t("home.tagline2") | lokalise("home.tagline2") }}
+              {{ $t('home.tagline2') | lokalise('home.tagline2') }}
             </span>
           </div>
           <p class="white--text mt-3">
-            {{ $t("home.subheading") | lokalise("home.subheading") }}
+            {{ $t('home.subheading') | lokalise('home.subheading') }}
           </p>
           <div class="mt-12">
             <mew-button
@@ -106,7 +106,7 @@
               @click.native="
                 $router.push({
                   name: ROUTES_HOME.CREATE_WALLET.NAME,
-                  params: {},
+                  params: {}
                 })
               "
             />
@@ -119,7 +119,7 @@
               @click.native="
                 $router.push({
                   name: ROUTES_HOME.ACCESS_WALLET.NAME,
-                  params: {},
+                  params: {}
                 })
               "
             />
@@ -130,25 +130,17 @@
   </div>
 </template>
 
-<script>
-import { ROUTES_HOME } from "@/core/configs/configRoutes";
-import handlerAnalytics from "@/modules/analytics-opt-in/handlers/handlerAnalytics.mixin";
-import enkryptMarketing from "@/core/mixins/enkryptMarketing.mixin.js";
+<script setup lang="ts">
+// import {onMounted} from 'vue'
+import { ROUTES_HOME } from '@/core/configs/configRoutes';
+// import handlerAnalytics from '@/modules/analytics-opt-in/handlers/handlerAnalytics.mixin';
+// import enkryptMarketing from '@/core/mixins/enkryptMarketing.mixin.js';
 
-export default {
-  name: "HomeLanding",
-  components: {},
-  mixins: [handlerAnalytics, enkryptMarketing],
-  data() {
-    return { ROUTES_HOME: ROUTES_HOME };
-  },
-  mounted() {
-    setTimeout(() => {
-      this.trackLandingPage();
-    }, 1000);
-  },
-  methods: {},
-};
+// onMounted(()=>{
+//   setTimeout(() => {
+//     this.trackLandingPage();
+//   }, 1000);
+// })
 </script>
 
 <style lang="scss" scoped>
@@ -162,7 +154,7 @@ export default {
 }
 
 .mobile-content {
-  background-image: url("~@/assets/images/backgrounds/bg-homepage-spaceman-center.svg");
+  background-image: url('~@/assets/images/backgrounds/bg-homepage-spaceman-center.svg');
   background-position: bottom center;
   background-size: 88rem;
   padding: 0 0 30rem 0;

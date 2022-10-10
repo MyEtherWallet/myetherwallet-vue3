@@ -1,0 +1,14 @@
+declare module 'vuetify';
+declare module 'vuetify/lib/components';
+declare module 'vuetify/lib/directives';
+declare module 'store';
+declare module 'ethereumjs-util';
+declare module 'bignumber.js';
+declare module 'web3-utils';
+declare module 'web3';
+declare module '@ethereumjs/common';
+declare module 'eth-ens-namehash';
+declare module 'lodash';
+declare module 'vue-cli-plugin-pinia';
+declare module 'uuid';
+declare module 'web3-core-requestmanager';

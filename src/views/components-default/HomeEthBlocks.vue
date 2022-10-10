@@ -20,32 +20,29 @@
           cols="12"
           md="6"
           class="d-flex align-center justify-center"
-          :class="$vuetify.breakpoint.smAndDown ? 'mt-8' : ''"
+          :class="$vuetify.display.smAndDown ? 'mt-8' : ''"
         >
           <div style="max-width: 370px">
             <div class="mew-subtitle mb-7">
               {{
-                $t("home.eth-blocks.title") | lokalise("home.eth-blocks.title")
+                $t('home.eth-blocks.title') || lokalise('home.eth-blocks.title')
               }}
             </div>
             <div>
-              {{
-                $t("home.eth-blocks.description")
-                  | lokalise("home.eth-blocks.description")
-              }}
+              {{ $t('home.eth-blocks.description') }}
             </div>
             <mew-button
-              :has-full-width="$vuetify.breakpoint.smAndDown"
+              :has-full-width="$vuetify.display.smAndDown"
               class="mt-8"
               btn-size="xlarge"
               :title="
-                $t('home.eth-blocks.btn-text')
-                  | lokalise('home.eth-blocks.btn-text')
+                $t('home.eth-blocks.btn-text') ||
+                lokalise('home.eth-blocks.btn-text')
               "
               @click.native="
                 $router.push({
                   name: 'EthBlocks',
-                  params: {},
+                  params: {}
                 })
               "
             ></mew-button>
@@ -56,19 +53,11 @@
   </div>
 </template>
 
-<script>
-import ethBlocksThree from "@/assets/images/icons/eth-blocks-3.png";
-import ethBlocksSix from "@/assets/images/icons/eth-blocks-6.png";
-export default {
-  name: "HomeEthBlocks",
-  components: {},
-  data() {
-    return {
-      three: ethBlocksThree,
-      six: ethBlocksSix,
-    };
-  },
-};
+<script setup lang="ts">
+import ethBlocksThree from '@/assets/images/icons/eth-blocks-3.jpg';
+import ethBlocksSix from '@/assets/images/icons/eth-blocks-6.jpg';
+const three = ethBlocksThree;
+const six = ethBlocksSix;
 </script>
 
 <style lang="scss" scoped>

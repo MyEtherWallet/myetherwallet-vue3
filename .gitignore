@@ -1,6 +1,6 @@
-.DS_Store
-node_modules
-/dist
+**/.DS_Store
+node_modules/
+/dist/
 
 /tests/e2e/reports/
 selenium-debug.log
@@ -18,7 +18,14 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+/tests/unit/coverage/
+selenium-debug.log
+/tests/e2e/reports/
+/download_folder
+/logs
+build
 # Editor directories and files
+.cache
 .idea
 .vscode
 *.suo
@@ -26,3 +33,17 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
+.npm
+.config
+/tests/unit/coverage/
+tests_output/
+release
+chrome-extension
+.env
+
+# Generated files
+src/_generated
+
+
+# Apollo files
+src/apollo/global/globalTypes.json

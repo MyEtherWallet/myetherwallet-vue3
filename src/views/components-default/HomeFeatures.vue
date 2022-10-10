@@ -8,9 +8,9 @@
         class="mx-auto text-center"
       >
         <div class="mew-heading-3 text-uppercase textMedium--text mb-1">
-          {{ $t("home.features.subheading") }}
+          {{ $t('home.features.subheading') }}
         </div>
-        <h1 class="mb-9">{{ $t("home.features.heading") }}</h1>
+        <h1 class="mb-9">{{ $t('home.features.heading') }}</h1>
       </v-sheet>
       <div class="features-tabs-container">
         <v-container>
@@ -41,9 +41,9 @@
       <v-container>
         <v-sheet color="transparent" max-width="500px" class="mx-auto">
           <h5 class="font-weight-bold text-uppercase textMedium--text mb-2">
-            {{ $t("home.features.subheading") }}
+            {{ $t('home.features.subheading') }}
           </h5>
-          <h1 class="mb-10">{{ $t("home.features.heading") }}</h1>
+          <h1 class="mb-10">{{ $t('home.features.heading') }}</h1>
           <v-tabs v-model="mobileTab" fixed-tabs>
             <v-tab v-for="item in mobileItems" :key="item.tab">
               {{ item.tab }}
@@ -51,7 +51,7 @@
           </v-tabs>
 
           <v-tabs-items v-model="mobileTab">
-            <v-tab-item v-for="item in mewTabs" :key="item.tab">
+            <v-tab-item v-for="item in mewTabs" :key="item.name">
               <div class="mt-10 mb-5">
                 <home-features-send v-if="item.name === 'ETH'" />
                 <home-features-swap v-if="item.name === 'Swap'" />
@@ -67,56 +67,57 @@
   </div>
 </template>
 
-<script>
-import HomeFeaturesSend from "./HomeFeaturesSend";
-import HomeFeaturesSwap from "./HomeFeaturesSwap";
-import HomeFeaturesDapps from "./HomeFeaturesDapps";
-import HomeFeaturesTokens from "./HomeFeaturesTokens";
+<script lang="ts">
+import HomeFeaturesSend from './HomeFeaturesSend.vue';
+import HomeFeaturesSwap from './HomeFeaturesSwap.vue';
+import HomeFeaturesDapps from './HomeFeaturesDapps.vue';
+import HomeFeaturesTokens from './HomeFeaturesTokens.vue';
+import { defineComponent } from 'vue';
 
-export default {
-  name: "HomeFeatures",
+export default defineComponent({
+  name: 'HomeFeatures',
   components: {
     HomeFeaturesSend,
     HomeFeaturesSwap,
     HomeFeaturesDapps,
-    HomeFeaturesTokens,
+    HomeFeaturesTokens
   },
   data: () => ({
     mobileTab: null,
     mobileItems: [
       {
-        tab: "ETH",
-        img: require("@/assets/images/snippets/mobile/mobile-features-send.svg"),
+        tab: 'ETH',
+        img: require('@/assets/images/snippets/mobile/mobile-features-send.svg')
       },
       {
-        tab: "Swap",
-        img: require("@/assets/images/snippets/mobile/mobile-features-swap.svg"),
+        tab: 'Swap',
+        img: require('@/assets/images/snippets/mobile/mobile-features-swap.svg')
       },
       {
-        tab: "DApps",
-        img: require("@/assets/images/snippets/mobile/mobile-features-dapps.svg"),
+        tab: 'DApps',
+        img: require('@/assets/images/snippets/mobile/mobile-features-dapps.svg')
       },
       {
-        tab: "Tokens",
-        img: require("@/assets/images/snippets/mobile/mobile-features-tokens.svg"),
-      },
+        tab: 'Tokens',
+        img: require('@/assets/images/snippets/mobile/mobile-features-tokens.svg')
+      }
     ],
     mewTabs: [
       {
-        name: "ETH",
+        name: 'ETH'
       },
       {
-        name: "Swap",
+        name: 'Swap'
       },
       {
-        name: "DApps",
+        name: 'DApps'
       },
       {
-        name: "Tokens",
-      },
-    ],
-  }),
-};
+        name: 'Tokens'
+      }
+    ]
+  })
+});
 </script>
 
 <style lang="scss" scoped>

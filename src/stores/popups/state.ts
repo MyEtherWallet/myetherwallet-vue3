@@ -1,0 +1,22 @@
+import Configs from '../configs';
+import { State } from './types';
+
+const state = (): State => ({
+  localStore: true,
+  stateVersion: Configs.VERSION.popups,
+  consentToTrack: false,
+  displayedTrackingPopup: false,
+  showedBanner: false,
+  showWalletPromo: true,
+  showEnkryptPromo: true,
+  promoOver: false,
+  enkryptLandingPopup: true,
+  enkryptLandingPopupClosed: 0,
+  enkryptWalletPopup: true,
+  enkryptWalletPopupClosed: 0,
+  enkryptWalletSnackbar: false,
+  enkryptWalletSnackbarClosed: 0,
+  enkryptWalletSnackbarCounter: 0
+});
+
+export default state;

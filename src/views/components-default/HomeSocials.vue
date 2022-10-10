@@ -3,7 +3,7 @@
     <div class="py-7" />
     <v-sheet align="center">
       <h1 class="textDark--text pb-5">
-        {{ $t("home.community-title") | lokalise("home.community-title") }}
+        {{ $t('home.community-title') | lokalise('home.community-title') }}
       </h1>
     </v-sheet>
     <v-sheet color="transparent" max-width="900px" class="mx-auto">
@@ -35,63 +35,57 @@
   </v-container>
 </template>
 
-<script>
-export default {
-  name: "HomeSocials",
-  components: {},
-  data: () => ({
-    socials: [
-      {
-        img: require("@/assets/images/icons/socials/facebook.png"),
-        link: "https://www.facebook.com/MyEtherWallet",
-        label: "Facebook",
-      },
-      {
-        img: require("@/assets/images/icons/socials/twitter.png"),
-        link: "https://twitter.com/myetherwallet",
-        label: "Twitter",
-      },
-      {
-        img: require("@/assets/images/icons/socials/medium.png"),
-        link: "https://medium.com/@myetherwallet",
-        label: "Medium",
-      },
-      {
-        img: require("@/assets/images/icons/socials/reddit.png"),
-        link: "https://www.reddit.com/r/MyEtherWallet/",
-        label: "Reddit",
-      },
-      {
-        img: require("@/assets/images/icons/socials/github.png"),
-        link: "https://github.com/myetherwallet",
-        label: "Github",
-      },
-      {
-        img: require("@/assets/images/icons/socials/vkontakte.png"),
-        link: "https://vk.com/public190491855",
-        label: "Vkontakte",
-      },
-      {
-        img: require("@/assets/images/icons/socials/youtube.png"),
-        link: "https://www.youtube.com/channel/UCQU5QbObwmaHNEMsuX3uQKA",
-        label: "Youtube",
-      },
-      {
-        img: require("@/assets/images/icons/socials/mewtopia.png"),
-        link: "https://www.mewtopia.com/",
-        label: "Mewtopia",
-      },
-      {
-        img: require("@/assets/images/icons/socials/instagram.png"),
-        link: "https://www.instagram.com/myetherwallet/",
-        label: "Instagram",
-      },
-      {
-        img: require("@/assets/images/icons/socials/telegram.png"),
-        link: "https://t.me/myetherwallet",
-        label: "Telegram",
-      },
-    ],
-  }),
-};
+<script setup lang="ts">
+const socials = [
+  {
+    img: require('@/assets/images/icons/socials/facebook.png'),
+    link: 'https://www.facebook.com/MyEtherWallet',
+    label: 'Facebook'
+  },
+  {
+    img: require('@/assets/images/icons/socials/twitter.png'),
+    link: 'https://twitter.com/myetherwallet',
+    label: 'Twitter'
+  },
+  {
+    img: require('@/assets/images/icons/socials/medium.png'),
+    link: 'https://medium.com/@myetherwallet',
+    label: 'Medium'
+  },
+  {
+    img: require('@/assets/images/icons/socials/reddit.png'),
+    link: 'https://www.reddit.com/r/MyEtherWallet/',
+    label: 'Reddit'
+  },
+  {
+    img: require('@/assets/images/icons/socials/github.png'),
+    link: 'https://github.com/myetherwallet',
+    label: 'Github'
+  },
+  {
+    img: require('@/assets/images/icons/socials/vkontakte.png'),
+    link: 'https://vk.com/public190491855',
+    label: 'Vkontakte'
+  },
+  {
+    img: require('@/assets/images/icons/socials/youtube.png'),
+    link: 'https://www.youtube.com/channel/UCQU5QbObwmaHNEMsuX3uQKA',
+    label: 'Youtube'
+  },
+  {
+    img: require('@/assets/images/icons/socials/mewtopia.png'),
+    link: 'https://www.mewtopia.com/',
+    label: 'Mewtopia'
+  },
+  {
+    img: require('@/assets/images/icons/socials/instagram.png'),
+    link: 'https://www.instagram.com/myetherwallet/',
+    label: 'Instagram'
+  },
+  {
+    img: require('@/assets/images/icons/socials/telegram.png'),
+    link: 'https://t.me/myetherwallet',
+    label: 'Telegram'
+  }
+];
 </script>

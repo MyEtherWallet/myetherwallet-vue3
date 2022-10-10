@@ -4,7 +4,7 @@
     max-width="700px"
   >
     <div class="mew-heading-1 mb-3">
-      {{ $t("home.features.eth.title") }}
+      {{ $t('home.features.eth.title') }}
     </div>
     <div class="mt-10">
       <v-row>
@@ -26,20 +26,21 @@
   </mew6-white-sheet>
 </template>
 
-<script>
-import { mapGetters, mapState } from "vuex";
-import ModuleAddressBook from "@/modules/address-book/ModuleAddressBook";
+<script lang="ts">
+import { mapGetters, mapState } from 'vuex';
+import ModuleAddressBook from '@/modules/address-book/ModuleAddressBook.vue';
+import { defineComponent } from 'vue';
 
-export default {
-  name: "HomeFeaturesSend",
+export default defineComponent({
+  name: 'HomeFeaturesSend',
   components: { ModuleAddressBook },
   data: () => ({
-    data: "1337",
+    data: '1337'
   }),
   computed: {
-    ...mapState("wallet", ["balance", "web3", "address"]),
-    ...mapGetters("global", ["network", "gasPrice"]),
-    ...mapGetters("wallet", ["balanceInETH", "tokensList"]),
+    ...mapState('wallet', ['balance', 'web3', 'address']),
+    ...mapGetters('global', ['network', 'gasPrice']),
+    ...mapGetters('wallet', ['balanceInETH', 'tokensList']),
     tokens() {
       const eth = {
         name: this.network.type.name,
@@ -50,15 +51,15 @@ export default {
         img: this.network.type.icon,
         decimals: 18,
         market_cap: null,
-        price_change_percentage_24h: null,
+        price_change_percentage_24h: null
       };
 
       const copiedTokens = this.tokensList.slice();
       copiedTokens.unshift(eth);
       return copiedTokens;
-    },
-  },
-};
+    }
+  }
+});
 </script>
 
 <style lang="scss" scoped></style>

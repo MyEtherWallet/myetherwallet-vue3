@@ -46,7 +46,7 @@
   </mew6-white-sheet>
 </template>
 
-<script>
+<script lang="ts">
 export default {
   name: "HomeFeaturesDapps",
   components: {},

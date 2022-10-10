@@ -27,7 +27,7 @@
   </mew6-white-sheet>
 </template>
 
-<script>
+<script lang="ts">
 import { ROUTES_HOME } from "@/core/configs/configRoutes";
 
 export default {

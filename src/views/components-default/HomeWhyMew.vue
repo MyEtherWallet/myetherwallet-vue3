@@ -6,13 +6,13 @@
         <v-sheet color="transparent" max-width="400px">
           <div class="mew-heading-3 text-uppercase textLight--text mb-1">
             {{
-              $t("home.about-mew.subheading")
-                | lokalise("home.about-mew.subheading")
+              $t('home.about-mew.subheading') |
+                lokalise('home.about-mew.subheading')
             }}
           </div>
           <h1 class="mb-9">
             {{
-              $t("home.about-mew.heading") | lokalise("home.about-mew.heading")
+              $t('home.about-mew.heading') | lokalise('home.about-mew.heading')
             }}
           </h1>
         </v-sheet>
@@ -48,7 +48,7 @@
             :desc="$t('home.about-mew.card-four.text')"
             :link="{
               title: $t('home.about-mew.card-four.link'),
-              url: 'https://www.mewwallet.com/',
+              url: 'https://www.mewwallet.com/'
             }"
           >
             <template #titleIconContainer>
@@ -81,9 +81,9 @@
         <v-sheet color="transparent" max-width="500px" class="mx-auto">
           <v-sheet color="transparent" max-width="400px" class="mb-9">
             <h5 class="font-weight-bold text-uppercase textLight--text mb-2">
-              {{ $t("home.about-mew.subheading") }}
+              {{ $t('home.about-mew.subheading') }}
             </h5>
-            <h1>{{ $t("home.about-mew.heading") }}</h1>
+            <h1>{{ $t('home.about-mew.heading') }}</h1>
           </v-sheet>
 
           <mew-info-card
@@ -92,7 +92,7 @@
             :desc="$t('home.about-mew.card-one.text')"
             :link="{
               title: 'Learn more',
-              url: 'www.myetherwallet.com',
+              url: 'www.myetherwallet.com'
             }"
             :icon="require('@/assets/images/icons/icon-faces-mew.svg')"
           />
@@ -103,7 +103,7 @@
             :desc="$t('home.about-mew.card-two.text')"
             :link="{
               title: 'Learn more',
-              url: 'www.myetherwallet.com',
+              url: 'www.myetherwallet.com'
             }"
           />
 
@@ -113,7 +113,7 @@
             :desc="$t('home.about-mew.card-three.text')"
             :link="{
               title: 'Learn more',
-              url: 'www.myetherwallet.com',
+              url: 'www.myetherwallet.com'
             }"
           />
 
@@ -123,7 +123,7 @@
             :desc="$t('home.about-mew.card-four.text')"
             :link="{
               title: $t('home.about-mew.card-four.link'),
-              url: 'www.myetherwallet.com',
+              url: 'www.myetherwallet.com'
             }"
           >
             <template #titleIconContainer>
@@ -155,11 +155,8 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "HomeWhyMew",
-  data: () => ({}),
-};
+<script setup lang="ts">
+
 </script>
 
 <style lang="scss" scoped>
