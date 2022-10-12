@@ -1,11 +1,14 @@
 import { OneInch, ZEROX, ParaSwap, Changelly } from './providers';
-import BigNumber from 'bignumber.js';
+import BigNumber from 'bignumber.js/bignumber';
 import Configs from './configs/providersConfigs';
 import hasValidDecimals from '@/core/helpers/hasValidDecimals.js';
 import { isObject } from 'lodash';
+import Web3 from 'web3/types';
 
 class Swap {
-  constructor(web3, chain) {
+  providers: Array<any>;
+  chain: string;
+  constructor(web3: Web3, chain: string) {
     this.providers = [
       new OneInch(web3, chain),
       new ZEROX(web3, chain),
@@ -13,6 +16,9 @@ class Swap {
       new Changelly(web3, chain)
     ];
     this.chain = chain;
+  }
+  static helpers = {
+    hasValidDecimals
   }
   getAllTokens() {
     const allTokens = {};
@@ -111,9 +117,5 @@ class Swap {
     }
   }
 }
-
-Swap.helpers = {
-  hasValidDecimals
-};
 
 export default Swap;

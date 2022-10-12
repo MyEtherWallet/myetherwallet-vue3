@@ -1,30 +1,45 @@
 import axios from 'axios';
-import BigNumber from 'bignumber.js';
+import BigNumber from 'bignumber.js/bignumber';
 const HOST_URL = 'https://mainnet.mewwallet.dev/v3';
 const GET_LIST = '/swap/list';
 const GET_QUOTE = '/swap/quote';
 const GET_TRADE = '/swap/trade';
 const REQUEST_CACHER = 'https://requestcache.mewapi.io/?url=';
-import { isAddress } from 'web3-utils';
+import { isAddress } from 'web3-utils/types';
 import Configs from '../configs/providersConfigs';
 import { ETH } from '@/utils/networks/types';
-import { Toast, ERROR } from '@/modules/toast/handler/handlerToast';
+import Web3 from 'web3/types';
+//import { Toast, ERROR } from '@/modules/toast/handler/handlerToast';
 class MEWPClass {
-  constructor(providerName, web3, supportednetworks, chain) {
+  web3: Web3;
+  chain: string;
+  supportedNetworks: Array<string>;
+  provider: string;
+  constructor(
+    providerName: string,
+    web3: Web3,
+    supportedNetworks: Array<string>,
+    chain: string
+  ) {
     this.web3 = web3;
     this.provider = providerName;
-    this.supportednetworks = supportednetworks;
+    this.supportedNetworks = supportedNetworks;
     this.chain = chain;
   }
-  isSupportedNetwork(chain) {
-    return this.supportednetworks.includes(chain);
+  static supportedDexes = {
+    ZERO_X: 'ZERO_X',
+    ONE_INCH: 'ONE_INCH',
+    PARASWAP: 'PARASWAP'
+  };
+  isSupportedNetwork(chain: string) {
+    return this.supportedNetworks.includes(chain);
   }
   getSupportedTokens() {
     return axios
       .get(`${REQUEST_CACHER}${HOST_URL}${GET_LIST}?chain=${this.chain}`)
       .then(response => {
         const data = response.data;
-        return data.map(d => {
+        return data.map((d: any) => {
           const token = {
             contract: d.contract_address.toLowerCase(),
             isEth: true,
@@ -41,13 +56,13 @@ class MEWPClass {
         });
       })
       .catch(err => {
-        Toast(err, {}, ERROR);
+        //Toast(err, {}, ERROR);
       });
   }
-  isValidToAddress({ address }) {
+  isValidToAddress({ address }: { address: string }) {
     return Promise.resolve(isAddress(address));
   }
-  getMinMaxAmount({ fromT }) {
+  getMinMaxAmount({ fromT }: { fromT: { decimals: number } }) {
     return Promise.resolve({
       minFrom: new BigNumber(1)
         .dividedBy(new BigNumber(10).pow(fromT.decimals))
@@ -128,7 +143,7 @@ class MEWPClass {
         };
       })
       .catch(err => {
-        Toast(err, {}, ERROR);
+        //Toast(err, {}, ERROR);
       });
   }
   async executeTrade(tradeObj, confirmInfo) {
@@ -155,8 +170,8 @@ class MEWPClass {
           .catch(reject);
       });
     }
-    const txs = [];
-    tradeObj.transactions.forEach(tx => {
+    const txs: Array<any> = [];
+    tradeObj.transactions.forEach((tx: any) => {
       tx.from = from;
       tx.gasPrice = gasPrice;
       tx.handleNotification = false;
@@ -202,8 +217,8 @@ class MEWPClass {
     let isSuccess = true;
     let isPending = false;
     const hashes = statusObj.statusObj.hashes;
-    const promises = [];
-    hashes.forEach(h => {
+    const promises: Array<Promise<any>> = [];
+    hashes.forEach((h: string) => {
       promises.push(
         this.web3.eth.getTransactionReceipt(h).then(receipt => {
           if (!receipt || (receipt && !receipt.blockNumber)) {
@@ -224,9 +239,5 @@ class MEWPClass {
     });
   }
 }
-MEWPClass.supportedDexes = {
-  ZERO_X: 'ZERO_X',
-  ONE_INCH: 'ONE_INCH',
-  PARASWAP: 'PARASWAP'
-};
+
 export default MEWPClass;
