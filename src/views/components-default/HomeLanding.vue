@@ -7,17 +7,17 @@
         <v-card color="transparent" flat tile max-width="430px">
           <div class="white--text mew-title">
             <span>
-              {{ $t('home.tagline1') | lokalise('home.tagline1') }}
+              {{ $t('home.tagline1') || lokalise('home.tagline1') }}
             </span>
             <span>
-              {{ $t('home.tagline2') | lokalise('home.tagline2') }}
+              {{ $t('home.tagline2') || lokalise('home.tagline2') }}
             </span>
           </div>
           <p class="white--text mt-3">
-            {{ $t('home.subheading') | lokalise('home.subheading') }}
+            {{ $t('home.subheading') || lokalise('home.subheading') }}
           </p>
           <div class="mt-9 d-flex">
-            <mew-button
+            <!-- <mew-button
               class="mr-3 HomeCreateWallet"
               :has-full-width="false"
               title="Create a new wallet"
@@ -41,17 +41,17 @@
                   params: {}
                 })
               "
-            />
+            /> -->
           </div>
           <div class="d-flex">
-            <mew-button
+            <!-- <mew-button
               class="extension-btns chrome-extension mt-5 mr-2"
               :has-full-width="false"
               btn-style="transparent"
               color-theme="white"
               btn-size="large"
               style="border-radius: 40px !important"
-              @click.native="openEnkrypt"
+              @click.native="enkryptLandingPopup = true"
             >
               <img class="mr-3 browser-icons" :src="browserLogo" />
               Get the Enkrypt Extension
@@ -70,7 +70,7 @@
                 src="@/assets/images/icons/icon-apple-google.svg"
               />
               Get the app
-            </mew-button>
+            </mew-button> -->
           </div>
         </v-card>
         <img
@@ -88,17 +88,17 @@
             style="font-size: 3rem; line-height: 3.3rem"
           >
             <span>
-              {{ $t('home.tagline1') | lokalise('home.tagline2') }}
+              {{ $t('home.tagline1') || lokalise('home.tagline2') }}
             </span>
             <span>
-              {{ $t('home.tagline2') | lokalise('home.tagline2') }}
+              {{ $t('home.tagline2') || lokalise('home.tagline2') }}
             </span>
           </div>
           <p class="white--text mt-3">
-            {{ $t('home.subheading') | lokalise('home.subheading') }}
+            {{ $t('home.subheading') || lokalise('home.subheading') }}
           </p>
           <div class="mt-12">
-            <mew-button
+            <!-- <mew-button
               class="mb-3 width--full"
               :has-full-width="false"
               title="Create a new wallet"
@@ -122,7 +122,7 @@
                   params: {}
                 })
               "
-            />
+            /> -->
           </div>
         </v-card>
       </v-container>
@@ -133,6 +133,7 @@
 <script setup lang="ts">
 // import {onMounted} from 'vue'
 import { ROUTES_HOME } from '@/core/configs/configRoutes';
+import { usePopupStore } from '@/stores/popups';
 // import handlerAnalytics from '@/modules/analytics-opt-in/handlers/handlerAnalytics.mixin';
 // import enkryptMarketing from '@/core/mixins/enkryptMarketing.mixin.js';
 
@@ -141,6 +142,7 @@ import { ROUTES_HOME } from '@/core/configs/configRoutes';
 //     this.trackLandingPage();
 //   }, 1000);
 // })
+const {enkryptLandingPopup} = usePopupStore();
 </script>
 
 <style lang="scss" scoped>

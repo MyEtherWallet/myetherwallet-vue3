@@ -6,13 +6,13 @@
         <v-sheet color="transparent" max-width="400px">
           <div class="mew-heading-3 text-uppercase textLight--text mb-1">
             {{
-              $t('home.about-mew.subheading') |
-                lokalise('home.about-mew.subheading')
+              $t('home.about-mew.subheading') ||
+              lokalise('home.about-mew.subheading')
             }}
           </div>
           <h1 class="mb-9">
             {{
-              $t('home.about-mew.heading') | lokalise('home.about-mew.heading')
+              $t('home.about-mew.heading') || lokalise('home.about-mew.heading')
             }}
           </h1>
         </v-sheet>
@@ -155,9 +155,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
-
-</script>
+<script setup lang="ts"></script>
 
 <style lang="scss" scoped>
 .desktop-content {

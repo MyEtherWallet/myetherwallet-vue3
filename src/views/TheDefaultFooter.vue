@@ -272,7 +272,7 @@ watch(select, select => {
               }`"
               color="greenPrimary"
               off-icon="mdi-alert-circle"
-              @change="popupStore.setTrackingConsent(true)"
+              @change="popupStore.consentToTrack = true"
             />
           </div>
           <div class="social-icons d-flex align-center">

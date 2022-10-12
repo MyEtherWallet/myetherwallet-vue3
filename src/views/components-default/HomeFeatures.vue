@@ -14,7 +14,7 @@
       </v-sheet>
       <div class="features-tabs-container">
         <v-container>
-          <mew-tabs
+          <!-- <mew-tabs
             class="mew-tabs-container d-flex align-center flex-column"
             :items="mewTabs"
             is-block
@@ -31,7 +31,7 @@
             <template #tabContent4>
               <home-features-tokens class="mt-16 mb-10" />
             </template>
-          </mew-tabs>
+          </mew-tabs> -->
         </v-container>
       </div>
     </div>

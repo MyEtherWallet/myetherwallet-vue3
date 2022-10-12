@@ -66,14 +66,13 @@
   </mew6-white-sheet>
 </template>
 
-<script lang="ts">
-import handlerSwap from '@/modules/swap/handlers/handlerSwap.ts';
-import { mapState, mapGetters } from 'vuex';
+<script lang="ts" setup>
+import handlerSwap from '@/modules/swap/handlers/handlerSwap';
 import { formatFloatingPointValue } from '@/core/helpers/numberFormatHelper';
 //import { Toast, ERROR } from "@/modules/toast/handler/handlerToast";
-import { ROUTES_HOME } from '@/core/configs/configRoutes';
+import { ROUTES_HOME as Routes } from '@/core/configs/configRoutes';
 import { isEmpty } from 'lodash';
-import { defineComponent } from 'vue';
+import { onMounted, watch } from 'vue';
 import Web3 from 'web3/types';
 
 const STATIC_PAIRS = [
@@ -155,79 +154,63 @@ const STATIC_PAIRS = [
     fromAmount: '100000000000000000'
   }
 ];
-export default defineComponent({
-  name: 'HomeFeaturesSwap',
-  components: {},
-  data() {
-    return {
-      swapHandler: null,
-      swapData: null,
-      loading: true,
-      error: false,
-      ROUTES_HOME: ROUTES_HOME
-    };
-  },
-  computed: {
-    ...mapState('wallet', ['web3']),
-    ...mapGetters('global', ['network'])
-  },
-  watch: {
-    web3(newVal: Web3) {
-      this.setSwapHandler(newVal);
+  let swapHandler:null|typeof handlerSwap = null
+  let swapData:null|Array<any> = null
+  let loading = true
+  let error = false
+  let ROUTES_HOME = Routes
+
+  watch(web3,(val:Web3)=>{
+    setSwapHandler(val);
+  })
+  onMounted(()=>{
+    setSwapHandler(this.web3)
+  })
+  const setSwapHandler= (val:Web3)=>{
+      swapHandler = new handlerSwap(val, network.type.name);
+      fetchRates();
     }
-  },
-  mounted() {
-    this.setSwapHandler(this.web3);
-  },
-  methods: {
-    setSwapHandler(val: Web3) {
-      this.swapHandler = new handlerSwap(val, this.network.type.name);
-      this.fetchRates();
-    },
-    fetchRates() {
+  const fetchRates =()=> {
       try {
-        this.swapData = null;
-        this.loading = true;
-        this.swapHandler.getQuotesForSet(STATIC_PAIRS).then(res => {
-          this.swapData = STATIC_PAIRS.map((itm, idx) => {
+        swapData = null;
+        loading = true;
+        swapHandler.getQuotesForSet(STATIC_PAIRS).then((res:any) => {
+          swapData = STATIC_PAIRS.map((itm, idx) => {
             itm['rate'] =
               res[idx].length === 0 || isEmpty(res[idx])
                 ? false
                 : formatFloatingPointValue(res[idx][0].amount).value;
             return itm;
           });
-          this.loading = false;
+          loading = false;
         });
       } catch (e) {
-        this.loading = false;
-        this.error = true;
+        loading = false;
+        error = true;
         //Toast(e.message, {}, ERROR);
       }
-    },
-    goToSwap(data) {
+    }
+  const goToSwap = (data:any) => {
       const obj = {
         fromToken: data.fromT.contract,
         toToken: data.toT.contract,
         amount: '1'
       };
-
-      this.navigateToSwap(obj);
-    },
-    navigateToSwap(query: string) {
-      const obj = { name: 'Swap' };
+      navigateToSwap(obj);
+    }
+  const navigateToSwap = (query: any)=> {
+      const obj = { name: 'Swap', query:'' };
       if (query) {
         obj['query'] = query;
       }
-      if (this.$route.name === 'Swap') {
-        // this will allow vue to update query param
-        // within the swap page when user clicks on the pairs again
-        this.$router.replace(obj);
-      } else {
-        this.$router.push(obj);
-      }
+      // if (this.$route.name === 'Swap') {
+      //   // this will allow vue to update query param
+      //   // within the swap page when user clicks on the pairs again
+      //   this.$router.replace(obj);
+      // } else {
+      //   this.$router.push(obj);
+      // }
     }
-  }
-});
 </script>
 
 <style lang="scss" scoped></style>

@@ -47,7 +47,9 @@
 </template>
 
 <script lang="ts">
-export default {
+import { defineComponent } from "vue";
+
+export default defineComponent({
   name: "HomeFeaturesDapps",
   components: {},
   data: (vm) => ({
@@ -99,7 +101,7 @@ export default {
       },
     ],
   }),
-};
+});
 </script>
 
 <style lang="scss" scoped>
