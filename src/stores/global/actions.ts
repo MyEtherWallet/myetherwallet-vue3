@@ -1,13 +1,34 @@
+import localStore from 'store';
+import Configs from '../configs';
 import { useSwapStore } from './../swap/index';
 import matchNetwork from '@/core/helpers/matchNetwork';
 import { toBNSafe } from '@/core/helpers/numberFormatHelper';
 import { useWalletStore } from '../wallet';
 import { This } from './types';
+import nodeList from '@/utils/networks';
 import BN from 'bn.js';
+const defaultNetwork = nodeList['ETH'].find(item => {
+  return item.service === 'myetherwallet.com-ws';
+});
+
+const INIT_STORE = function (this: This) {
+  if (localStore.get(Configs.LOCAL_STORAGE_KEYS.global)) {
+    const savedStore = localStore.get(Configs.LOCAL_STORAGE_KEYS.global);
+    if (savedStore.stateVersion === Configs.VERSION.global) {
+      if (!nodeList[savedStore.currentNetwork.type.name]) {
+        savedStore['currentNetwork'] = defaultNetwork;
+        savedStore.currentNetwork.type = {
+          name: 'ETH'
+        };
+      }
+      Object.assign(this, savedStore);
+    }
+  }
+};
 
 const setOnlineStatus = function (this: This, status: boolean) {
   const walletStore = useWalletStore();
-  if (status) walletStore.setWeb3Instance(null);
+  //if (status) walletStore.setWeb3Instance(null);
   this.online = status;
 };
 
@@ -44,7 +65,7 @@ const setNetwork = async function (
     this.currentNetwork = _netObj;
   }
   const swapStore = useSwapStore();
-  swapStore.resetPrefetch();
+  swapStore.prefetched = false;
 };
 const addLocalContract = function (this: This, localContract: any) {
   if (!this.localContracts[this.currentNetwork.type.name])
@@ -66,6 +87,7 @@ const setBaseFeePerGas = function (this: This, val: BN) {
 };
 
 export interface Actions {
+  INIT_STORE: typeof INIT_STORE;
   updateGasPrice: typeof updateGasPrice;
   setOnlineStatus: typeof setOnlineStatus;
   setNetwork: typeof setNetwork;
@@ -75,6 +97,7 @@ export interface Actions {
   setBaseFeePerGas: typeof setBaseFeePerGas;
 }
 export default {
+  INIT_STORE,
   updateGasPrice,
   setOnlineStatus,
   setNetwork,

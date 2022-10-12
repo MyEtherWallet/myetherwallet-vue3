@@ -1,3 +1,4 @@
+import { useCustomStore } from './../custom/index';
 //import { Toast, ERROR } from '@/modules/toast/handler/handlerToast';
 import { ETH, BSC, MATIC } from '@/utils/networks/types';
 import { MAIN_TOKEN_ADDRESS } from '@/core/helpers/common';
@@ -45,12 +46,13 @@ const setNetworkTokens = function (this: This, tokens: Map<any, any>) {
 const setTokenAndEthBalance = function (this: This) {
   const walletStore = useWalletStore();
   const globalStore = useGlobalStore();
+  //const customStore = useCustomStore();
   const address = walletStore.address;
-  walletStore.setLoadingWalletInfo(true);
+  walletStore.loadingWalletInfo = true;
   const isTokenBalanceApiSupported =
-    globalStore.network().type.name === BSC.name ||
-    globalStore.network().type.name === ETH.name ||
-    globalStore.network().type.name === MATIC.name;
+    globalStore.network.type.name === BSC.name ||
+    globalStore.network.type.name === ETH.name ||
+    globalStore.network.type.name === MATIC.name;
   const TOKEN_BALANCE_API = 'https://tokenbalance.mewapi.io';
 
   const _getTokenBalance = (balance: string | number, decimals: number) => {
@@ -65,34 +67,35 @@ const setTokenAndEthBalance = function (this: This) {
   };
   if (!isTokenBalanceApiSupported) {
     walletStore.web3.eth.getBalance(address).then((res: any) => {
-      const token = this.contractToToken(MAIN_TOKEN_ADDRESS);
-      const denominator = new BigNumber(10).pow(token.decimals);
+      const token = this.contractToToken()(MAIN_TOKEN_ADDRESS);
+      const denominator = new BigNumber(10).pow(token?.decimals || 1);
       const usdBalance = new BigNumber(res)
         .div(denominator)
-        .times(token.price)
+        .times(token?.price || 1)
         .toString();
-      setTokens([
+      walletStore.tokens = [
         Object.assign(
           {
             balance: res,
-            balancef: _getTokenBalance(res, token.decimals).value,
+            balancef: _getTokenBalance(res, token?.decimals || 0).value,
             usdBalance: usdBalance,
             usdBalancef: formatFiatValue(usdBalance).value
           },
           token
         )
-      ]);
-      setAccountBalance(toBN(res));
+      ];
+      walletStore.balance = toBN(res).toString();
       // dispatch can't be blank
-      const { updateCustomTokenBalances } = useCustomStore();
-      updateCustomTokenBalances(false);
-      setLoadingWalletInfo(false);
+      //customStore.updateCustomTokenBalances();
+      walletStore.loadingWalletInfo = false;
     });
     return;
   }
   let mainTokenBalance = toBN('0');
   fetch(
-    `${TOKEN_BALANCE_API}/${network.type.name.toLowerCase()}?address=${address}`
+    `${TOKEN_BALANCE_API}/${globalStore
+      .network
+      .type.name.toLowerCase()}?address=${address}`
   )
     .then(res => res.json())
     .then(res => res.result)
@@ -102,12 +105,12 @@ const setTokenAndEthBalance = function (this: This) {
 
       hasPreTokens.forEach((t: any) => {
         if (!t.contract) return;
-        const token = this.contractToToken(t.contract);
+        const token = this.contractToToken()(t.contract);
         if (!token) {
           promises.push(
-            getTokenInfo(t.contract, web3).then(info => {
+            getTokenInfo(t.contract, walletStore.web3).then(info => {
               if (info) {
-                network.type.tokens.push({
+                globalStore.network.type.tokens.push({
                   name: info.name,
                   symbol: info.symbol,
                   decimals: info.decimals,
@@ -123,7 +126,7 @@ const setTokenAndEthBalance = function (this: This) {
     .then(tokens => {
       const formattedList: Array<any> = [];
       tokens.forEach((t: any) => {
-        const token = this.contractToToken(t.contract);
+        const token = this.contractToToken()(t.contract);
         if (!token) return;
         if (t.contract === MAIN_TOKEN_ADDRESS) {
           mainTokenBalance = toBN(t.balance);
@@ -153,11 +156,11 @@ const setTokenAndEthBalance = function (this: This) {
           : 0;
       });
       try {
-        setTokens(formattedList);
-        setAccountBalance(mainTokenBalance);
+        walletStore.tokens = formattedList;
+        walletStore.balance = mainTokenBalance.toString();
         // dispatch can't be blank
-        updateCustomTokenBalances(false);
-        setLoadingWalletInfo(false);
+        //customStore.updateCustomTokenBalances();
+        walletStore.loadingWalletInfo = false;
       } catch (e) {
         //Toast(e.message, {}, ERROR));
       }

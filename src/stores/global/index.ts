@@ -4,7 +4,7 @@ import getters from './getters';
 import { defineStore } from 'pinia';
 
 export const useGlobalStore = defineStore('global', {
-  state
-  // actions,
-  // getters
+  state,
+  actions,
+  getters
 });

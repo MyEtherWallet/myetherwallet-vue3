@@ -6,7 +6,7 @@ import { This } from './types';
 const currentNotifications = function (this: This) {
   const { address } = useWalletStore();
   const { network } = useGlobalStore();
-  const currentNetworkType = network().type.name;
+  const currentNetworkType = network.type.name;
   const filteredArray = this.notifications.filter(item => {
     if (
       item.from?.toLowerCase() === address?.toLowerCase() &&
@@ -21,7 +21,7 @@ const currentNotifications = function (this: This) {
 const txNotifications = function (this: This) {
   const { address } = useWalletStore();
   const { network } = useGlobalStore();
-  const currentNetworkType = network().type.name;
+  const currentNetworkType = network.type.name;
   const filteredArray = this.notifications.filter(item => {
     if (
       item.from?.toLowerCase() === address?.toLowerCase() &&
@@ -36,7 +36,7 @@ const txNotifications = function (this: This) {
 const swapNotifications = function (this: This) {
   const { address } = useWalletStore();
   const { network } = useGlobalStore();
-  const currentNetworkType = network().type.name;
+  const currentNetworkType = network.type.name;
   const filteredArray = this.notifications.filter(item => {
     if (
       item.from?.toLowerCase() === address?.toLowerCase() &&

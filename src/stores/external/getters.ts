@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js';
+import BigNumber from 'bignumber.js/bignumber';
 import platformList from '@/_generated/platformlist.json';
 import {
   formatFiatValue,
@@ -25,7 +25,7 @@ const balanceFiatValue = function (this: This) {
   return new BigNumber(balanceInETH).times(this.fiatValue());
 };
 
-const totalTokenFiatValue = function (this: This) {
+const totalTokenFiatValue = function (this: This): BigNumber | number {
   const { tokensList } = useWalletStore();
   if (!tokensList.length) return new BigNumber(0);
   const totalValue = tokensList.reduce((total, currentVal) => {
@@ -63,69 +63,92 @@ const networkTokenUSDMarket = function (this: This) {
     price_change_percentage_24h: 0
   };
 };
-const getCoinGeckoTokenById = function (this: This, cgid: any) {
-  const cgToken = this.coinGeckoTokens.get(cgid);
-  return {
-    name: cgToken ? cgToken.symbol.toUpperCase() : '',
-    symbol: cgToken ? cgToken.symbol.toUpperCase() : '',
-    subtext: cgToken ? cgToken.name : '',
-    value: cgToken ? cgToken.name : '',
-    img: cgToken ? `https://img.mewapi.io/?image=${cgToken.image}` : '',
-    market_cap: cgToken ? cgToken.market_cap : '0',
-    market_capf: cgToken ? formatIntegerValue(cgToken.market_cap).value : '0',
-    price_change_percentage_24h: cgToken
-      ? cgToken.price_change_percentage_24h
-      : '0',
-    price_change_percentage_24hf:
-      cgToken && cgToken.price_change_percentage_24h
-        ? formatPercentageValue(cgToken.price_change_percentage_24h).value
+interface CoinGeckoToken {
+  name: string;
+  symbol: string;
+  subtext: string;
+  value: string;
+  img: string;
+  market_cap: string;
+  market_capf: string;
+  price_change_percentage_24h: string;
+  price_change_percentage_24hf: string | any;
+  price: string;
+  pricef: string;
+}
+const getCoinGeckoTokenById = function (this: This) {
+  return (cgid: any): CoinGeckoToken => {
+    const cgToken = this.coinGeckoTokens.get(cgid);
+    return {
+      name: cgToken ? cgToken.symbol.toUpperCase() : '',
+      symbol: cgToken ? cgToken.symbol.toUpperCase() : '',
+      subtext: cgToken ? cgToken.name : '',
+      value: cgToken ? cgToken.name : '',
+      img: cgToken ? `https://img.mewapi.io/?image=${cgToken.image}` : '',
+      market_cap: cgToken ? cgToken.market_cap : '0',
+      market_capf: cgToken ? formatIntegerValue(cgToken.market_cap).value : '0',
+      price_change_percentage_24h: cgToken
+        ? cgToken.price_change_percentage_24h
         : '0',
-    price: cgToken ? cgToken.current_price : '0',
-    pricef: cgToken ? formatFiatValue(cgToken.current_price).value : '0'
+      price_change_percentage_24hf:
+        cgToken && cgToken.price_change_percentage_24h
+          ? formatPercentageValue(cgToken.price_change_percentage_24h).value
+          : '0',
+      price: cgToken ? cgToken.current_price : '0',
+      pricef: cgToken ? formatFiatValue(cgToken.current_price).value : '0'
+    };
   };
 };
 /**
  * Get Token info including market data if exists
  */
-const contractToToken = function (
-  this: This,
-  contractAddress: string
-): null | any {
-  if (!contractAddress) {
-    return null;
-  }
-  contractAddress = contractAddress.toLowerCase();
-  let tokenId = platformList[contractAddress];
-  let cgToken;
-  if (contractAddress === MAIN_TOKEN_ADDRESS) {
-    const { network } = useGlobalStore();
-    tokenId = network.type.coingeckoID;
-    const networkType = network.type;
-    cgToken = this.getCoinGeckoTokenById(tokenId);
+interface ContractToTokenResponse extends CoinGeckoToken {
+  name: string;
+  symbol: string;
+  subtext: string;
+  value: string;
+  contract: string;
+  img: string;
+  decimals: number;
+}
+const contractToToken = function (this: This) {
+  return (contractAddress: string): null | ContractToTokenResponse => {
+    if (!contractAddress) {
+      return null;
+    }
+    contractAddress = contractAddress.toLowerCase();
+    let tokenId = platformList[contractAddress];
+    let cgToken;
+    if (contractAddress === MAIN_TOKEN_ADDRESS) {
+      const { network } = useGlobalStore();
+      tokenId = network.type.coingeckoID;
+      const networkType = network.type;
+      cgToken = this.getCoinGeckoTokenById()(tokenId);
+      return Object.assign(cgToken, {
+        name: networkType.currencyName,
+        symbol: networkType.currencyName,
+        subtext: networkType.name_long,
+        value: networkType.name_long,
+        contract: MAIN_TOKEN_ADDRESS,
+        img: cgToken.img !== '' ? cgToken.img : networkType.icon,
+        decimals: 18
+      });
+    }
+
+    cgToken = this.getCoinGeckoTokenById()(tokenId);
+    const networkToken = this.networkTokens.get(contractAddress);
+
+    if (!networkToken) return null;
     return Object.assign(cgToken, {
-      name: networkType.currencyName,
-      symbol: networkType.currencyName,
-      subtext: networkType.name_long,
-      value: networkType.name_long,
-      contract: MAIN_TOKEN_ADDRESS,
-      img: cgToken.img !== '' ? cgToken.img : networkType.icon,
-      decimals: 18
+      name: networkToken.name,
+      symbol: networkToken.symbol,
+      subtext: networkToken.name,
+      value: networkToken.name,
+      contract: networkToken.address,
+      img: networkToken.icon_png ? networkToken.icon_png : '',
+      decimals: networkToken.decimals
     });
-  }
-
-  cgToken = this.getCoinGeckoTokenById(tokenId);
-  const networkToken = this.networkTokens.get(contractAddress);
-
-  if (!networkToken) return null;
-  return Object.assign(cgToken, {
-    name: networkToken.name,
-    symbol: networkToken.symbol,
-    subtext: networkToken.name,
-    value: networkToken.name,
-    contract: networkToken.address,
-    img: networkToken.icon_png ? networkToken.icon_png : '',
-    decimals: networkToken.decimals
-  });
+  };
 };
 export interface Getters {
   fiatValue: typeof fiatValue;

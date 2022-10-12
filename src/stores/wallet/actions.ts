@@ -40,35 +40,30 @@ const setWallet = function (this: This, params: Array<any>) {
 };
 
 const setWeb3Instance = function (this: This, provider?: string) {
-  const globalStore = useGlobalStore();
-  const hostUrl = globalStore.currentNetwork.url
-    ? url.parse(globalStore.currentNetwork.url)
-    : globalStore.Network()['ETH'][0];
+  const { currentNetwork, network, gasPrice, Networks } = useGlobalStore();
+  const hostUrl = currentNetwork.url
+    ? url.parse(currentNetwork.url)
+    : url.parse(Networks['ETH'][0].url);
   const options: any = {};
   // eslint-disable-next-line
   const parsedUrl = `${hostUrl.protocol}//${hostUrl.host}${
-    globalStore.currentNetwork.port ? ':' + globalStore.currentNetwork.port : ''
+    currentNetwork.port ? ':' + currentNetwork.port : ''
   }${hostUrl.pathname}`;
-  globalStore.currentNetwork.username !== '' &&
-  globalStore.currentNetwork.password !== ''
+  currentNetwork.username !== '' && currentNetwork.password !== ''
     ? (options['headers'] = {
         authorization: `Basic: ${btoa(
-          globalStore.currentNetwork.username +
-            ':' +
-            globalStore.currentNetwork.password
+          currentNetwork.username + ':' + currentNetwork.password
         )}`
       })
     : {};
-  const web3Instance: any = new web3(
-    new MEWProvider(provider ? provider : parsedUrl, options)
-  );
+  const web3Instance: any = new web3();
+  //new MEWProvider(provider ? provider : parsedUrl, options)
   web3Instance.eth.transactionConfirmationBlocks = 1;
   web3Instance['mew'] = {};
   web3Instance['mew'].sendBatchTransactions = (arr: Array<any>) => {
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async resolve => {
       for (let i = 0; i < arr.length; i++) {
-        const gasPrice = globalStore.gasPrice;
         const localTx = {
           to: arr[i].to,
           data: arr[i].data,
@@ -85,7 +80,7 @@ const setWeb3Instance = function (this: This, provider?: string) {
         arr[i].gas = gas;
         arr[i].gasLimit = gas;
         arr[i].chainId = !arr[i].chainId
-          ? globalStore.network().type.chainID
+          ? network.type.chainID
           : arr[i].chainId;
         arr[i].gasPrice =
           arr[i].gasPrice === undefined ? gasPrice : arr[i].gasPrice;

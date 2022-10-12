@@ -36,17 +36,21 @@ const network = function (this: This) {
   }
   return network;
 };
-const gasPriceByType = function (this: This, type: GasTypes = 'economy') {
-  if (!this.isEIP1559SupportedNetwork()) {
-    return getGasBasedOnType(this.baseGasPrice, type);
-  }
-  const priorityFee = getPriorityFeeBasedOnType(
-    toBN(this.eip1559.maxPriorityFeePerGas),
-    type
-  );
-  const baseFee = getBaseFeeBasedOnType(toBN(this.eip1559.baseFeePerGas), type);
-  return baseFee.add(priorityFee).toString();
-};
+const gasPriceByType = () =>
+  function (this: This, type: GasTypes = 'economy') {
+    if (!this.isEIP1559SupportedNetwork()) {
+      return getGasBasedOnType(this.baseGasPrice, type);
+    }
+    const priorityFee = getPriorityFeeBasedOnType(
+      toBN(this.eip1559.maxPriorityFeePerGas),
+      type
+    );
+    const baseFee = getBaseFeeBasedOnType(
+      toBN(this.eip1559.baseFeePerGas),
+      type
+    );
+    return baseFee.add(priorityFee).toString();
+  };
 const gasPrice = function (this: This) {
   if (!this.isEIP1559SupportedNetwork()) {
     return getGasBasedOnType(this.baseGasPrice, this.gasPriceType);
@@ -85,7 +89,9 @@ const swapLink = function (this: This) {
 const currencyConfig = function (this: This) {
   const currency = this.preferredCurrency;
   const externalStore = useExternalStore();
-  const rate = externalStore.currencyRate.data ? externalStore.currencyRate.data.exchange_rate : 1;
+  const rate = externalStore.currencyRate.data
+    ? externalStore.currencyRate.data.exchange_rate
+    : 1;
   return { currency, rate };
 };
 /**
@@ -97,7 +103,7 @@ const currencyConfig = function (this: This) {
 interface FiatValueOptions {
   doNotLocalize?: boolean;
 }
-const getFiatValue = function (
+const getFiatValue = ()=>function (
   this: This,
   value: string | number | BigNumber,
   options: FiatValueOptions = {}
