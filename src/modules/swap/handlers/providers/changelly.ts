@@ -1,4 +1,4 @@
-import { gasPriceTypes } from '@/core/helpers/gasPriceHelper';
+//import { gasPriceTypes } from '@/core/helpers/gasPriceHelper';
 import Web3 from 'web3/types';
 import axios from 'axios';
 import BigNumber from 'bignumber.js/bignumber';
@@ -10,7 +10,7 @@ import Web3Contract from 'web3-eth-contract/types';
 import { ETH } from '@/utils/networks/types';
 //import { Toast, ERROR } from '@/modules/toast/handler/handlerToast';
 //import { EventBus } from '@/core/plugins/eventBus';
-import EventNames from '@/utils/web3-provider/events.js';
+//import EventNames from '@/utils/web3-provider/events.js';
 import BN from 'bn.js';
 
 const HOST_URL = 'https://swap.mewapi.io/changelly';
