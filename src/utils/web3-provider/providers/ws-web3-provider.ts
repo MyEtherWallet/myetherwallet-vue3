@@ -1,20 +1,27 @@
 'use strict';
 
-import { Toast, SENTRY } from '@/modules/toast/handler/handlerToast';
+//import { Toast, SENTRY } from '@/modules/toast/handler/handlerToast';
 const errors = require('web3-core-helpers/types').errors;
 import { isArray, isFunction } from 'lodash';
-let Ws = null;
-let _btoa = null;
-let parseURL = null;
-Ws = function (url, protocols) {
+const Ws = function (url: string, protocols: string | Array<string>) {
   if (protocols) return new window.WebSocket(url, protocols);
   return new window.WebSocket(url);
 };
-_btoa = btoa;
-parseURL = function (url) {
+const _btoa = btoa;
+const parseURL = function (url: string) {
   return new URL(url);
 };
-const WebsocketProvider = function WebsocketProvider(url, options) {
+interface ThisWSProvider {
+  responseCallbacks: any;
+  notificationCallbacks: Array<any>;
+  _customTimeout?: number;
+  connection: WebSocket;
+}
+const WebsocketProvider = function WebsocketProvider(
+  this: ThisWSProvider,
+  url: string,
+  options?: any
+) {
   const _this = this;
   this.responseCallbacks = {};
   this.notificationCallbacks = [];
