@@ -6,8 +6,8 @@ export type Network = {
     blockExplorerTX?: string;
     blockExplorerAddr?: string;
     chainID?: number;
-    tokens?: Promise<JSON>;
-    contracts?: Promise<JSON>;
+    tokens?: any;
+    contracts?: any;
     isTestNetwork?: boolean;
     ens?: {
       registry?: string;
