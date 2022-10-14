@@ -26,39 +26,33 @@
   </mew6-white-sheet>
 </template>
 
-<script lang="ts">
-import { mapGetters, mapState } from 'vuex';
+<script setup lang="ts">
 import ModuleAddressBook from '@/modules/address-book/ModuleAddressBook.vue';
-import { defineComponent } from 'vue';
+import { useGlobalStore } from '@/stores/global';
+import { useWalletStore } from '@/stores/wallet';
+import { computed, reactive } from 'vue';
 
-export default defineComponent({
-  name: 'HomeFeaturesSend',
-  components: { ModuleAddressBook },
-  data: () => ({
-    data: '1337'
-  }),
-  computed: {
-    ...mapState('wallet', ['balance', 'web3', 'address']),
-    ...mapGetters('global', ['network', 'gasPrice']),
-    ...mapGetters('wallet', ['balanceInETH', 'tokensList']),
-    tokens() {
-      const eth = {
-        name: this.network.type.name,
-        symbol: this.network.type.name,
-        subtext: this.network.type.name_long,
-        value: this.network.type.name_long,
-        balance: this.balance,
-        img: this.network.type.icon,
-        decimals: 18,
-        market_cap: null,
-        price_change_percentage_24h: null
-      };
+const { data } = reactive({
+  data: '1337'
+});
+const { network } = useGlobalStore();
+const { balance, tokensList } = useWalletStore();
+const tokens = computed(() => {
+  const eth = {
+    name: network.type.name,
+    symbol: network.type.name,
+    subtext: network.type.name_long,
+    value: network.type.name_long,
+    balance: balance,
+    img: network.type.icon,
+    decimals: 18,
+    market_cap: null,
+    price_change_percentage_24h: null
+  };
 
-      const copiedTokens = this.tokensList.slice();
-      copiedTokens.unshift(eth);
-      return copiedTokens;
-    }
-  }
+  const copiedTokens = tokensList.slice();
+  copiedTokens.unshift(eth);
+  return copiedTokens;
 });
 </script>
 

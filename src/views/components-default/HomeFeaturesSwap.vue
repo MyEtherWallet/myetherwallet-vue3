@@ -8,29 +8,29 @@
       {{ $t('home.features.swap.title') }}
     </div>
     <div class="mt-10">
-      <v-row v-if="!loading && !error">
+      <v-row v-if="!data.loading && !data.error">
         <v-col
-          v-for="(data, key) in swapData"
+          v-for="(d, key) in data.swapData"
           :key="key"
           cols="12"
           md="6"
           style="padding: 4px !important"
         >
           <v-sheet
-            v-if="data.rate"
+            v-if="d.rate"
             color="tableHeader"
             class="d-flex align-center justify-space-between border-radius--5px py-5 px-4 cursor cursor--pointer"
-            @click="goToSwap(data)"
+            @click="goToSwap(d)"
           >
             <div class="text-uppercase">
-              1 {{ data.fromT.symbol }} / {{ data.rate }} {{ data.toT.symbol }}
+              1 {{ d.fromT.symbol }} / {{ d.rate }} {{ d.toT.symbol }}
             </div>
             <div class="d-flex align-center">
               <img
                 width="22"
                 :src="
                   require('@/assets/images/currencies/' +
-                    data.fromT.symbol.toLowerCase() +
+                    d.fromT.symbol.toLowerCase() +
                     '.png')
                 "
                 alt="currency-icon"
@@ -45,7 +45,7 @@
                 width="22"
                 :src="
                   require('@/assets/images/currencies/' +
-                    data.toT.symbol.toLowerCase() +
+                    d.toT.symbol.toLowerCase() +
                     '.png')
                 "
                 alt="eth-icon"
@@ -59,7 +59,7 @@
         btn-size="xlarge"
         class="mx-auto mt-12 d-block"
         @click.native="
-          $router.push({ name: ROUTES_HOME.ACCESS_WALLET.NAME, params: {} })
+          $router.push({ name: Routes.ACCESS_WALLET.NAME, params: {} })
         "
       />
     </div>
@@ -72,10 +72,15 @@ import { formatFloatingPointValue } from '@/core/helpers/numberFormatHelper';
 //import { Toast, ERROR } from "@/modules/toast/handler/handlerToast";
 import { ROUTES_HOME as Routes } from '@/core/configs/configRoutes';
 import { isEmpty } from 'lodash';
-import { onMounted, watch } from 'vue';
+import { computed, onMounted, reactive, watch } from 'vue';
 import Web3 from 'web3/types';
+import { SwapPairData } from '@/modules/swap/handlers/providers/mew-provider-class';
+import { useGlobalStore } from '@/stores/global';
+import { useWalletStore } from '@/stores/wallet';
+import Swap from '@/modules/swap/handlers/handlerSwap';
+import { useRouter } from 'vue-router';
 
-const STATIC_PAIRS = [
+const STATIC_PAIRS: Array<SwapPairData> = [
   {
     toT: {
       symbol: 'BTC',
@@ -110,7 +115,7 @@ const STATIC_PAIRS = [
     toT: {
       symbol: 'KNC',
       contract: '0xdd974d5c2e2928dea5f71b9825b8b646686bd200',
-      toT: 18
+      decimals: 18
     },
     fromAmount: '100000000000000000'
   },
@@ -154,63 +159,75 @@ const STATIC_PAIRS = [
     fromAmount: '100000000000000000'
   }
 ];
-  let swapHandler:null|typeof handlerSwap = null
-  let swapData:null|Array<any> = null
-  let loading = true
-  let error = false
-  let ROUTES_HOME = Routes
+interface Data {
+  swapHandler: null | Swap;
+  swapData: null | any;
+  loading: boolean;
+  error: boolean;
+  ROUTES_HOME: any;
+}
+const data: Data = reactive({
+  swapHandler: null,
+  swapData: null,
+  loading: true,
+  error: false,
+  ROUTES_HOME: Routes
+});
+const { network } = useGlobalStore();
+const { web3 } = useWalletStore();
 
-  watch(web3,(val:Web3)=>{
-    setSwapHandler(val);
-  })
-  onMounted(()=>{
-    setSwapHandler(this.web3)
-  })
-  const setSwapHandler= (val:Web3)=>{
-      swapHandler = new handlerSwap(val, network.type.name);
-      fetchRates();
-    }
-  const fetchRates =()=> {
-      try {
-        swapData = null;
-        loading = true;
-        swapHandler.getQuotesForSet(STATIC_PAIRS).then((res:any) => {
-          swapData = STATIC_PAIRS.map((itm, idx) => {
-            itm['rate'] =
-              res[idx].length === 0 || isEmpty(res[idx])
-                ? false
-                : formatFloatingPointValue(res[idx][0].amount).value;
-            return itm;
-          });
-          loading = false;
-        });
-      } catch (e) {
-        loading = false;
-        error = true;
-        //Toast(e.message, {}, ERROR);
-      }
-    }
-  const goToSwap = (data:any) => {
-      const obj = {
-        fromToken: data.fromT.contract,
-        toToken: data.toT.contract,
-        amount: '1'
-      };
-      navigateToSwap(obj);
-    }
-  const navigateToSwap = (query: any)=> {
-      const obj = { name: 'Swap', query:'' };
-      if (query) {
-        obj['query'] = query;
-      }
-      // if (this.$route.name === 'Swap') {
-      //   // this will allow vue to update query param
-      //   // within the swap page when user clicks on the pairs again
-      //   this.$router.replace(obj);
-      // } else {
-      //   this.$router.push(obj);
-      // }
-    }
+watch(web3, (val: Web3) => {
+  setSwapHandler(val);
+});
+onMounted(() => {
+  setSwapHandler(web3);
+});
+const setSwapHandler = (val: Web3) => {
+  data.swapHandler = new handlerSwap(val, network.type.name);
+  fetchRates();
+};
+const fetchRates = () => {
+  try {
+    data.swapData = null;
+    data.loading = true;
+    data.swapHandler?.getQuotesForSet(STATIC_PAIRS).then((res: any) => {
+      data.swapData = STATIC_PAIRS.map((itm, idx) => {
+        itm['rate'] =
+          res[idx].length === 0 || isEmpty(res[idx])
+            ? false
+            : formatFloatingPointValue(res[idx][0].amount).value;
+        return itm;
+      });
+      data.loading = false;
+    });
+  } catch (e) {
+    data.loading = false;
+    data.error = true;
+    //Toast(e.message, {}, ERROR);
+  }
+};
+const goToSwap = (data: any) => {
+  const obj = {
+    fromToken: data.fromT.contract,
+    toToken: data.toT.contract,
+    amount: '1'
+  };
+  navigateToSwap(obj);
+};
+const router = useRouter();
+const navigateToSwap = (query: any) => {
+  const obj = { name: 'Swap', query: {} };
+  if (query) {
+    obj['query'] = query;
+  }
+  if (router.currentRoute.value.name === 'Swap') {
+    // this will allow vue to update query param
+    // within the swap page when user clicks on the pairs again
+    router.replace(obj);
+  } else {
+    router.push(obj);
+  }
+};
 </script>
 
 <style lang="scss" scoped></style>

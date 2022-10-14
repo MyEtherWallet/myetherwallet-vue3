@@ -34,74 +34,68 @@
     </v-row>
     <div class="message d-flex align-center justify-center px-3 py-5 mt-7">
       <div class="message--text textMedium--text text-center">
-        {{ $t("home.features.dapps.text") }}
+        {{ $t('home.features.dapps.text') }}
         <a
           href="https://v5.myetherwallet.com"
           target="_blank"
           class="greenPrimary--text"
-          >{{ $t("home.features.dapps.link-text") }}</a
+          >{{ $t('home.features.dapps.link-text') }}</a
         >
       </div>
     </div>
   </mew6-white-sheet>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n({ useScope: 'global' });
+const dapps = [
+  {
+    label: t('home.features.dapps.eth-blocks'),
+    icon: require('@/assets/images/icons/icon-eth-blocks-logo.png'),
+    isAccessible: true,
+    isNew: true
+  },
+  {
+    label: t('home.features.dapps.stake-eth2'),
+    icon: require('@/assets/images/icons/icon-dapp-eth20.png'),
+    isAccessible: true
+  },
+  {
+    label: t('home.features.dapps.ens-manager'),
+    icon: require('@/assets/images/icons/icon-dapp-ens-manager.png'),
+    isAccessible: true
+  },
+  {
+    label: t('home.features.dapps.makerdao'),
+    icon: require('@/assets/images/icons/icon-dapp-makerdao.png')
+  },
+  {
+    label: t('home.features.dapps.safesend'),
+    icon: require('@/assets/images/icons/icon-dapp-lock.png')
+  },
 
-export default defineComponent({
-  name: "HomeFeaturesDapps",
-  components: {},
-  data: (vm) => ({
-    dapps: [
-      {
-        label: vm.$t("home.features.dapps.eth-blocks"),
-        icon: require("@/assets/images/icons/icon-eth-blocks-logo.png"),
-        isAccessible: true,
-        isNew: true,
-      },
-      {
-        label: vm.$t("home.features.dapps.stake-eth2"),
-        icon: require("@/assets/images/icons/icon-dapp-eth20.png"),
-        isAccessible: true,
-      },
-      {
-        label: vm.$t("home.features.dapps.ens-manager"),
-        icon: require("@/assets/images/icons/icon-dapp-ens-manager.png"),
-        isAccessible: true,
-      },
-      {
-        label: vm.$t("home.features.dapps.makerdao"),
-        icon: require("@/assets/images/icons/icon-dapp-makerdao.png"),
-      },
-      {
-        label: vm.$t("home.features.dapps.safesend"),
-        icon: require("@/assets/images/icons/icon-dapp-lock.png"),
-      },
-
-      {
-        label: vm.$t("home.features.dapps.aave"),
-        icon: require("@/assets/images/icons/icon-dapp-aave.png"),
-      },
-      {
-        label: vm.$t("home.features.dapps.golem-migrator"),
-        icon: require("@/assets/images/icons/icon-dapp-golem.png"),
-      },
-      {
-        label: vm.$t("home.features.dapps.lend-migrator"),
-        icon: require("@/assets/images/icons/icon-dapp-lend.png"),
-      },
-      {
-        label: vm.$t("home.features.dapps.unstopabble"),
-        icon: require("@/assets/images/icons/icon-dapp-unstoppable.png"),
-      },
-      {
-        label: vm.$t("home.features.dapps.ambrpay"),
-        icon: require("@/assets/images/icons/icon-dapp-ambrpay.png"),
-      },
-    ],
-  }),
-});
+  {
+    label: t('home.features.dapps.aave'),
+    icon: require('@/assets/images/icons/icon-dapp-aave.png')
+  },
+  {
+    label: t('home.features.dapps.golem-migrator'),
+    icon: require('@/assets/images/icons/icon-dapp-golem.png')
+  },
+  {
+    label: t('home.features.dapps.lend-migrator'),
+    icon: require('@/assets/images/icons/icon-dapp-lend.png')
+  },
+  {
+    label: t('home.features.dapps.unstoppable'),
+    icon: require('@/assets/images/icons/icon-dapp-unstoppable.png')
+  },
+  {
+    label: t('home.features.dapps.ambrpay'),
+    icon: require('@/assets/images/icons/icon-dapp-ambrpay.png')
+  }
+];
 </script>
 
 <style lang="scss" scoped>

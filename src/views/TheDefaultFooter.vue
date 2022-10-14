@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue';
+import { ref, watch } from 'vue';
 import { ROUTES_HOME } from '@/core/configs/configRoutes.js';
 import { loadLanguageAsync } from '@/main/i18n.js';
 import { usePopupStore } from '@/stores/popups';
 import { useGlobalStore } from '@/stores/global';
 import { LocationQueryRaw } from 'vue-router';
-const globalStore = computed(() => useGlobalStore());
-const popupStore = computed(() => usePopupStore());
+const { locale } = useGlobalStore();
+const { consentToTrack, displayedTrackingPopup } = usePopupStore();
 const ethDonationAddress = '';
 const btcDonationAddress = '';
 
@@ -24,9 +24,7 @@ const languages = [
     flag: require('@/assets/images/flags/russia.png')
   }
 ];
-const select = ref(
-  globalStore.value.locale === 'en_US' ? languages[0] : languages[1]
-);
+const select = ref(locale === 'en_US' ? languages[0] : languages[1]);
 const socialIcons = [
   {
     link: 'https://www.facebook.com/MyEtherWallet',
@@ -260,19 +258,14 @@ watch(select, select => {
               </div>
             </div>
           </div>
-          <div
-            v-if="popupStore.displayedTrackingPopup"
-            class="matomo-tracking-switch"
-          >
+          <div v-if="displayedTrackingPopup" class="matomo-tracking-switch">
             <v-switch
-              :input-value="popupStore.consentToTrack"
+              :input-value="consentToTrack"
               inset
-              :label="`Data Tracking ${
-                popupStore.consentToTrack ? 'On' : 'Off'
-              }`"
+              :label="`Data Tracking ${consentToTrack ? 'On' : 'Off'}`"
               color="greenPrimary"
               off-icon="mdi-alert-circle"
-              @change="popupStore.consentToTrack = true"
+              @change="consentToTrack = true"
             />
           </div>
           <div class="social-icons d-flex align-center">

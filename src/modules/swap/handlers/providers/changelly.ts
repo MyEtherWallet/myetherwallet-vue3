@@ -12,6 +12,7 @@ import { ETH } from '@/utils/networks/types';
 //import { EventBus } from '@/core/plugins/eventBus';
 //import EventNames from '@/utils/web3-provider/events.js';
 import BN from 'bn.js';
+import { SwapTradeParams } from './mew-provider-class';
 
 const HOST_URL = 'https://swap.mewapi.io/changelly';
 const REQUEST_CACHER = 'https://requestcache.mewapi.io/?url=';
@@ -188,8 +189,8 @@ class Changelly {
     toT,
     fromAmount,
     refundAddress
-  }: TradeParams) {
-    const fromAmountBN = new BigNumber(fromAmount);
+  }: SwapTradeParams) {
+    const fromAmountBN = new BigNumber(fromAmount || 0);
     const queryAmount = fromAmountBN.div(
       new BigNumber(10).pow(new BigNumber(fromT.decimals))
     );
@@ -318,7 +319,7 @@ class Changelly {
       }
     });
   }
-  getStatus(statusObj: any) {
+  getStatus(statusObj:any ) {
     statusObj = statusObj.statusObj;
     return axios
       .post(
@@ -362,15 +363,6 @@ interface QuoteParams {
   fromT: any;
   toT: any;
   fromAmount: string | number;
-}
-interface TradeParams {
-  fromAddress: string;
-  toAddress: string;
-  quote: any;
-  fromT: any;
-  toT: any;
-  fromAmount: string | number;
-  refundAddress: string;
 }
 interface ValidToAddress {
   toT: any;

@@ -11,7 +11,7 @@ import { ETH } from '@/utils/networks/types';
 import Web3 from 'web3/types';
 //import { Toast, ERROR } from '@/modules/toast/handler/handlerToast';
 class MEWPClass {
-  web3: Web3;
+  web3: CustomWeb3;
   chain: string;
   supportedNetworks: Array<string>;
   provider: string;
@@ -62,32 +62,32 @@ class MEWPClass {
   isValidToAddress({ address }: { address: string }) {
     return Promise.resolve(isAddress(address));
   }
-  getMinMaxAmount({ fromT }: { fromT: { decimals: number } }) {
+  getMinMaxAmount({ fromT }: SwapPairData) {
     return Promise.resolve({
       minFrom: new BigNumber(1)
-        .dividedBy(new BigNumber(10).pow(fromT.decimals))
+        .dividedBy(new BigNumber(10).pow(fromT.decimals || 1))
         .toFixed(),
       maxFrom: new BigNumber(1)
-        .multipliedBy(new BigNumber(10).pow(fromT.decimals))
+        .multipliedBy(new BigNumber(10).pow(fromT.decimals || 1))
         .toFixed()
     });
   }
-  getQuote({ fromT, toT, fromAmount }) {
+  getQuote({ fromT, toT, fromAmount }: SwapPairData) {
     const fromAddress = fromT.contract;
-    const toAddress = toT.contract;
+    const toAddress = toT?.contract || '';
     if (!isAddress(fromAddress) || !isAddress(toAddress))
       return Promise.resolve([]);
-    const fromAmountBN = new BigNumber(fromAmount);
+    const fromAmountBN = new BigNumber(fromAmount || 0);
     const queryAmount = fromAmountBN.div(
-      new BigNumber(10).pow(new BigNumber(fromT.decimals))
+      new BigNumber(10).pow(new BigNumber(fromT.decimals || 0))
     );
-    return this.getMinMaxAmount({ fromT, toT }).then(minmax => {
+    return this.getMinMaxAmount({ fromT }).then(minmax => {
       return axios
         .get(`${HOST_URL}${GET_QUOTE}`, {
           params: {
             fromContractAddress: fromAddress,
             toContractAddress: toAddress,
-            amount: queryAmount.toFixed(fromT.decimals),
+            amount: queryAmount.toFixed(fromT.decimals || 0),
             chain: this.chain,
             excludeDexes: Object.values(MEWPClass.supportedDexes)
               .filter(dex => dex !== this.provider)
@@ -96,9 +96,9 @@ class MEWPClass {
         })
         .then(response => {
           const quotes = response.data.quotes.filter(
-            q => q.dex === this.provider
+            (q: any) => q.dex === this.provider
           );
-          return quotes.map(q => {
+          return quotes.map((q: any) => {
             return {
               exchange: q.exchange,
               provider: this.provider,
@@ -115,12 +115,19 @@ class MEWPClass {
         });
     });
   }
-  getTrade({ fromAddress, toAddress, quote, fromT, toT, fromAmount }) {
+  getTrade({
+    fromAddress,
+    toAddress,
+    quote,
+    fromT,
+    toT,
+    fromAmount
+  }: SwapTradeParams) {
     const contactFromAddress = fromT.contract;
-    const contractToAddress = toT.contract;
-    const fromAmountBN = new BigNumber(fromAmount);
+    const contractToAddress = toT?.contract;
+    const fromAmountBN = new BigNumber(fromAmount || 0);
     const queryAmount = fromAmountBN.div(
-      new BigNumber(10).pow(new BigNumber(fromT.decimals))
+      new BigNumber(10).pow(new BigNumber(fromT.decimals || 0))
     );
     return axios
       .get(`${HOST_URL}${GET_TRADE}`, {
@@ -132,7 +139,7 @@ class MEWPClass {
           platform: 'web',
           fromContractAddress: contactFromAddress,
           toContractAddress: contractToAddress,
-          amount: queryAmount.toFixed(fromT.decimals),
+          amount: queryAmount.toFixed(fromT.decimals || 0),
           chain: this.chain
         }
       })
@@ -146,7 +153,7 @@ class MEWPClass {
         //Toast(err, {}, ERROR);
       });
   }
-  async executeTrade(tradeObj, confirmInfo) {
+  async executeTrade(tradeObj: TradeObjParam, confirmInfo: any) {
     const from = await this.web3.eth.getCoinbase();
     const gasPrice = tradeObj.gasPrice ? tradeObj.gasPrice : null;
     if (tradeObj.transactions.length === 1) {
@@ -182,12 +189,12 @@ class MEWPClass {
 
     return new Promise((resolve, reject) => {
       let counter = 0;
-      const hashes = [];
+      const hashes: Array<string> = [];
       this.web3.mew
         .sendBatchTransactions(txs)
-        .then(promises => {
-          promises.forEach(p => {
-            p.on('transactionHash', hash => {
+        .then((promises: Array<Promise<any>>) => {
+          promises.forEach((p: any) => {
+            p.on('transactionHash', (hash: string) => {
               hashes.push(hash);
               counter++;
               if (counter === promises.length)
@@ -198,7 +205,7 @@ class MEWPClass {
                 });
             });
 
-            p.on('error', err => {
+            p.on('error', (err: any) => {
               hashes.push(err);
               counter++;
               if (counter === promises.length)
@@ -213,7 +220,7 @@ class MEWPClass {
         .catch(reject);
     });
   }
-  getStatus(statusObj) {
+  getStatus(statusObj: SwapStatusObject) {
     let isSuccess = true;
     let isPending = false;
     const hashes = statusObj.statusObj.hashes;
@@ -239,5 +246,34 @@ class MEWPClass {
     });
   }
 }
-
+interface CustomWeb3 extends Web3 {
+  mew?: any;
+}
+interface TradeObjParam {
+  gasPrice?: string | number;
+  transactions: Array<any>;
+}
+interface SwapData {
+  symbol: string;
+  contract: string;
+  decimals?: number | 1;
+}
+export interface SwapPairData {
+  fromT: SwapData;
+  toT?: SwapData;
+  fromAmount?: string;
+  rate?: any;
+}
+export interface SwapTradeParams extends SwapPairData {
+  toT: SwapData;
+  fromAddress: string;
+  toAddress: string;
+  quote: any;
+  refundAddress: string;
+}
+export interface SwapStatusObject {
+  statusObj: {
+    hashes: Array<string>;
+  };
+}
 export default MEWPClass;

@@ -1,4 +1,7 @@
-export default {
+interface Config {
+  [key: string]: any;
+}
+export default <Config>{
   status: {
     SUBMITTED: 'SUBMITTED',
     PENDING: 'PENDING',

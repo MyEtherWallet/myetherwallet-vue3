@@ -1,6 +1,19 @@
 import { ETH, BSC, MATIC } from '@/utils/networks/types';
-
-const TRENDING_LIST = {
+interface Coin {
+  contract: String;
+  decimals?: number;
+  img?: string;
+  symbol?: string;
+  isEth: boolean;
+  name?: string;
+  subtext?: string;
+  value?: string;
+  cgid?: string;
+}
+interface TrendingList {
+  [key: string]: Array<Coin>;
+}
+const TRENDING_LIST: TrendingList = {
   [ETH.name]: [
     {
       contract: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',

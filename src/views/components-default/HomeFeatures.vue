@@ -67,57 +67,45 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import HomeFeaturesSend from './HomeFeaturesSend.vue';
 import HomeFeaturesSwap from './HomeFeaturesSwap.vue';
 import HomeFeaturesDapps from './HomeFeaturesDapps.vue';
 import HomeFeaturesTokens from './HomeFeaturesTokens.vue';
-import { defineComponent } from 'vue';
-
-export default defineComponent({
-  name: 'HomeFeatures',
-  components: {
-    HomeFeaturesSend,
-    HomeFeaturesSwap,
-    HomeFeaturesDapps,
-    HomeFeaturesTokens
+import { reactive } from 'vue';
+const { mobileTab } = reactive({ mobileTab: null });
+const mobileItems = [
+  {
+    tab: 'ETH',
+    img: require('@/assets/images/snippets/mobile/mobile-features-send.svg')
   },
-  data: () => ({
-    mobileTab: null,
-    mobileItems: [
-      {
-        tab: 'ETH',
-        img: require('@/assets/images/snippets/mobile/mobile-features-send.svg')
-      },
-      {
-        tab: 'Swap',
-        img: require('@/assets/images/snippets/mobile/mobile-features-swap.svg')
-      },
-      {
-        tab: 'DApps',
-        img: require('@/assets/images/snippets/mobile/mobile-features-dapps.svg')
-      },
-      {
-        tab: 'Tokens',
-        img: require('@/assets/images/snippets/mobile/mobile-features-tokens.svg')
-      }
-    ],
-    mewTabs: [
-      {
-        name: 'ETH'
-      },
-      {
-        name: 'Swap'
-      },
-      {
-        name: 'DApps'
-      },
-      {
-        name: 'Tokens'
-      }
-    ]
-  })
-});
+  {
+    tab: 'Swap',
+    img: require('@/assets/images/snippets/mobile/mobile-features-swap.svg')
+  },
+  {
+    tab: 'DApps',
+    img: require('@/assets/images/snippets/mobile/mobile-features-dapps.svg')
+  },
+  {
+    tab: 'Tokens',
+    img: require('@/assets/images/snippets/mobile/mobile-features-tokens.svg')
+  }
+];
+const mewTabs = [
+  {
+    name: 'ETH'
+  },
+  {
+    name: 'Swap'
+  },
+  {
+    name: 'DApps'
+  },
+  {
+    name: 'Tokens'
+  }
+];
 </script>
 
 <style lang="scss" scoped>
