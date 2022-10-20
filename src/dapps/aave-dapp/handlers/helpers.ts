@@ -1,12 +1,12 @@
-import { BN } from 'web3-utils';
-import BigNumber from 'bignumber.js';
-const checkAmount = (total, amount) => {
-  if (BN(amount).gt(BN(total))) {
+import { toBN } from 'web3-utils/types';
+import BigNumber from 'bignumber.js/bignumber';
+const checkAmount = (total: string | number, amount: string | number) => {
+  if (toBN(amount).gt(toBN(total))) {
     return true;
   }
 };
 
-const findReserve = (id, reserves) => {
+const findReserve = (id: any, reserves: Array<any>) => {
   return reserves.find(reserve => {
     return reserve.underlyingAsset
       ? reserve.underlyingAsset === id
@@ -14,7 +14,7 @@ const findReserve = (id, reserves) => {
   });
 };
 
-const convertToFixed = (val, num) => {
+const convertToFixed = (val: number | string, num: number) => {
   if (!val || val === 0) {
     return 0;
   }
@@ -31,11 +31,11 @@ const convertToFixed = (val, num) => {
  * @param round - number of decimal point to round to
  * @returns  a string of rounded number
  */
-const getRoundNumber = (value, dp) => {
-  return value.toFormat(Math.min(dp, value.decimalPlaces()));
+const getRoundNumber = (value: BigNumber, dp: number) => {
+  return value.toFormat(Math.min(dp, value.decimalPlaces() || 0));
 };
 
-const roundPercentage = val => {
+const roundPercentage = (val: string) => {
   const value = new BigNumber(val.replace('%', ''));
   const isNegative = value.isNegative() ? '-' : '';
   const absoluteValue = value.absoluteValue(); // Get Absolute value
@@ -62,7 +62,7 @@ const roundPercentage = val => {
   return `${getRoundNumber(value, 2)}%`;
 };
 
-const roundNumber = val => {
+const roundNumber = (val: string | number) => {
   const OneThousand = 1e3;
   const OneMillion = 1e6;
   const OneBillion = 1e9;

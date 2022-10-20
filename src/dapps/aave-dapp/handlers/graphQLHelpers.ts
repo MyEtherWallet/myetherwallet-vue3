@@ -1,4 +1,4 @@
-export function depositDetails(param) {
+export function depositDetails(param: any) {
   const query = `
   mutation Deposit($data: TransferFromInput!) {
     deposit(data: $data) {
@@ -23,7 +23,7 @@ export function depositDetails(param) {
   return fetchQuery(query, param);
 }
 
-export function borrowDetails(param) {
+export function borrowDetails(param: any) {
   const query = `
     mutation Borrow($data: BorrowInput!) {
       borrow(data: $data) {
@@ -47,7 +47,7 @@ export function borrowDetails(param) {
   return fetchQuery(query, param);
 }
 
-export function repayDetails(param) {
+export function repayDetails(param: any) {
   const query = `
     mutation Repay($data: TransferFromInput!) {
       repay(data: $data) {
@@ -70,7 +70,7 @@ export function repayDetails(param) {
   return fetchQuery(query, param);
 }
 
-export function swapBorrowRateDetails(param) {
+export function swapBorrowRateDetails(param: any) {
   const query = `
     mutation SwapBorrowRateMode($data: ApproveInput!) {
       swapBorrowRateMode(data: $data) {
@@ -94,7 +94,7 @@ export function swapBorrowRateDetails(param) {
   return fetchQuery(query, param);
 }
 
-export function withdrawDetails(param) {
+export function withdrawDetails(param: any) {
   const query = `mutation Withdraw($data: RedeemInput!) {
       redeem(data: $data) {
         ...EthTransaction
@@ -117,7 +117,7 @@ export function withdrawDetails(param) {
   return fetchQuery(query, param);
 }
 
-export function setUsageAsCollateralDetails(param) {
+export function setUsageAsCollateralDetails(param: any) {
   const query = `
     mutation SetUsageAsCollateralMode($data: SetUsageAsCollateralInput!) {
       setUsageAsCollateral(data: $data) {
@@ -141,7 +141,7 @@ export function setUsageAsCollateralDetails(param) {
   return fetchQuery(query, param);
 }
 
-function fetchQuery(query, param) {
+function fetchQuery(query: any, param: any) {
   const url = 'https://protocol-api.aave.com/graphql';
   return fetch(url, {
     method: 'POST',

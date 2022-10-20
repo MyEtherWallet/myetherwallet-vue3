@@ -3,9 +3,9 @@
     <the-wrapper-dapp
       :has-exit-btn="true"
       :banner-img="BG"
-      :banner-text="topBanner"
-      :tab-items="tabs"
-      :active-tab="activeTab"
+      :banner-text="state.topBanner"
+      :tab-items="state.tabs"
+      :active-tab="state.activeTab"
     >
       <template #tabContent1>
         <v-sheet
@@ -88,8 +88,8 @@
             </v-col>
             <v-col cols="12" class="pt-md-2">
               <aave-table
-                :table-header="depositsTableHeader"
-                :handler="handler"
+                :table-header="state.depositsTableHeader"
+                :handler="state.handler"
                 :has-search="false"
                 :has-toggle="false"
                 @selectedDeposit="openDepositOverlayWithToken"
@@ -229,8 +229,8 @@
             </v-col>
             <v-col cols="12" class="pt-md-2">
               <aave-table
-                :table-header="borrowTableHeader"
-                :handler="handler"
+                :table-header="state.borrowTableHeader"
+                :handler="state.handler"
                 :has-search="false"
                 :has-toggle="false"
                 @selectedBorrow="openBorrowOverlayWithToken"
@@ -250,68 +250,73 @@
       </template>
     </the-wrapper-dapp>
     <aave-deposit-overlay
-      :open="showDepositOverlay"
+      :open="state.showDepositOverlay"
       :close="closeDepositOverlay"
-      :pre-selected-token="requestToken"
-      :handler="handler"
+      :pre-selected-token="state.requestToken"
+      :handler="state.handler"
       @onConfirm="callDeposit"
     />
     <aave-borrow-overlay
-      :pre-selected-token="requestToken"
-      :open="showBorrowOverlay"
+      :pre-selected-token="state.requestToken"
+      :open="state.showBorrowOverlay"
       :close="closeBorrowOverlay"
-      :handler="handler"
+      :handler="state.handler"
       @onConfirm="callBorrow"
     />
     <aave-collateral-overlay
-      :pre-selected-token="requestToken"
-      :handler="handler"
-      :open="showCollateralOverlay"
+      :pre-selected-token="state.requestToken"
+      :handler="state.handler"
+      :open="state.showCollateralOverlay"
       :close="closeCollateralOverlay"
       @onConfirm="callSwitchCollateral"
     />
     <aave-withdraw-overlay
-      :pre-selected-token="requestToken"
-      :handler="handler"
-      :open="showWithdrawOverlay"
+      :pre-selected-token="state.requestToken"
+      :handler="state.handler"
+      :open="state.showWithdrawOverlay"
       :close="closeWithdrawOverlay"
       @onConfirm="callWithdraw"
     />
     <aave-repay-overlay
-      :pre-selected-token="requestToken"
-      :handler="handler"
-      :open="showRepayOverlay"
+      :pre-selected-token="state.requestToken"
+      :handler="state.handler"
+      :open="state.showRepayOverlay"
       :close="closeRepayOverlay"
       @onConfirm="callRepay"
     />
     <aave-set-apr-overlay
-      :pre-selected-token="requestToken"
-      :handler="handler"
-      :open="showAprTypeOverlay"
+      :pre-selected-token="state.requestToken"
+      :handler="state.handler"
+      :open="state.showAprTypeOverlay"
       :close="closeAprTypeOverlay"
       @onConfirm="callSwitchInterest"
     />
   </div>
 </template>
 
-<script>
-import TheWrapperDapp from '@/core/components/TheWrapperDapp';
-import AaveBorrowOverlay from './components/AaveBorrowOverlay';
-import AaveDepositOverlay from './components/AaveDepositOverlay';
-import AaveCollateralOverlay from './components/AaveCollateralOverlay';
-import AaveRepayOverlay from './components/AaveRepayOverlay';
-import AaveWithdrawOverlay from './components/AaveWithdrawOverlay';
-import AaveSetAprOverlay from './components/AaveSetAprOverlay';
+<script setup lang="ts">
+import TheWrapperDapp from '@/core/components/TheWrapperDapp.vue';
+import AaveBorrowOverlay from './components/AaveBorrowOverlay.vue';
+import AaveDepositOverlay from './components/AaveDepositOverlay.vue';
+import AaveCollateralOverlay from './components/AaveCollateralOverlay.vue';
+import AaveRepayOverlay from './components/AaveRepayOverlay.vue';
+import AaveWithdrawOverlay from './components/AaveWithdrawOverlay.vue';
+import AaveSetAprOverlay from './components/AaveSetAprOverlay.vue';
 import BG from '@/assets/images/backgrounds/bg-unstoppable-domain.png';
 import handlerAave from './handlers/handlerAave';
 import AaveCalls from './apollo/queries/queries';
-import { mapGetters } from 'vuex';
-import BigNumber from 'bignumber.js';
+import BigNumber from 'bignumber.js/bignumber';
 import { AAVE_TABLE_HEADER } from '@/dapps/aave-dapp/handlers/helpers';
-import AaveTable from './components/AaveTable';
-import { ERROR, SUCCESS, Toast } from '@/modules/toast/handler/handlerToast';
+import AaveTable from './components/AaveTable.vue';
+//import { ERROR, SUCCESS, Toast } from '@/modules/toast/handler/handlerToast';
+import { computed, onMounted, reactive, watch } from 'vue';
+import { useGlobalStore } from '@/stores/global';
+import { useExternalStore } from '@/stores/external';
 
-const COLORS = {
+interface Colors {
+  [key: string]: string;
+}
+const COLORS: Colors = {
   ENJ: 'bluePrimary',
   ETH: 'greenPrimary',
   ZRX: 'greenMedium',
@@ -333,384 +338,381 @@ const COLORS = {
   YFI: 'white',
   TUSD: 'black'
 };
-
-export default {
-  name: 'AaveLayout',
-  components: {
-    TheWrapperDapp,
-    AaveBorrowOverlay,
-    AaveDepositOverlay,
-    AaveTable,
-    AaveCollateralOverlay,
-    AaveRepayOverlay,
-    AaveWithdrawOverlay,
-    AaveSetAprOverlay
+interface State {
+  handler: null | handlerAave;
+  caller: null | any;
+  showDepositOverlay: boolean;
+  requestToken: any;
+  showBorrowOverlay: boolean;
+  showWithdrawOverlay: boolean;
+  showCollateralOverlay: boolean;
+  showRepayOverlay: boolean;
+  showAprTypeOverlay: boolean;
+  activeTab: number;
+  topBanner: {
+    title: string;
+    subtext: string;
+  };
+  depositsTableHeader: string;
+  borrowTableHeader: string;
+  tabs: Array<{ name: string }>;
+}
+const state: State = reactive({
+  handler: null,
+  caller: null,
+  showDepositOverlay: false,
+  requestToken: {},
+  showBorrowOverlay: false,
+  showWithdrawOverlay: false,
+  showCollateralOverlay: false,
+  showRepayOverlay: false,
+  showAprTypeOverlay: false,
+  activeTab: 0,
+  topBanner: {
+    title: 'AAVE',
+    subtext:
+      'Aave is an Open Source Money Market Protocol, allowing you to earn daily interest on your stablecoins. Borrow against various assets and switch interest between variable and stable rates'
   },
-  data() {
+  depositsTableHeader: AAVE_TABLE_HEADER.BALANCE_DEPOSIT,
+  borrowTableHeader: AAVE_TABLE_HEADER.BALANCE_BORROW,
+  tabs: [{ name: 'Deposits' }, { name: 'Borrowings' }]
+});
+const { isEthNetwork } = useGlobalStore();
+const { fiatValue } = useExternalStore();
+const isLoadingData = computed(() => {
+  if (!state.handler) true;
+  return state.handler?.isLoading;
+});
+const loanValue = computed(() => {
+  if (!state.handler) return `0%`;
+  return `${BigNumber(state.handler.userSummary.currentLiquidationThreshold)
+    .times(100)
+    .toFixed()}%`;
+});
+const healthFactor = computed(() => {
+  if (!state.handler) return '-';
+  return BigNumber(state.handler.userSummary.healthFactor).gt(0)
+    ? BigNumber(state.handler.userSummary.healthFactor).toFixed(3)
+    : `-`;
+});
+const totalLiquidity = computed(() => {
+  const eth =
+    !state.handler || state.handler.userSummary.totalLiquidityETH === 'NaN'
+      ? '0'
+      : state.handler.userSummary.totalLiquidityETH;
+  const usd =
+    !state.handler || state.handler.userSummary.totalLiquidityETH === 'NaN'
+      ? '0'
+      : BigNumber(state.handler.userSummary.totalLiquidityETH)
+          .times(fiatValue ? fiatValue : 0)
+          .toFixed(2);
+
+  return {
+    eth: state.handler ? eth : '0',
+    usd: state.handler ? usd : '0'
+  };
+});
+const totalCollateral = computed(() => {
+  if (!state.handler)
     return {
-      handler: null,
-      caller: null,
-      showDepositOverlay: false,
-      requestToken: {},
-      showBorrowOverlay: false,
-      showWithdrawOverlay: false,
-      showCollateralOverlay: false,
-      showRepayOverlay: false,
-      showAprTypeOverlay: false,
-      activeTab: 0,
-      BG: BG,
-      topBanner: {
-        title: 'AAVE',
-        subtext:
-          'Aave is an Open Source Money Market Protocol, allowing you to earn daily interest on your stablecoins. Borrow against various assets and switch interest between variable and stable rates'
-      },
-      depositsTableHeader: AAVE_TABLE_HEADER.BALANCE_DEPOSIT,
-      borrowTableHeader: AAVE_TABLE_HEADER.BALANCE_BORROW,
-      tabs: [{ name: 'Deposits' }, { name: 'Borrowings' }]
+      eth: `0 ETH`,
+      usd: `$ 0.00`
     };
-  },
-  computed: {
-    ...mapGetters('global', ['isEthNetwork']),
-    ...mapGetters('external', ['fiatValue']),
-    isLoadingData() {
-      if (!this.handler) true;
-      return this.handler.isLoading;
-    },
-    loanValue() {
-      if (!this.handler) return `0%`;
-      return `${BigNumber(this.handler.userSummary.currentLiquidationThreshold)
+
+  const eth = `${state.handler.userSummary.totalCollateralETH}`;
+  const usd = `${BigNumber(
+    state.handler.userSummary.totalCollateralUSD
+  ).toFixed(2)}`;
+
+  return {
+    eth: eth,
+    usd: usd
+  };
+});
+const totalBorrow = computed(() => {
+  if (!state.handler)
+    return {
+      eth: `0 ETH`,
+      usd: `$ 0.00`
+    };
+
+  const eth = `${state.handler.userSummary.totalBorrowsETH}`;
+  const usd = `${BigNumber(state.handler.userSummary.totalBorrowsUSD).toFixed(
+    2
+  )}`;
+
+  return {
+    eth: eth,
+    usd: usd
+  };
+});
+const compositionPercentage = computed(() => {
+  if (
+    state.handler &&
+    state.handler.userSummary &&
+    Object.keys(state.handler.userSummary).length > 0
+  ) {
+    const total = state.handler.userSummary.totalLiquidityETH;
+    const data = state.handler.userSummary.reservesData.map((item: any) => {
+      item['percentage'] = BigNumber(item.currentUnderlyingBalance)
         .times(100)
-        .toFixed()}%`;
-    },
-    healthFactor() {
-      if (!this.handler) return '-';
-      return BigNumber(this.handler.userSummary.healthFactor).gt(0)
-        ? BigNumber(this.handler.userSummary.healthFactor).toFixed(3)
-        : `-`;
-    },
-    totalLiquidity() {
-      const eth =
-        !this.handler || this.handler.userSummary.totalLiquidityETH === 'NaN'
-          ? '0'
-          : this.handler.userSummary.totalLiquidityETH;
-      const usd =
-        !this.handler || this.handler.userSummary.totalLiquidityETH === 'NaN'
-          ? '0'
-          : BigNumber(this.handler.userSummary.totalLiquidityETH)
-              .times(this.fiatValue ? this.fiatValue : 0)
-              .toFixed(2);
+        .div(total)
+        .toFixed();
+      item['color'] = COLORS[item.reserve.symbol];
+      return item;
+    });
+    const newObj = {
+      total: total,
+      data: data
+    };
 
-      return {
-        eth: this.handler ? eth : '0',
-        usd: this.handler ? usd : '0'
-      };
-    },
-    totalCollateral() {
-      if (!this.handler)
-        return {
-          eth: `0 ETH`,
-          usd: `$ 0.00`
-        };
+    return newObj;
+  }
 
-      const eth = `${this.handler.userSummary.totalCollateralETH}`;
-      const usd = `${BigNumber(
-        this.handler.userSummary.totalCollateralUSD
-      ).toFixed(2)}`;
-
-      return {
-        eth: eth,
-        usd: usd
-      };
-    },
-    totalBorrow() {
-      if (!this.handler)
-        return {
-          eth: `0 ETH`,
-          usd: `$ 0.00`
-        };
-
-      const eth = `${this.handler.userSummary.totalBorrowsETH}`;
-      const usd = `${BigNumber(
-        this.handler.userSummary.totalBorrowsUSD
-      ).toFixed(2)}`;
-
-      return {
-        eth: eth,
-        usd: usd
-      };
-    },
-    compositionPercentage() {
+  return {
+    total: 0,
+    data: []
+  };
+});
+const collateralPercentage = computed(() => {
+  if (
+    state.handler &&
+    state.handler.userSummary &&
+    Object.keys(state.handler.userSummary).length > 0
+  ) {
+    const total = state.handler.userSummary.totalCollateralETH;
+    const data = state.handler.userSummary.reservesData.filter((item: any) => {
       if (
-        this.handler &&
-        this.handler.userSummary &&
-        Object.keys(this.handler.userSummary).length > 0
+        item.usageAsCollateralEnabledOnUser &&
+        item.currentUnderlyingBalanceETH > 0
       ) {
-        const total = this.handler.userSummary.totalLiquidityETH;
-        const data = this.handler.userSummary.reservesData.map(item => {
-          item['percentage'] = BigNumber(item.currentUnderlyingBalance)
-            .times(100)
-            .div(total)
-            .toFixed();
-          item['color'] = COLORS[item.reserve.symbol];
-          return item;
-        });
-        const newObj = {
-          total: total,
-          data: data
-        };
-
-        return newObj;
+        item['percentage'] = BigNumber(item.currentUnderlyingBalance)
+          .times(100)
+          .div(total)
+          .toFixed();
+        item['color'] = COLORS[item.reserve.symbol];
+        return item;
       }
+    });
+    const newObj = {
+      total: total,
+      data: data
+    };
 
-      return {
-        total: 0,
-        data: []
-      };
-    },
-    collateralPercentage() {
-      if (
-        this.handler &&
-        this.handler.userSummary &&
-        Object.keys(this.handler.userSummary).length > 0
-      ) {
-        const total = this.handler.userSummary.totalCollateralETH;
-        const data = this.handler.userSummary.reservesData.filter(item => {
-          if (
-            item.usageAsCollateralEnabledOnUser &&
-            item.currentUnderlyingBalanceETH > 0
-          ) {
-            item['percentage'] = BigNumber(item.currentUnderlyingBalance)
-              .times(100)
-              .div(total)
-              .toFixed();
-            item['color'] = COLORS[item.reserve.symbol];
-            return item;
-          }
-        });
-        const newObj = {
-          total: total,
-          data: data
-        };
+    return newObj;
+  }
 
-        return newObj;
-      }
-
-      return {
-        total: 0,
-        data: []
-      };
-    },
-    borrowingsPercentage() {
-      if (
-        this.handler &&
-        this.handler.userSummary &&
-        Object.keys(this.handler.userSummary).length > 0
-      ) {
-        const borrowLimit = BigNumber(
-          this.handler.userSummary.availableBorrowsETH
-        )
-          .plus(this.handler.userSummary.borrowLimitBorrowsETH)
-          .toFixed(4);
-        const percentageLeft = BigNumber(
-          this.handler.userSummary.availableBorrowsETH
-        )
+  return {
+    total: 0,
+    data: []
+  };
+});
+const borrowingsPercentage = computed(() => {
+  if (
+    state.handler &&
+    state.handler.userSummary &&
+    Object.keys(state.handler.userSummary).length > 0
+  ) {
+    const borrowLimit = BigNumber(state.handler.userSummary.availableBorrowsETH)
+      .plus(state.handler.userSummary.borrowLimitBorrowsETH)
+      .toFixed(4);
+    const percentageLeft = BigNumber(
+      state.handler.userSummary.availableBorrowsETH
+    )
+      .times(100)
+      .div(borrowLimit)
+      .toFixed();
+    const data = state.handler.userSummary.reservesData.filter((item: any) => {
+      if (item.currentBorrowsETH > 0) {
+        item['percentage'] = BigNumber(item.currentBorrowsETH)
           .times(100)
           .div(borrowLimit)
           .toFixed();
-        const data = this.handler.userSummary.reservesData.filter(item => {
-          if (item.currentBorrowsETH > 0) {
-            item['percentage'] = BigNumber(item.currentBorrowsETH)
-              .times(100)
-              .div(borrowLimit)
-              .toFixed();
-            item['color'] = COLORS[item.reserve.symbol];
-            return item;
-          }
-        });
-        if (borrowLimit > 0 && percentageLeft > 0) {
-          data.push({
-            symbol: 'Available',
-            amount: '',
-            percentage: percentageLeft,
-            color: '#c7c7c7'
-          });
-        }
-        const newObj = {
-          total: borrowLimit,
-          data: data
-        };
-
-        return newObj;
+        item['color'] = COLORS[item.reserve.symbol];
+        return item;
       }
+    });
+    if (
+      BigNumber(borrowLimit).toNumber() > 0 &&
+      BigNumber(percentageLeft).toNumber() > 0
+    ) {
+      data.push({
+        symbol: 'Available',
+        amount: '',
+        percentage: percentageLeft,
+        color: '#c7c7c7'
+      });
+    }
+    const newObj = {
+      total: borrowLimit,
+      data: data
+    };
 
-      return {
-        total: 0,
-        data: []
-      };
-    }
-  },
-  watch: {
-    isEthNetwork(newVal) {
-      if (newVal) {
-        this.setCallerAndHandler();
-      } else {
-        this.handler = null;
-        this.caller = null;
-      }
-    }
-  },
-  mounted() {
-    this.setCallerAndHandler();
-  },
-  methods: {
-    callDeposit(e) {
-      this.handler
-        .deposit(e)
-        .then(() => {
-          Toast('Success! Your deposit will be displayed shortly', {}, SUCCESS);
-        })
-        .catch(e => {
-          Toast(e.message, {}, ERROR);
-        });
-    },
-    callSwitchCollateral(e) {
-      this.handler
-        .switchCollateral(e)
-        .then(() => {
-          Toast(
-            'Success! Your collateral is being switched and will display shortly',
-            {},
-            SUCCESS
-          );
-        })
-        .catch(e => {
-          Toast(e.message, {}, ERROR);
-        });
-    },
-    callBorrow(e) {
-      this.handler
-        .borrow(e)
-        .then(() => {
-          Toast(
-            'Success! Your borrowed token will be displayed shortly',
-            {},
-            SUCCESS
-          );
-        })
-        .catch(e => {
-          Toast(e.message, {}, ERROR);
-        });
-    },
-    callWithdraw(e) {
-      this.handler
-        .withdraw(e)
-        .then(() => {
-          Toast(
-            'Success! Your borrowed token will be displayed shortly',
-            {},
-            SUCCESS
-          );
-        })
-        .catch(e => {
-          Toast(e.message, {}, ERROR);
-        });
-    },
-    callRepay(e) {
-      this.handler
-        .repay(e)
-        .then(() => {
-          Toast(
-            'Success! Your borrowed token will be displayed shortly',
-            {},
-            SUCCESS
-          );
-        })
-        .catch(e => {
-          Toast(e.message, {}, ERROR);
-        });
-    },
-    callSwitchInterest(e) {
-      this.handler
-        .switchRate(e)
-        .then(() => {
-          Toast(
-            'Success! Your borrowed token will be displayed shortly',
-            {},
-            SUCCESS
-          );
-        })
-        .catch(e => {
-          Toast(e.message, {}, ERROR);
-        });
-    },
-    openDepositOverlayWithToken(token) {
-      this.requestToken = token;
-      this.showDepositOverlay = true;
-    },
-    openBorrowOverlayWithToken(token) {
-      this.requestToken = token;
-      this.showBorrowOverlay = true;
-    },
-    openDepositOverlay() {
-      this.showDepositOverlay = true;
-    },
-    closeDepositOverlay() {
-      this.requestToken = {};
-      this.showDepositOverlay = false;
-    },
-    openBorrowOverlay() {
-      this.showBorrowOverlay = true;
-    },
-    closeBorrowOverlay() {
-      this.requestToken = {};
-      this.showBorrowOverlay = false;
-    },
-    openWithdrawOverlay(token) {
-      this.requestToken = token;
-      this.showWithdrawOverlay = true;
-    },
-    closeWithdrawOverlay() {
-      this.requestToken = {};
-      this.showWithdrawOverlay = false;
-    },
-    openCollateralOverlay(token) {
-      this.requestToken = token;
-      this.showCollateralOverlay = true;
-    },
-    closeCollateralOverlay() {
-      this.requestToken = {};
-      this.showCollateralOverlay = false;
-    },
-    openRepayOverlay(token) {
-      this.requestToken = token;
-      this.showRepayOverlay = true;
-    },
-    closeRepayOverlay() {
-      this.requestToken = {};
-      this.showRepayOverlay = false;
-    },
-    openAprTypeOverlay(token) {
-      this.requestToken = token;
-      this.showAprTypeOverlay = true;
-    },
-    closeAprTypeOverlay() {
-      this.requestToken = {};
-      this.showAprTypeOverlay = false;
-    },
-    setCallerAndHandler() {
-      this.handler = new handlerAave();
-      this.caller = new AaveCalls(this.$apollo);
-      this.caller.getUserData(res => {
-        this.handler._userDataHandler(res);
-      });
-      this.caller.getUsdPriceEth(res => {
-        this.handler._usdPriceHandler(res);
-      });
-      this.caller.getReserveData(res => {
-        this.handler._reserveDataHandler(res);
-      });
-    }
+    return newObj;
   }
+
+  return {
+    total: 0,
+    data: []
+  };
+});
+watch({ isEthNetwork }, newVal => {
+  if (newVal) {
+    setCallerAndHandler();
+  } else {
+    state.handler = null;
+    state.caller = null;
+  }
+});
+onMounted(() => {
+  setCallerAndHandler();
+});
+const callDeposit = (e: any) => {
+  state.handler
+    ?.deposit(e)
+    .then(() => {
+      //Toast('Success! Your deposit will be displayed shortly', {}, SUCCESS);
+    })
+    .catch((e: any) => {
+      //Toast(e.message, {}, ERROR);
+    });
+};
+const callSwitchCollateral = (e: any) => {
+  state.handler
+    ?.switchCollateral(e)
+    .then(() => {
+      // Toast(
+      //   'Success! Your collateral is being switched and will display shortly',
+      //   {},
+      //   SUCCESS
+      // );
+    })
+    .catch((e: any) => {
+      //Toast(e.message, {}, ERROR);
+    });
+};
+const callBorrow = (e: any) => {
+  state.handler
+    ?.borrow(e)
+    .then(() => {
+      // Toast(
+      //   'Success! Your borrowed token will be displayed shortly',
+      //   {},
+      //   SUCCESS
+      // );
+    })
+    .catch((e: any) => {
+      //Toast(e.message, {}, ERROR);
+    });
+};
+const callWithdraw = (e: any) => {
+  state.handler
+    ?.withdraw(e)
+    .then(() => {
+      // Toast(
+      //   'Success! Your borrowed token will be displayed shortly',
+      //   {},
+      //   SUCCESS
+      // );
+    })
+    .catch((e: any) => {
+      //Toast(e.message, {}, ERROR);
+    });
+};
+const callRepay = (e: any) => {
+  state.handler
+    ?.repay(e)
+    .then(() => {
+      // Toast(
+      //   'Success! Your borrowed token will be displayed shortly',
+      //   {},
+      //   SUCCESS
+      // );
+    })
+    .catch((e: any) => {
+      //Toast(e.message, {}, ERROR);
+    });
+};
+const callSwitchInterest = (e: any) => {
+  state.handler
+    ?.switchRate(e)
+    .then(() => {
+      // Toast(
+      //   'Success! Your borrowed token will be displayed shortly',
+      //   {},
+      //   SUCCESS
+      // );
+    })
+    .catch((e: any) => {
+      //Toast(e.message, {}, ERROR);
+    });
+};
+const openDepositOverlayWithToken = (token: any) => {
+  state.requestToken = token;
+  state.showDepositOverlay = true;
+};
+const openBorrowOverlayWithToken = (token: any) => {
+  state.requestToken = token;
+  state.showBorrowOverlay = true;
+};
+const openDepositOverlay = () => {
+  state.showDepositOverlay = true;
+};
+const closeDepositOverlay = () => {
+  state.requestToken = {};
+  state.showDepositOverlay = false;
+};
+const openBorrowOverlay = () => {
+  state.showBorrowOverlay = true;
+};
+const closeBorrowOverlay = () => {
+  state.requestToken = {};
+  state.showBorrowOverlay = false;
+};
+const openWithdrawOverlay = (token: any) => {
+  state.requestToken = token;
+  state.showWithdrawOverlay = true;
+};
+const closeWithdrawOverlay = () => {
+  state.requestToken = {};
+  state.showWithdrawOverlay = false;
+};
+const openCollateralOverlay = (token: any) => {
+  state.requestToken = token;
+  state.showCollateralOverlay = true;
+};
+const closeCollateralOverlay = () => {
+  state.requestToken = {};
+  state.showCollateralOverlay = false;
+};
+const openRepayOverlay = (token: any) => {
+  state.requestToken = token;
+  state.showRepayOverlay = true;
+};
+const closeRepayOverlay = () => {
+  state.requestToken = {};
+  state.showRepayOverlay = false;
+};
+const openAprTypeOverlay = (token: any) => {
+  state.requestToken = token;
+  state.showAprTypeOverlay = true;
+};
+const closeAprTypeOverlay = () => {
+  state.requestToken = {};
+  state.showAprTypeOverlay = false;
+};
+const setCallerAndHandler = () => {
+  state.handler = new handlerAave();
+  state.caller = new AaveCalls(this.$apollo);
+  state.caller.getUserData((res: any) => {
+    state.handler?._userDataHandler(res);
+  });
+  state.caller.getUsdPriceEth((res: any) => {
+    state.handler?._usdPriceHandler(res);
+  });
+  state.caller.getReserveData((res: any) => {
+    state.handler?._reserveDataHandler(res);
+  });
 };
 </script>
 

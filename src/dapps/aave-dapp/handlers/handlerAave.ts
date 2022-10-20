@@ -8,25 +8,45 @@ import {
 } from './graphQLHelpers.js';
 
 import eth from '@/assets/images/currencies/eth.png';
-
-import vuexStore from '@/core/store';
-import { mapState, mapGetters } from 'vuex';
+import { Node } from '@/utils/networks/nodes/types';
 import {
   formatUserSummaryData,
   formatReserves,
   normalize
-} from '@aave/protocol-js';
-import moment from 'moment';
-import BigNumber from 'bignumber.js';
+} from '@aave/protocol-js/dist';
+import moment from 'moment/moment';
+import BigNumber from 'bignumber.js/bignumber';
+import { useWalletStore } from '@/stores/wallet';
+import { useGlobalStore } from '@/stores/global';
 
 const STABLE_COINS = ['TUSD', 'DAI', 'USDT', 'USDC', 'sUSD'];
 
 export default class AaveHandler {
+  reservesData: Array<any>;
+  rawReserveData: Array<any>;
+  reservesStable: Array<any>;
+  actionType: string;
+  userReserveData: Array<any>;
+  token: any;
+  usdPriceEth: string;
+  userSummary: any;
+  rateHistory: RateHistory;
+  // this.pendingToken = {};
+  compositionDeposit: Array<any>;
+  compositionBorrow: Array<any>;
+  compositionCollateral: Array<any>;
+  percentageLeft: string;
+  isLoading: boolean;
+  web3: any;
+  address: string | null;
+  balance: string;
+  tokensList: Array<any>;
+  balanceInETH: string;
+  network: Node;
   constructor() {
-    this.$store = vuexStore;
-    Object.assign(this, mapState('wallet', ['web3', 'address', 'balance']));
-    Object.assign(this, mapGetters('wallet', ['tokensList', 'balanceInETH']));
-    Object.assign(this, mapGetters('global', ['network']));
+    const { web3, address, balance, tokensList, balanceInETH } =
+      useWalletStore();
+    const { network } = useGlobalStore();
     this.reservesData = [];
     this.rawReserveData = [];
     this.reservesStable = [];
@@ -42,25 +62,31 @@ export default class AaveHandler {
     this.compositionCollateral = [];
     this.percentageLeft = '';
     this.isLoading = true;
+    this.web3 = web3;
+    this.address = address;
+    this.balance = balance;
+    this.tokensList = tokensList;
+    this.balanceInETH = balanceInETH;
+    this.network = network;
   }
 
-  sendTransaction(param) {
+  sendTransaction(param: Array<any>) {
     if (param) {
       if (param.length > 1) {
-        return this.web3().mew.sendBatchTransactions(param);
+        return this.web3.mew.sendBatchTransactions(param);
       }
-      return this.web3().eth.sendTransaction(param[0]);
+      return this.web3.eth.sendTransaction(param[0]);
     }
     return new Error('No Parameters sent!');
   }
 
-  async borrow(param) {
+  async borrow(param: any) {
     param.referralCode = '14';
     try {
       return borrowDetails(param).then(res => {
-        const txArr = [];
+        const txArr: Array<any> = [];
         if (res.data.length !== 0) {
-          res.data.borrow.forEach(data => {
+          res.data.borrow.forEach((data: any) => {
             txArr.push(data.tx);
           });
           return this.sendTransaction(txArr);
@@ -71,17 +97,17 @@ export default class AaveHandler {
           );
         }
       });
-    } catch (e) {
+    } catch (e: any) {
       throw new Error(e);
     }
   }
 
-  async deposit(param) {
+  async deposit(param: any) {
     try {
       return await depositDetails(param).then(res => {
-        const txArr = [];
+        const txArr: Array<any> = [];
         if (res.data.length !== 0) {
-          res.data.deposit.forEach(data => {
+          res.data.deposit.forEach((data: any) => {
             txArr.push(data.tx);
           });
           return this.sendTransaction(txArr);
@@ -92,17 +118,17 @@ export default class AaveHandler {
           );
         }
       });
-    } catch (e) {
+    } catch (e: any) {
       throw new Error(e);
     }
   }
 
-  async withdraw(param) {
+  async withdraw(param: any) {
     try {
       return withdrawDetails(param).then(res => {
-        const txArr = [];
+        const txArr: Array<any> = [];
         if (res.data.length !== 0) {
-          res.data.redeem.forEach(data => {
+          res.data.redeem.forEach((data: any) => {
             txArr.push(data.tx);
           });
           return this.sendTransaction(txArr);
@@ -113,17 +139,17 @@ export default class AaveHandler {
           );
         }
       });
-    } catch (e) {
+    } catch (e: any) {
       throw new Error(e);
     }
   }
 
-  async switchCollateral(param) {
+  async switchCollateral(param: any) {
     try {
       return setUsageAsCollateralDetails(param).then(res => {
-        const txArr = [];
+        const txArr: Array<any> = [];
         if (res.data.length !== 0) {
-          res.data.setUsageAsCollateral.forEach(data => {
+          res.data.setUsageAsCollateral.forEach((data: any) => {
             txArr.push(data.tx);
           });
         }
@@ -135,17 +161,17 @@ export default class AaveHandler {
 
         return this.sendTransaction(txArr);
       });
-    } catch (e) {
+    } catch (e: any) {
       throw new Error(e);
     }
   }
 
-  async switchRate(param) {
+  async switchRate(param: any) {
     try {
       return swapBorrowRateDetails(param).then(res => {
-        const txArr = [];
+        const txArr: Array<any> = [];
         if (res.data.length !== 0) {
-          res.data.swapBorrowRateMode.forEach(data => {
+          res.data.swapBorrowRateMode.forEach((data: any) => {
             txArr.push(data.tx);
           });
           return this.sendTransaction(txArr);
@@ -156,17 +182,17 @@ export default class AaveHandler {
           );
         }
       });
-    } catch (e) {
+    } catch (e: any) {
       throw new Error(e);
     }
   }
 
-  async repay(param) {
+  async repay(param: any) {
     try {
       return repayDetails(param).then(res => {
-        const txArr = [];
+        const txArr: Array<any> = [];
         if (res.data.length !== 0) {
-          res.data.repay.forEach(data => {
+          res.data.repay.forEach((data: any) => {
             txArr.push(data.tx);
           });
           return this.sendTransaction(txArr);
@@ -177,15 +203,15 @@ export default class AaveHandler {
           );
         }
       });
-    } catch (e) {
+    } catch (e: any) {
       throw new Error(e);
     }
   }
 
   // aave calls
 
-  getLiquidityRateHistoryUpdate(id, next) {
-    this.aaveCalls.getLiquidityRateHistoryUpdate(id, next);
+  getLiquidityRateHistoryUpdate(id: any, next: Function) {
+    //this.aaveCalls.getLiquidityRateHistoryUpdate(id, next);
   }
 
   // setters (?)
@@ -196,20 +222,20 @@ export default class AaveHandler {
       this.userReserveData &&
       this.usdPriceEth
     ) {
-      this.userSummary = formatUserSummaryData(
-        this.rawReserveData,
-        this.userReserveData,
-        this.address().toLowerCase(),
-        this.usdPriceEth,
-        Number(moment().format('X'))
-      );
+      // this.userSummary = formatUserSummaryData(
+      //   this.rawReserveData,
+      //   this.userReserveData,
+      //   this.address?.toLowerCase() || '',
+      //   this.usdPriceEth,
+      //   Number(moment().format('X'))
+      // );
       this.mergeTheReserves();
     }
   }
 
   mergeTheReserves() {
     if (this.userSummary.reservesData.length > 0) {
-      this.userSummary.reservesData.forEach(data => {
+      this.userSummary.reservesData.forEach((data: any) => {
         const foundReserve = this.reservesData.find(
           elem => elem.name === data.reserve.name
         );
@@ -220,8 +246,8 @@ export default class AaveHandler {
   }
 
   getReserveBalances() {
-    const tokensList = this.tokensList();
-    const ethBalance = this.balanceInETH();
+    const tokensList = this.tokensList;
+    const ethBalance = this.balanceInETH;
     if (this.reservesData.length > 0) {
       this.reservesData.forEach(reserve => {
         reserve.tokenBalance = 0;
@@ -247,13 +273,17 @@ export default class AaveHandler {
     this.isLoading = false;
   }
 
-  _liquidityRateHandler(res) {
+  _liquidityRateHandler(res: any) {
     const data = res.data.userReserves;
-    const rateHistory = { labels: [], stableRates: [], variableRates: [] };
+    const rateHistory: RateHistory = {
+      labels: [],
+      stableRates: [],
+      variableRates: []
+    };
     const rayDecimals = 27;
-    const sortedData = data.sort((a, b) => a.timestamp - b.timestamp);
-    sortedData.forEach(item => {
-      const date = moment.unix(item.timestamp).format('MMM Do');
+    const sortedData = data.sort((a: any, b: any) => a.timestamp - b.timestamp);
+    sortedData.forEach((item: any) => {
+      const date = moment.unix(item.timestamp).format('MMM Do') || '';
       rateHistory.labels.push(date);
       rateHistory.stableRates.push(
         new BigNumber(normalize(item.stableBorrowRate, rayDecimals))
@@ -270,24 +300,24 @@ export default class AaveHandler {
     this.rateHistory = rateHistory;
   }
 
-  _usdPriceHandler(res) {
+  _usdPriceHandler(res: any) {
     const data = res.data.priceOracle.usdPriceEth;
     this.usdPriceEth = data;
     this.setFormatUserSummaryData();
   }
 
-  _userDataHandler(res) {
-    const data = res.data.userReserves.map(item => {
-      item.reserve['icon'] = this.getTokenIcon(item.reserve.aToken.id);
+  _userDataHandler(res: any) {
+    const data = res.data.userReserves.map((item: any) => {
+      item.reserve['icon'] = this.getTokenIcon();
       return item;
     });
     this.userReserveData = data;
     this.setFormatUserSummaryData();
   }
 
-  _reserveDataHandler(res) {
-    const data = res.data.reserves.map(item => {
-      item['icon'] = this.getTokenIcon(item.aToken.id);
+  _reserveDataHandler(res: any) {
+    const data = res.data.reserves.map((item: any) => {
+      item['icon'] = this.getTokenIcon();
       return item;
     });
     this.rawReserveData = data;
@@ -301,4 +331,9 @@ export default class AaveHandler {
   getTokenIcon() {
     return eth;
   }
+}
+interface RateHistory {
+  labels: Array<any>;
+  stableRates: Array<any>;
+  variableRates: Array<any>;
 }

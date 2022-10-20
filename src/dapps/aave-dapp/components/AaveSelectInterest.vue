@@ -9,7 +9,7 @@
     rounded
     color="white"
     elevation="1"
-    :width="$vuetify.breakpoint.mdAndUp ? '650px' : '100%'"
+    :width="$vuetify.display.mdAndUp ? '650px' : '100%'"
   >
     <div class="text-left">
       Select the type of rate for your loan. Please click on the desired rate
@@ -57,7 +57,7 @@
     Continue button
   =====================================================================================
   -->
-    <mew-button
+    <!-- <mew-button
       class="my-8"
       title="Continue"
       btn-size="xlarge"
@@ -69,68 +69,61 @@
       class="mt-4"
       description="You cannot choose stable for reserves being
     used as collateral. Disable the collateral usage and try again."
-    />
+    /> -->
   </v-sheet>
 </template>
 
-<script>
+<script setup lang="ts">
 import { INTEREST_TYPES, roundPercentage } from '../handlers/helpers';
-import BigNumber from 'bignumber.js';
-export default {
-  props: {
-    selectedToken: {
-      type: Object,
-      default: () => {}
-    }
-  },
-  data() {
-    return {
-      type: ''
-    };
-  },
-  computed: {
-    showError() {
-      return this.selectedToken?.usageAsCollateralEnabled || false;
-    },
-    rates() {
-      const stable = this.selectedToken?.stableBorrowRateEnabled
-        ? roundPercentage(
-            new BigNumber(this.selectedToken.stableBorrowRate)
-              .multipliedBy(100)
-              .toString()
-          )
-        : '--';
-      const variable = this.selectedToken
-        ? roundPercentage(
-            new BigNumber(this.selectedToken.variableBorrowRate)
-              .multipliedBy(100)
-              .toString()
-          )
-        : '--';
-      return {
-        stable,
-        variable
-      };
-    },
-    isStable() {
-      return this.type === INTEREST_TYPES.stable;
-    },
-    isVariable() {
-      return this.type === INTEREST_TYPES.variable;
-    }
-  },
-  methods: {
-    setTypeToStable() {
-      this.type = INTEREST_TYPES.stable;
-    },
-    setTypeToVariable() {
-      this.type = INTEREST_TYPES.variable;
-    },
-    onContinue() {
-      const type = this.type.charAt(0).toUpperCase() + this.type.slice(1);
-      this.$emit('continue', type);
-    }
+import BigNumber from 'bignumber.js/bignumber';
+import { computed, reactive } from 'vue';
+const props = defineProps({
+  selectedToken: {
+    type: Object,
+    default: () => {}
   }
+});
+const state = reactive({
+  type: ''
+});
+const showError = computed(() => {
+  return props.selectedToken?.usageAsCollateralEnabled || false;
+});
+const rates = computed(() => {
+  const stable = props.selectedToken?.stableBorrowRateEnabled
+    ? roundPercentage(
+        new BigNumber(props.selectedToken.stableBorrowRate)
+          .multipliedBy(100)
+          .toString()
+      )
+    : '--';
+  const variable = props.selectedToken
+    ? roundPercentage(
+        new BigNumber(props.selectedToken.variableBorrowRate)
+          .multipliedBy(100)
+          .toString()
+      )
+    : '--';
+  return {
+    stable,
+    variable
+  };
+});
+const isStable = computed(() => {
+  return state.type === INTEREST_TYPES.stable;
+});
+const isVariable = computed(() => {
+  return state.type === INTEREST_TYPES.variable;
+});
+const setTypeToStable = () => {
+  state.type = INTEREST_TYPES.stable;
+};
+const setTypeToVariable = () => {
+  state.type = INTEREST_TYPES.variable;
+};
+const onContinue = () => {
+  const type = state.type.charAt(0).toUpperCase() + state.type.slice(1);
+  //this.$emit('continue', type);
 };
 </script>
 

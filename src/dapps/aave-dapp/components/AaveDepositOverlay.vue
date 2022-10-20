@@ -11,14 +11,14 @@
       =====================================================================================
       -->
     <v-sheet
-      v-if="step === 0"
+      v-if="state.step === 0"
       color="white"
       max-width="650px"
       class="border-radius--10px pa-4"
     >
       <aave-table
         :handler="handler"
-        :table-header="depositHeader"
+        :table-header="state.depositHeader"
         @selectedDeposit="handleSelectedDeposit"
       />
     </v-sheet>
@@ -27,21 +27,21 @@
           Aave Summary
         =====================================================================================
         -->
-    <div v-if="step === 1 || step === 3">
+    <div v-if="state.step === 1 || state.step === 3">
       <aave-summary
-        :selected-token="selectedToken"
+        :selected-token="state.selectedToken"
         :handler="handler"
-        :amount="amount"
+        :amount="state.amount"
         :amount-usd="amountUsd"
-        :step="step"
-        :action-type="depositHeader"
+        :step="state.step"
+        :action-type="state.depositHeader"
         @confirmed="handleConfirm"
         @onConfirm="emitDeposit"
       />
     </div>
-    <div v-if="step === 2">
+    <div v-if="state.step === 2">
       <aave-amount-form
-        :selected-token="selectedToken"
+        :selected-token="state.selectedToken"
         :handler="handler"
         :show-toggle="aaveDepositForm.showToggle"
         :left-side-values="aaveDepositForm.leftSideValues"
@@ -56,125 +56,127 @@
   </mew-overlay>
 </template>
 
-<script>
-import AaveTable from './AaveTable';
-import AaveSummary from './AaveSummary';
+<script setup lang="ts">
+import AaveTable from './AaveTable.vue';
+import AaveSummary from './AaveSummary.vue';
 import AaveAmountForm from './AaveAmountForm.vue';
 import { AAVE_TABLE_HEADER, convertToFixed } from '../handlers/helpers';
 import { isEmpty } from 'lodash';
-import aaveOverlayMixin from '../handlers/aaveOverlayMixin';
-import BigNumber from 'bignumber.js';
-import { mapGetters } from 'vuex';
-export default {
-  components: { AaveTable, AaveSummary, AaveAmountForm },
-  mixins: [aaveOverlayMixin],
-  data() {
-    return {
-      step: 0,
-      selectedToken: {},
-      amount: '0',
-      depositHeader: AAVE_TABLE_HEADER.DEPOSIT
-    };
-  },
-  computed: {
-    ...mapGetters('wallet', ['tokensList', 'balanceInETH']),
-    ...mapGetters('global', ['network']),
-    tokenBalance() {
-      const symbol = this.selectedToken.token;
-      if (symbol === this.network.type.currencyName) return this.balanceInETH;
-      const hasBalance = this.tokensList.find(item => {
-        if (item.symbol === symbol) {
-          return item;
-        }
-      });
-      return hasBalance ? BigNumber(hasBalance.usdBalance).toFixed() : '0';
-    },
-    header() {
-      switch (this.step) {
-        case 1:
-        case 3:
-          return 'Deposit';
-        case 2:
-          return 'Confirmation';
-        default:
-          return 'Select the token you want to deposit';
-      }
-    },
-    aaveDepositForm() {
-      const hasDeposit = this.selectedTokenInUserSummary;
-      const depositedBalance = `${convertToFixed(
-        hasDeposit ? hasDeposit?.currentUnderlyingBalance : 0,
-        6
-      )} ${this.selectedToken.token}`;
-      const depositedBalanceInUSD = `$ ${BigNumber(this.selectedTokenUSDValue)
-        .times(hasDeposit?.currentUnderlyingBalance)
-        .toFixed(2)}`;
-
-      const tokenBalance = `${this.tokenBalance} ${this.selectedToken.token}`;
-      const usd = `$ ${BigNumber(this.tokenBalance)
-        .times(this.selectedTokenUSDValue)
-        .toFixed(2)}`;
-      return {
-        showToggle: true,
-        leftSideValues: {
-          title: depositedBalance,
-          caption: depositedBalanceInUSD,
-          subTitle: 'Aave Deposit Balance'
-        },
-        rightSideValues: {
-          title: tokenBalance,
-          caption: usd,
-          subTitle: 'Aave Wallet Balance'
-        },
-        formText: {
-          title: 'How much would you like to deposit?',
-          caption:
-            'Here you can set the amount you want to deposit. You can manually enter a specific amount or use the percentage buttons below.'
-        },
-        buttonTitle: {
-          action: 'Deposit',
-          cancel: 'Cancel Deposit'
-        }
-      };
+import BigNumber from 'bignumber.js/bignumber';
+import { computed, reactive, watch } from 'vue';
+import { useWalletStore } from '@/stores/wallet';
+import { useGlobalStore } from '@/stores/global';
+import { useAaveOverlay, useProps } from '../handlers/aaveOverlayMixin';
+const props = defineProps({ ...useProps });
+interface State {
+  step: number;
+  selectedToken: any;
+  amount: string;
+  depositHeader: string;
+}
+const state: State = reactive({
+  step: 0,
+  selectedToken: {},
+  amount: '0',
+  depositHeader: AAVE_TABLE_HEADER.DEPOSIT
+});
+const {
+  selectedTokenInUserSummary,
+  selectedTokenUSDValue,
+  actualToken,
+  amountUsd
+} = useAaveOverlay(props);
+const { tokensList, balanceInETH, address } = useWalletStore();
+const { network } = useGlobalStore();
+const tokenBalance = computed(() => {
+  const symbol = state.selectedToken.token;
+  if (symbol === network.type.currencyName) return balanceInETH;
+  const hasBalance = tokensList.find(item => {
+    if (item.symbol === symbol) {
+      return item;
     }
-  },
-  watch: {
-    preSelectedToken(newVal) {
-      if (newVal && !isEmpty(newVal)) {
-        this.handleSelectedDeposit(this.preSelectedToken);
-      }
-    }
-  },
-  methods: {
-    handleSelectedDeposit(val) {
-      this.selectedToken = val;
-      this.step = 1;
-    },
-    handleConfirm() {
-      this.step += 1;
-    },
-    handleDepositAmount(e) {
-      this.step = 3;
-      this.amount = e;
-    },
-    handleCancel() {
-      this.step = 0;
-      this.selectedToken = {};
-      this.amount = '0';
-
-      this.close();
-    },
-    emitDeposit() {
-      const param = {
-        aavePool: 'proto',
-        userAddress: this.address,
-        amount: this.amount,
-        referralCode: '14',
-        reserve: this.actualToken.underlyingAsset
-      };
-      this.$emit('onConfirm', param);
-      this.handleCancel();
-    }
+  });
+  return hasBalance ? BigNumber(hasBalance.usdBalance).toFixed() : '0';
+});
+const header = computed(() => {
+  switch (state.step) {
+    case 1:
+    case 3:
+      return 'Deposit';
+    case 2:
+      return 'Confirmation';
+    default:
+      return 'Select the token you want to deposit';
   }
+});
+const aaveDepositForm = computed(() => {
+  const hasDeposit = selectedTokenInUserSummary.value;
+  const depositedBalance = `${convertToFixed(
+    hasDeposit ? hasDeposit?.currentUnderlyingBalance : 0,
+    6
+  )} ${state.selectedToken.token}`;
+  const depositedBalanceInUSD = `$ ${BigNumber(selectedTokenUSDValue.value)
+    .times(hasDeposit?.currentUnderlyingBalance)
+    .toFixed(2)}`;
+
+  const balance = `${tokenBalance} ${state.selectedToken.token}`;
+  const usd = `$ ${BigNumber(tokenBalance.value)
+    .times(selectedTokenUSDValue.value)
+    .toFixed(2)}`;
+  return {
+    showToggle: true,
+    leftSideValues: {
+      title: depositedBalance,
+      caption: depositedBalanceInUSD,
+      subTitle: 'Aave Deposit Balance'
+    },
+    rightSideValues: {
+      title: balance,
+      caption: usd,
+      subTitle: 'Aave Wallet Balance'
+    },
+    formText: {
+      title: 'How much would you like to deposit?',
+      caption:
+        'Here you can set the amount you want to deposit. You can manually enter a specific amount or use the percentage buttons below.'
+    },
+    buttonTitle: {
+      action: 'Deposit',
+      cancel: 'Cancel Deposit'
+    }
+  };
+});
+watch(props.preSelectedToken, val => {
+  if (val && !isEmpty(val)) {
+    handleSelectedDeposit(props.preSelectedToken);
+  }
+});
+const handleSelectedDeposit = (val: any) => {
+  state.selectedToken = val;
+  state.step = 1;
+};
+const handleConfirm = () => {
+  state.step += 1;
+};
+const handleDepositAmount = (e: string) => {
+  state.step = 3;
+  state.amount = e;
+};
+const handleCancel = () => {
+  state.step = 0;
+  state.selectedToken = {};
+  state.amount = '0';
+  props.close();
+};
+const emitDeposit = () => {
+  const param = {
+    aavePool: 'proto',
+    userAddress: address,
+    amount: state.amount,
+    referralCode: '14',
+    reserve: actualToken.value.underlyingAsset
+  };
+  //this.$emit('onConfirm', param);
+  handleCancel();
 };
 </script>

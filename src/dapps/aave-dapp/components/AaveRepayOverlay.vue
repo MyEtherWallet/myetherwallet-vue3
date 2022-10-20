@@ -4,7 +4,7 @@
     Repay Overlay
   =====================================================================================
   -->
-  <mew-overlay
+  <!-- <mew-overlay
     :show-overlay="open"
     title="Repay"
     :close="close"
@@ -24,79 +24,71 @@
         @emitValues="handleRepayAmount"
       />
     </div>
-  </mew-overlay>
+  </mew-overlay> -->
 </template>
 
-<script>
+<script setup lang="ts">
+import { useWalletStore } from '@/stores/wallet';
+import { computed, reactive } from 'vue';
+import { useAaveOverlay, useProps } from '../handlers/aaveOverlayMixin';
 import { convertToFixed } from '../handlers/helpers';
-import AaveAmountForm from './AaveAmountForm';
-import aaveOverlayMixin from '../handlers/aaveOverlayMixin';
-export default {
-  components: {
-    AaveAmountForm
-  },
-  mixins: [aaveOverlayMixin],
-  data() {
-    return {
-      amount: ''
-    };
-  },
-  computed: {
-    totalBorrow() {
-      const borrows = this.selectedTokenInUserSummary?.currentBorrows;
-      return borrows ? borrows : '0';
+import AaveAmountForm from './AaveAmountForm.vue';
+const props = defineProps({ ...useProps });
+const state = reactive({ amount: '' });
+const { selectedTokenInUserSummary, actualToken } = useAaveOverlay(props);
+const totalBorrow = computed(() => {
+  const borrows = selectedTokenInUserSummary.value?.currentBorrows;
+  return borrows ? borrows : '0';
+});
+const aaveRepayForm = computed(() => {
+  const hasBorrowed = selectedTokenInUserSummary.value;
+  const borrowedEth = hasBorrowed
+    ? `${hasBorrowed.currentBorrows} ${props.preSelectedToken.token}`
+    : `$ 0.00`;
+  const borrowedUSD = hasBorrowed
+    ? `$ ${convertToFixed(hasBorrowed.currentBorrowsUSD, 2)}`
+    : `0 ETH`;
+  const eth = `${props.handler?.userSummary.totalCollateralETH} ETH`;
+  const usd = `$ ${convertToFixed(
+    props.handler?.userSummary.totalCollateralUSD,
+    2
+  )}`;
+  return {
+    showToggle: true,
+    leftSideValues: {
+      title: borrowedEth,
+      caption: borrowedUSD,
+      subTitle: 'You borrowed'
     },
-    aaveRepayForm() {
-      const hasBorrowed = this.selectedTokenInUserSummary;
-      const borrowedEth = hasBorrowed
-        ? `${hasBorrowed.currentBorrows} ${this.preSelectedToken.token}`
-        : `$ 0.00`;
-      const borrowedUSD = hasBorrowed
-        ? `$ ${convertToFixed(hasBorrowed.currentBorrowsUSD)}`
-        : `0 ETH`;
-      const eth = `${this.handler?.userSummary.totalCollateralETH} ETH`;
-      const usd = `$ ${convertToFixed(
-        this.handler?.userSummary.totalCollateralUSD
-      )}`;
-      return {
-        showToggle: true,
-        leftSideValues: {
-          title: borrowedEth,
-          caption: borrowedUSD,
-          subTitle: 'You borrowed'
-        },
-        rightSideValues: {
-          title: usd,
-          caption: eth,
-          subTitle: 'Total Collateral'
-        },
-        formText: {
-          title: 'How much would you like to repay?',
-          caption:
-            'Here you can set the amount you want to repay. You can manually enter a specific amount or use the percentage buttons below.'
-        },
-        buttonTitle: {
-          action: 'Repay',
-          cancel: 'Cancel Repay'
-        }
-      };
-    }
-  },
-  methods: {
-    handleRepayAmount(e) {
-      const param = {
-        aavePool: 'proto',
-        amount: e,
-        userAddress: this.address,
-        reserve: this.actualToken.underlyingAsset
-      };
-      this.$emit('onConfirm', param);
-      this.handleCancel();
+    rightSideValues: {
+      title: usd,
+      caption: eth,
+      subTitle: 'Total Collateral'
     },
-    handleCancel() {
-      this.amount = '';
-      this.close();
+    formText: {
+      title: 'How much would you like to repay?',
+      caption:
+        'Here you can set the amount you want to repay. You can manually enter a specific amount or use the percentage buttons below.'
+    },
+    buttonTitle: {
+      action: 'Repay',
+      cancel: 'Cancel Repay'
     }
-  }
+  };
+});
+const { address } = useWalletStore();
+const handleRepayAmount = (e: string) => {
+  const param = {
+    aavePool: 'proto',
+    amount: e,
+    userAddress: address,
+    reserve: actualToken.value.underlyingAsset
+  };
+  //this.$emit('onConfirm', param);
+  handleCancel();
+};
+const handleCancel = () => {
+  state.amount = '';
+  props.close();
 };
 </script>

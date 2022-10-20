@@ -6,14 +6,14 @@
       =====================================================================================
       -->
     <v-sheet
-      v-if="step === 0"
+      v-if="state.step === 0"
       color="white"
       max-width="650px"
       class="border-radius--10px pa-4"
     >
       <aave-table
         :handler="handler"
-        :table-header="aaveTableHandler"
+        :table-header="state.aaveTableHandler"
         @selectedBorrow="handleSelectedBorrow"
       />
     </v-sheet>
@@ -22,11 +22,11 @@
         Aave token borrow form
       =====================================================================================
       -->
-    <div v-if="step === 1">
+    <div v-if="state.step === 1">
       <aave-amount-form
-        :selected-token="selectedToken"
+        :selected-token="state.selectedToken"
         :handler="handler"
-        :action-type="aaveTableHandler"
+        :action-type="state.aaveTableHandler"
         :show-toggle="aaveBorrowForm.showToggle"
         :left-side-values="aaveBorrowForm.leftSideValues"
         :right-side-values="aaveBorrowForm.rightSideValues"
@@ -41,7 +41,7 @@
         Aave select interest
       =====================================================================================
       -->
-    <div v-if="step === 2">
+    <div v-if="state.step === 2">
       <aave-select-interest
         :selected-token="actualToken"
         @continue="handleContinue"
@@ -52,134 +52,135 @@
         Aave Summary
       =====================================================================================
       -->
-    <div v-if="step === 3">
+    <div v-if="state.step === 3">
       <aave-summary
-        :selected-token="selectedToken"
+        :selected-token="state.selectedToken"
         :handler="handler"
-        :amount="amount"
+        :amount="state.amount"
         :amount-usd="amountUsd"
-        :step="step"
-        :action-type="aaveTableHandler"
+        :step="state.step"
+        :action-type="state.aaveTableHandler"
         @onConfirm="handleConfirm"
       />
     </div>
   </mew-overlay>
 </template>
 
-<script>
-import AaveTable from './AaveTable';
-import AaveSummary from './AaveSummary';
+<script setup lang="ts">
+import AaveTable from './AaveTable.vue';
+import AaveSummary from './AaveSummary.vue';
 import AaveAmountForm from './AaveAmountForm.vue';
 import AaveSelectInterest from './AaveSelectInterest.vue';
 import { AAVE_TABLE_HEADER, convertToFixed } from '../handlers/helpers';
-import { mapState } from 'vuex';
 import { isEmpty } from 'lodash';
-import aaveOverlayMixin from '../handlers/aaveOverlayMixin';
+import { useAaveOverlay, useProps } from '../handlers/aaveOverlayMixin';
+import { computed, reactive, watch } from 'vue';
+import { useWalletStore } from '@/stores/wallet';
 
-export default {
-  components: { AaveTable, AaveAmountForm, AaveSelectInterest, AaveSummary },
-  mixins: [aaveOverlayMixin],
-  data() {
-    return {
-      step: 0,
-      selectedToken: {},
-      aaveTableHandler: AAVE_TABLE_HEADER.BORROW,
-      amount: '0',
-      type: ''
-    };
-  },
-  computed: {
-    ...mapState('wallet', ['address']),
-    aaveBorrowForm() {
-      const hasBorrowed = this.selectedTokenInUserSummary;
-      const borrowedEth = hasBorrowed
-        ? `${hasBorrowed.currentBorrows} ${this.selectedToken.token}`
-        : `$ 0.00`;
-      const borrowedUSD = hasBorrowed
-        ? `$ ${convertToFixed(hasBorrowed.currentBorrowsUSD)}`
-        : `0 ETH`;
-      const eth = `${this.handler?.userSummary.totalCollateralETH} ETH`;
-      const usd = `$ ${convertToFixed(
-        this.handler?.userSummary.totalCollateralUSD
-      )}`;
-      return {
-        showToggle: false,
-        leftSideValues: {
-          title: borrowedEth,
-          caption: borrowedUSD,
-          subTitle: 'You borrowed'
-        },
-        rightSideValues: {
-          title: usd,
-          caption: eth,
-          subTitle: 'Total Collateral'
-        },
-        formText: {
-          title: 'How much would you like to borrow?',
-          caption: 'Here you can set the amount you want to borrow.'
-        },
-        buttonTitle: {
-          action: 'Borrow',
-          cancel: 'Cancel Borrow'
-        }
-      };
-    },
-    header() {
-      switch (this.step) {
-        case 1:
-        case 3:
-          return 'Borrow';
-        case 2:
-          return 'Confirmation';
-        default:
-          return 'Select the token you want to borrow';
-      }
-    }
-  },
-  watch: {
-    preSelectedToken(newVal) {
-      if (newVal && !isEmpty(newVal)) {
-        this.handleSelectedBorrow(this.preSelectedToken);
-      }
-    }
-  },
-  methods: {
-    handleSelectedBorrow(e) {
-      this.selectedToken = e;
-      this.step = 1;
-    },
-    handleValues(e) {
-      this.step = 2;
-      this.amount = e;
-    },
-    handleCancel() {
-      this.callClose();
-    },
-    callClose() {
-      this.step = 0;
-      this.selectedToken = {};
-      this.aaveTableHandler = AAVE_TABLE_HEADER.BORROW;
-      this.amount = '0';
-      this.close();
-    },
-    handleContinue(e) {
-      this.type = e;
-      this.step = 3;
-    },
-    handleConfirm() {
-      const param = {
-        aavePool: 'proto',
-        userAddress: this.address,
-        amount: this.amount,
-        referralCode: '14',
-        reserve: this.actualToken.underlyingAsset,
-        interestRateMode: this.type
-      };
+const { selectedTokenInUserSummary, actualToken, amountUsd } = useAaveOverlay(
+  {}
+);
+const props = defineProps({ ...useProps });
 
-      this.$emit('onConfirm', param);
-      this.callClose();
+interface State {
+  step: number;
+  selectedToken: any;
+  aaveTableHandler: string;
+  amount: string;
+  type: string;
+}
+const state: State = reactive({
+  step: 0,
+  selectedToken: {},
+  aaveTableHandler: AAVE_TABLE_HEADER.BORROW,
+  amount: '0',
+  type: ''
+});
+const aaveBorrowForm = computed(() => {
+  const hasBorrowed = selectedTokenInUserSummary.value;
+  const borrowedEth = hasBorrowed
+    ? `${hasBorrowed.currentBorrows} ${state.selectedToken.token}`
+    : `$ 0.00`;
+  const borrowedUSD = hasBorrowed
+    ? `$ ${convertToFixed(hasBorrowed.currentBorrowsUSD, 2)}`
+    : `0 ETH`;
+  const eth = `${props.handler?.userSummary.totalCollateralETH} ETH`;
+  const usd = `$ ${convertToFixed(
+    props.handler?.userSummary.totalCollateralUSD,
+    2
+  )}`;
+  return {
+    showToggle: false,
+    leftSideValues: {
+      title: borrowedEth,
+      caption: borrowedUSD,
+      subTitle: 'You borrowed'
+    },
+    rightSideValues: {
+      title: usd,
+      caption: eth,
+      subTitle: 'Total Collateral'
+    },
+    formText: {
+      title: 'How much would you like to borrow?',
+      caption: 'Here you can set the amount you want to borrow.'
+    },
+    buttonTitle: {
+      action: 'Borrow',
+      cancel: 'Cancel Borrow'
     }
+  };
+});
+const header = computed(() => {
+  switch (state.step) {
+    case 1:
+    case 3:
+      return 'Borrow';
+    case 2:
+      return 'Confirmation';
+    default:
+      return 'Select the token you want to borrow';
   }
+});
+watch(props.preSelectedToken, val => {
+  if (val && !isEmpty(val)) {
+    handleSelectedBorrow(props.preSelectedToken);
+  }
+});
+const handleSelectedBorrow = (e: any) => {
+  state.selectedToken = e;
+  state.step = 1;
+};
+const handleValues = (e: string) => {
+  state.step = 2;
+  state.amount = e;
+};
+const handleCancel = () => {
+  callClose();
+};
+const callClose = () => {
+  state.step = 0;
+  state.selectedToken = {};
+  state.aaveTableHandler = AAVE_TABLE_HEADER.BORROW;
+  state.amount = '0';
+  props.close();
+};
+const handleContinue = (e: string) => {
+  state.type = e;
+  state.step = 3;
+};
+const { address } = useWalletStore();
+const handleConfirm = () => {
+  const param = {
+    aavePool: 'proto',
+    userAddress: address,
+    amount: state.amount,
+    referralCode: '14',
+    reserve: actualToken.value.underlyingAsset,
+    interestRateMode: state.type
+  };
+  //this.$emit('onConfirm', param);
+  callClose();
 };
 </script>
 

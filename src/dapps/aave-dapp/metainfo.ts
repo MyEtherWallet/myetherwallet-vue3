@@ -1,5 +1,5 @@
 import { ROUTES_WALLET } from '@/core/configs/configRoutes';
-import layout from './Aave';
+import layout from './Aave.vue';
 export default {
   title: 'Aave V1',
   subtitle: 'Earn passive income on your deposits and borrow assets',

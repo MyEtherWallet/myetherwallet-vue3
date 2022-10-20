@@ -18,38 +18,33 @@
   </mew-overlay>
 </template>
 
-<script>
-import { Toast, WARNING } from '@/modules/toast/handler/handlerToast';
-import aaveOverlayMixin from '../handlers/aaveOverlayMixin';
-import AaveSelectInterest from './AaveSelectInterest';
-export default {
-  components: {
-    AaveSelectInterest
-  },
-  mixins: [aaveOverlayMixin],
-  data() {
-    return {
-      rateType: ''
-    };
-  },
-  methods: {
-    handleSetInterestRate(e) {
-      this.rateType = e;
-      const param = {
-        aavePool: 'proto',
-        userAddress: this.address,
-        reserve: this.actualToken.underlyingAsset
-      };
-      if (
-        e.toLowerCase() ===
-        this.selectedTokenInUserSummary.borrowRateMode.toLowerCase()
-      ) {
-        Toast(`Selected rate is already ${e}`, {}, WARNING);
-      } else {
-        this.$emit('onConfirm', param);
-        this.close();
-      }
-    }
+<script setup lang="ts">
+//import { Toast, WARNING } from '@/modules/toast/handler/handlerToast';
+import { useWalletStore } from '@/stores/wallet';
+import { reactive } from 'vue';
+import { useAaveOverlay, useProps } from '../handlers/aaveOverlayMixin';
+import AaveSelectInterest from './AaveSelectInterest.vue';
+const { address } = useWalletStore();
+const props = defineProps({ ...useProps });
+const { actualToken, selectedTokenInUserSummary } = useAaveOverlay(props);
+const state = reactive({
+  rateType: ''
+});
+const handleSetInterestRate = (e: string) => {
+  state.rateType = e;
+  const param = {
+    aavePool: 'proto',
+    userAddress: address,
+    reserve: actualToken.value.underlyingAsset
+  };
+  if (
+    e.toLowerCase() ===
+    selectedTokenInUserSummary.value.borrowRateMode.toLowerCase()
+  ) {
+    //Toast(`Selected rate is already ${e}`, {}, WARNING);
+  } else {
+    //this.$emit('onConfirm', param);
+    props.close();
   }
 };
 </script>

@@ -7,7 +7,7 @@
     max-width="650"
   >
     <v-row justify="space-around" dense>
-      <v-col cols="12" md="6">
+      <!-- <v-col cols="12" md="6">
         <mew-module
           color-type="overlayBg"
           :has-body-padding="true"
@@ -16,7 +16,7 @@
           :caption="leftSideValues.caption"
           class="text-left height--full"
           :style="
-            $vuetify.breakpoint.smAndDown ? 'padding-top: 0 !important' : ''
+            $vuetify.display.smAndDown ? 'padding-top: 0 !important' : ''
           "
         />
       </v-col>
@@ -29,10 +29,10 @@
           :caption="rightSideValues.caption"
           class="text-left height--full"
           :style="
-            $vuetify.breakpoint.smAndDown ? 'padding-top: 0 !important' : ''
+            $vuetify.display.smAndDown ? 'padding-top: 0 !important' : ''
           "
         />
-      </v-col>
+      </v-col> -->
     </v-row>
     <div class="px-2 px-md-12 mt-5">
       <p class="mew-heading-3 text-left">{{ formText.title }}</p>
@@ -40,7 +40,7 @@
         {{ formText.caption }}
       </p>
     </div>
-    <div class="px-0 px-md-12 mt-5">
+    <!-- <div class="px-0 px-md-12 mt-5">
       <v-sheet max-width="300px" class="mx-auto">
         <mew-input
           :value="amount"
@@ -58,9 +58,9 @@
         :on-toggle-btn-idx="startingIdx"
         @onBtnClick="onToggle"
       />
-    </div>
+    </div> -->
 
-    <div class="mt-12 mb-2">
+    <!-- <div class="mt-12 mb-2">
       <mew-button
         :title="buttonTitle.action"
         color-theme="primary"
@@ -78,112 +78,100 @@
         btn-size="xlarge"
         @click.native="cancel"
       />
-    </div>
+    </div> -->
   </v-sheet>
 </template>
 
-<script>
-import BigNumber from 'bignumber.js';
-export default {
-  name: 'AaveAmountForm',
-  props: {
-    selectedToken: {
-      type: Object,
-      default: () => {}
-    },
-    showToggle: {
-      type: Boolean,
-      default: false
-    },
-    leftSideValues: {
-      type: Object,
-      default: () => {
-        return {
-          title: '',
-          caption: '',
-          subTitle: ''
-        };
-      }
-    },
-    rightSideValues: {
-      type: Object,
-      default: () => {
-        return { title: '', caption: '', subTitle: '' };
-      }
-    },
-    formText: {
-      type: Object,
-      default: () => {
-        return { title: '', caption: '' };
-      }
-    },
-    buttonTitle: {
-      type: Object,
-      default: () => {
-        return { action: '', cancel: '' };
-      }
-    },
-    tokenBalance: {
-      type: String,
-      default: '0'
+<script setup lang="ts">
+import BigNumber from 'bignumber.js/bignumber';
+import { computed, onMounted, reactive } from 'vue';
+const props = defineProps({
+  selectedToken: {
+    type: Object,
+    default: () => {}
+  },
+  showToggle: {
+    type: Boolean,
+    default: false
+  },
+  leftSideValues: {
+    type: Object,
+    default: () => {
+      return { title: '', caption: '', subTitle: '' };
     }
   },
-  data() {
-    return {
-      group: ['25%', '50%', '75%', 'MAX'],
-      amount: '0',
-      startingIdx: 0
-    };
-  },
-  computed: {
-    hasAmount() {
-      return BigNumber(this.amount).gt(0);
+  rightSideValues: {
+    type: Object,
+    default: () => {
+      return { title: '', caption: '', subTitle: '' };
     }
   },
-  mounted() {
-    if (this.showToggle) {
-      this.onToggle('50%');
+  formText: {
+    type: Object,
+    default: () => {
+      return { title: '', caption: '' };
     }
   },
-  methods: {
-    setAmount(e) {
-      this.amount = e;
-    },
-    onToggle(e) {
-      switch (e) {
-        case this.group[0]:
-          this.startingIdx = 0;
-          this.amount = this.calculatedAmt(0.25);
-          break;
-        case this.group[1]:
-          this.startingIdx = 1;
-          this.amount = this.calculatedAmt(0.5);
-          break;
-        case this.group[2]:
-          this.startingIdx = 2;
-          this.amount = this.calculatedAmt(0.75);
-          break;
-        default:
-          this.startingIdx = 3;
-          this.amount = this.calculatedAmt(1);
-      }
-    },
-    checkIfNumerical(value) {
-      const regex = new RegExp('^-?[0-9]+.?[0-9]*$');
-      const test = regex.test(value);
-      if (value !== '' && !test) return 'Please enter a valid value!';
-      return test;
-    },
-    cancel() {
-      this.$emit('cancel');
-    },
-    emitValues() {
-      this.$emit('emitValues', this.amount);
-    },
-    calculatedAmt(per) {
-      const amt = BigNumber(this.tokenBalance).times(per);
-      return amt.toFixed();
+  buttonTitle: {
+    type: Object,
+    default: () => {
+      return { action: '', cancel: '' };
     }
+  },
+  tokenBalance: {
+    type: String,
+    default: '0'
   }
+});
+const group = ['25%', '50%', '75%', 'MAX'];
+interface State {
+  amount: string | number;
+  startingIdx: number;
+}
+const state: State = reactive({ amount: 0, startingIdx: 0 });
+const hasAmount = computed(() => BigNumber(state.amount).gt(0));
+
+onMounted(() => {
+  if (props.showToggle) {
+    onToggle('50%');
+  }
+});
+const setAmount = (e: number) => {
+  state.amount = e;
+};
+const onToggle = (e: string) => {
+  switch (e) {
+    case group[0]:
+      state.startingIdx = 0;
+      state.amount = calculatedAmt(0.25);
+      break;
+    case group[1]:
+      state.startingIdx = 1;
+      state.amount = calculatedAmt(0.5);
+      break;
+    case group[2]:
+      state.startingIdx = 2;
+      state.amount = calculatedAmt(0.75);
+      break;
+    default:
+      state.startingIdx = 3;
+      state.amount = calculatedAmt(1);
+  }
+};
+const checkIfNumerical = (value: any) => {
+  const regex = new RegExp('^-?[0-9]+.?[0-9]*$');
+  const test = regex.test(value);
+  if (value !== '' && !test) return 'Please enter a valid value!';
+  return test;
+};
+// cancel() {
+//   this.$emit('cancel');
+// }
+// const emitValues = ()=>{
+//   this.$emit('emitValues', this.amount);
+// }
+const calculatedAmt = (per: number) => {
+  const amt = BigNumber(props.tokenBalance).times(per);
+  return amt.toFixed();
 };
 </script>

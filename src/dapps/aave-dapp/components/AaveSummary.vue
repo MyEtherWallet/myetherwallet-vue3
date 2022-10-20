@@ -10,7 +10,7 @@
     rounded
     color="white"
     elevation="1"
-    :width="$vuetify.breakpoint.mdAndUp ? '650px' : '100%'"
+    :width="$vuetify.display.mdAndUp ? '650px' : '100%'"
   >
     <!--
   =====================================================================================
@@ -34,7 +34,7 @@
         <span class="textLight--text">{{ amountUsd }}</span>
       </div>
       <img
-        :height="$vuetify.breakpoint.mdAndUp ? '80' : '30'"
+        :height="$vuetify.display.mdAndUp ? '80' : '30'"
         :src="selectedToken.tokenImg"
         :alt="selectedToken.token"
       />
@@ -94,8 +94,9 @@
     >
       <v-col class="d-flex align-center" cols="6"
         ><span>{{ detail.title }}</span>
-        <mew-tooltip v-if="detail.tooltip" class="ml-1" :text="detail.tooltip"
-      /></v-col>
+        <!-- <mew-tooltip v-if="detail.tooltip" class="ml-1" :text="detail.tooltip"
+      /> -->
+      </v-col>
       <v-col class="font-weight-bold d-flex align-center justify-end" cols="6">
         <img v-if="detail.icon" :src="detail.icon" height="20" class="mr-1" />
         <v-icon v-if="detail.indicator" :class="detail.class" dense>{{
@@ -110,154 +111,153 @@
    Confirm button
   =====================================================================================
   -->
-    <mew-button
+    <!-- <mew-button
       class="mt-10 mx-auto d-block"
       title="Confirm"
       btn-size="xlarge"
       @click.native="confirm"
-    />
+    /> -->
   </v-sheet>
 </template>
 
-<script>
-import BigNumber from 'bignumber.js';
+<script setup lang="ts">
+import BigNumber from 'bignumber.js/bignumber';
 import {
   convertToFixed,
   ACTION_TYPES,
   INTEREST_TYPES
 } from '../handlers/helpers';
 import { calculateHealthFactorFromBalancesBigUnits } from '@aave/protocol-js';
-
-export default {
-  props: {
-    actionType: {
-      type: String,
-      default: ''
-    },
-    handler: {
-      type: [Object, null],
-      validator: item => typeof item === 'object' || null,
-      default: () => {}
-    },
-    selectedToken: {
-      type: Object,
-      default: () => {}
-    },
-    amount: {
-      type: String,
-      default: '0'
-    },
-    amountUsd: {
-      type: String,
-      default: '$ 0.00'
-    },
-    step: {
-      type: Number,
-      default: 0
-    }
+import { computed } from 'vue';
+const props = defineProps({
+  actionType: {
+    type: String,
+    default: ''
   },
-  computed: {
-    isDeposit() {
-      return this.actionType.toLowerCase() === ACTION_TYPES.deposit;
-    },
-    isInterest() {
-      return this.actionType.toLowerCase() === ACTION_TYPES.interest;
-    },
-    details() {
-      let details = [
-        {
-          title: 'Currency',
-          value: this.selectedToken.token,
-          icon: this.selectedToken.tokenImg
-        }
-      ];
-      switch (this.actionType.toLowerCase()) {
-        /**
-         * Case: Aave Deposit and Collateral Summary
-         */
-        case ACTION_TYPES.deposit:
-        case ACTION_TYPES.collateral:
-          details = this.step === 1 && this.isDeposit ? [] : details;
-          details.push(
-            {
-              title: 'Current Health Factor',
-              tooltip: 'Tooltip text',
-              value: this.currentHealthFactor,
-              class:
-                this.currentHealthFactor > this.nextHealthFactor
-                  ? 'greenPrimary--text'
-                  : 'redPrimary--text'
-            },
-            {
-              title: 'Next Health Factor',
-              tooltip: 'Tooltip text',
-              value: this.nextHealthFactor,
-              class:
-                this.currentHealthFactor > this.nextHealthFactor
-                  ? 'redPrimary--text'
-                  : 'greenPrimary--text',
-              indicator:
-                this.currentHealthFactor > this.nextHealthFactor
-                  ? 'mdi-arrow-down-bold'
-                  : 'mdi-arrow-up-bold'
-            }
-          );
-          return details;
-      }
-      return details;
-    },
-    currentHealthFactor() {
-      return new BigNumber(this.handler?.userSummary?.healthFactor).toFixed(3);
-    },
-    nextHealthFactor() {
-      const selectedToken = this.actualToken;
-      let nextHealthFactor = convertToFixed(this.currentHealthFactor),
-        collateralBalanceETH = this.handler?.userSummary.totalCollateralETH;
-      const totalBorrowsETH = this.handler?.userSummary.totalBorrowsETH;
-      if (selectedToken?.price && this.amount !== '0') {
-        const ethBalance = BigNumber(this.amount).times(
-          selectedToken?.price?.priceInEth
-        );
-        collateralBalanceETH = new BigNumber(
-          this.handler.userSummary.totalCollateralETH
-        ).plus(ethBalance);
-        nextHealthFactor = calculateHealthFactorFromBalancesBigUnits(
-          collateralBalanceETH,
-          totalBorrowsETH,
-          this.handler.userSummary.totalFeesETH,
-          this.handler.userSummary.currentLiquidationThreshold
-        ).toFixed(3);
-      }
-      return nextHealthFactor;
-    },
-    /* currently using dummy data for values */
-    currentInterest() {
-      return {
-        type: 'Variable',
-        percentage: '11.33%'
-      };
-    },
-    nextInterest() {
-      return {
-        type: 'Stable',
-        percentage: '2.837%'
-      };
-    }
+  handler: {
+    type: Object || null,
+    //validator: item => typeof item === 'object' || null,
+    default: () => {}
   },
-  methods: {
-    confirm() {
-      if (this.step === 1) {
-        this.$emit('confirmed');
-      } else {
-        this.$emit('onConfirm');
-      }
-    },
-    getInterestTypeClass(type) {
-      if (type.toLowerCase() === INTEREST_TYPES.stable) {
-        return 'secondary--text';
-      }
-      return 'orangePrimary';
-    }
+  selectedToken: {
+    type: Object,
+    default: () => {}
+  },
+  amount: {
+    type: String,
+    default: '0'
+  },
+  amountUsd: {
+    type: String,
+    default: '$ 0.00'
+  },
+  step: {
+    type: Number,
+    default: 0
   }
+});
+const isDeposit = computed(
+  () => props.actionType.toLowerCase() === ACTION_TYPES.deposit
+);
+const isInterest = computed(
+  () => props.actionType.toLowerCase() === ACTION_TYPES.interest
+);
+interface Detail {
+  title: string;
+  tooltip?: string;
+  value: string | number;
+  icon?: string;
+  class?: string;
+  indicator?: string;
+}
+const details = computed(() => {
+  let details: Array<Detail> = [
+    {
+      title: 'Currency',
+      value: props.selectedToken.token,
+      icon: props.selectedToken.tokenImg
+    }
+  ];
+  switch (props.actionType.toLowerCase()) {
+    /**
+     * Case: Aave Deposit and Collateral Summary
+     */
+    case ACTION_TYPES.deposit:
+    case ACTION_TYPES.collateral:
+      details = props.step === 1 && isDeposit.value ? [] : details;
+      details.push(
+        {
+          title: 'Current Health Factor',
+          tooltip: 'Tooltip text',
+          value: currentHealthFactor.value,
+          class:
+            currentHealthFactor.value > nextHealthFactor.value
+              ? 'greenPrimary--text'
+              : 'redPrimary--text'
+        },
+        {
+          title: 'Next Health Factor',
+          tooltip: 'Tooltip text',
+          value: nextHealthFactor.value,
+          class:
+            currentHealthFactor.value > nextHealthFactor.value
+              ? 'redPrimary--text'
+              : 'greenPrimary--text',
+          indicator:
+            currentHealthFactor.value > nextHealthFactor.value
+              ? 'mdi-arrow-down-bold'
+              : 'mdi-arrow-up-bold'
+        }
+      );
+      return details;
+  }
+  return details;
+});
+const currentHealthFactor = computed(() =>
+  new BigNumber(props.handler?.userSummary?.healthFactor).toFixed(3)
+);
+const nextHealthFactor = computed(() => {
+  const selectedToken: any = {}; //props.actualToken;
+  let nextHealthFactor = convertToFixed(currentHealthFactor.value, 0),
+    collateralBalanceETH = props.handler?.userSummary.totalCollateralETH;
+  const totalBorrowsETH = props.handler?.userSummary.totalBorrowsETH;
+  if (selectedToken?.price && props.amount !== '0') {
+    const ethBalance = BigNumber(props.amount).times(
+      selectedToken?.price?.priceInEth
+    );
+    collateralBalanceETH = new BigNumber(
+      props.handler.userSummary.totalCollateralETH
+    ).plus(ethBalance);
+    nextHealthFactor = calculateHealthFactorFromBalancesBigUnits(
+      collateralBalanceETH,
+      totalBorrowsETH,
+      props.handler.userSummary.totalFeesETH
+      //props.handler.userSummary.currentLiquidationThreshold
+    ).toFixed(3);
+  }
+  return nextHealthFactor;
+});
+/* currently using dummy data for values */
+const currentInterest = {
+  type: 'Variable',
+  percentage: '11.33%'
+};
+const nextInterest = {
+  type: 'Stable',
+  percentage: '2.837%'
+};
+
+const confirm = () => {
+  if (props.step === 1) {
+    //this.$emit('confirmed');
+  } else {
+    //this.$emit('onConfirm');
+  }
+};
+const getInterestTypeClass = (type: string) => {
+  if (type.toLowerCase() === INTEREST_TYPES.stable) {
+    return 'secondary--text';
+  }
+  return 'orangePrimary';
 };
 </script>

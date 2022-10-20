@@ -14,42 +14,35 @@
   </mew-overlay>
 </template>
 
-<script>
-import AaveSummary from './AaveSummary';
+<script setup lang="ts">
+import AaveSummary from './AaveSummary.vue';
 import { ACTION_TYPES } from '@/dapps/aave-dapp/handlers/helpers';
-import { mapState } from 'vuex';
-import aaveOverlayMixin from '../handlers/aaveOverlayMixin';
-export default {
-  components: { AaveSummary },
-  mixins: [aaveOverlayMixin],
-  data() {
-    return {
-      collateral: ACTION_TYPES.collateral
-    };
-  },
-  computed: {
-    ...mapState('wallet', ['address']),
-    title() {
-      return Object.keys(this.preSelectedToken).length === 0
-        ? ''
-        : this.preSelectedToken?.toggle?.value
-        ? 'Usage as collateral'
-        : 'Disable usage as collateral';
-    }
-  },
-  methods: {
-    callSwitchCollateral() {
-      const param = {
-        aavePool: 'proto',
-        userAddress: this.address,
-        reserve: this.actualToken.underlyingAsset,
-        interestRateMode: this.type,
-        usageAsCollateral: !this.actualToken.usageAsCollateralEnabled
-      };
+import { computed } from '@vue/reactivity';
+import { useAaveOverlay, useProps } from '../handlers/aaveOverlayMixin';
+import { useWalletStore } from '@/stores/wallet';
+const collateral = ACTION_TYPES.collateral;
+const props = defineProps({ ...useProps });
+const {address} = useWalletStore()
 
-      this.$emit('onConfirm', param);
-      this.close();
-    }
-  }
+const title = computed(() => {
+  return Object.keys(props.preSelectedToken).length === 0
+    ? ''
+    : props.preSelectedToken?.toggle?.value
+    ? 'Usage as collateral'
+    : 'Disable usage as collateral';
+});
+
+const {actualToken} = useAaveOverlay(props)
+const callSwitchCollateral = () => {
+  const param = {
+    aavePool: 'proto',
+    userAddress: address,
+    reserve: actualToken.value.underlyingAsset,
+    //interestRateMode: this.type,
+    usageAsCollateral: actualToken.value.usageAsCollateralEnabled
+  };
+
+  // this.$emit('onConfirm', param);
+  // this.close();
 };
 </script>
