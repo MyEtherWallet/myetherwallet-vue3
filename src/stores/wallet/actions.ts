@@ -103,9 +103,11 @@ const setWeb3Instance = function (this: This, provider?: string) {
 export interface Actions {
   removeWallet: typeof removeWallet;
   setWallet: typeof setWallet;
+  setWeb3Instance: typeof setWeb3Instance;
 }
 
 export default {
   removeWallet,
-  setWallet
+  setWallet,
+  setWeb3Instance
 };
