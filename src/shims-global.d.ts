@@ -11,3 +11,5 @@ declare module 'vue-cli-plugin-pinia';
 declare module 'uuid';
 declare module 'web3-core-requestmanager';
 declare module 'web3-core-method/src';
+declare module 'platform';
+declare module 'vue-matomo';

@@ -4,9 +4,11 @@ import router from './router';
 import vuetify from './plugins/vuetify';
 import { loadFonts } from './plugins/webfontloader';
 import i18n from './main/i18n';
+import VueMatomo from 'vue-matomo';
 import PiniaPlugin from 'vue-cli-plugin-pinia';
 import { createPinia } from 'pinia';
 import lokalise from './filters/lokalise';
+import { MatomoOptions } from './main/matomo';
 loadFonts();
 
 const app = createApp(App);
@@ -22,4 +24,5 @@ app
   .use(i18n)
   .use(PiniaPlugin)
   .use(pinia)
+  .use(VueMatomo, MatomoOptions)
   .mount('#app');
