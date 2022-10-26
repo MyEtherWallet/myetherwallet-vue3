@@ -1,9 +1,11 @@
 import { GasTypes } from '@/core/helpers/gasPriceHelper';
 import { Node } from '@/utils/networks/nodes/types';
+import { Store } from 'pinia';
 import { Actions } from './actions';
 import { Getters } from './getters';
 
 export interface State {
+  [key: string]: any;
   localStore: boolean;
   Errors: any;
   online: boolean;
@@ -24,6 +26,4 @@ export interface State {
   testing: boolean;
 }
 
-export interface This extends State, Actions, Getters {
-  [key: string]: any;
-}
+export type ThisStore = Store<'global', State, Getters, Actions>;

@@ -1,3 +1,4 @@
+import { Store } from 'pinia';
 import { Actions } from './actions';
 import { Getters } from './getters';
 
@@ -11,4 +12,5 @@ export interface State {
   stateVersion: string;
   cart: Cart;
 }
-export interface This extends State, Actions, Getters {}
+
+export type ThisStore = Store<'ethBlocks', State, Getters, Actions>;

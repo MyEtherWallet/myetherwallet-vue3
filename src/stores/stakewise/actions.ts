@@ -1,43 +1,41 @@
+import { PiniaActionAdaptor } from './../types';
 import localStore from 'store';
 import Configs from './configs';
-import { This } from './types';
+import { ThisStore } from './types';
 
-const INIT_STORE = function (this: This) {
-  if (localStore.get(Configs.LOCAL_STORAGE_KEYS.stakewise)) {
-    const savedStore = localStore.get(Configs.LOCAL_STORAGE_KEYS.stakewise);
-    if (savedStore.stateVersion === Configs.VERSION.stakewise) {
-      Object.assign(this, savedStore);
+const actions: PiniaActionAdaptor<Actions, ThisStore> = {
+  INIT_STORE() {
+    if (localStore.get(Configs.LOCAL_STORAGE_KEYS.stakewise)) {
+      const savedStore = localStore.get(Configs.LOCAL_STORAGE_KEYS.stakewise);
+      if (savedStore.stateVersion === Configs.VERSION.stakewise) {
+        Object.assign(this, savedStore);
+      }
     }
+  },
+  addToPendingTxs(tx: any) {
+    this.stakewiseTxs.ETH.push(tx);
+  },
+  addToPendingTxsGoerli(tx: any) {
+    this.stakewiseTxs.GOERLI.push(tx);
+  },
+  removePendingTxs(tx: any) {
+    this.stakewiseTxs.ETH = this.stakewiseTxs.ETH.filter((item: any) => {
+      return item.hash !== tx;
+    });
+  },
+  removePendingTxsGoerli(tx: any) {
+    this.stakewiseTxs.GOERLI = this.stakewiseTxs.GOERLI.filter((item: any) => {
+      return item.hash !== tx;
+    });
   }
 };
 
-const addToPendingTxs = function (this: This, tx: any) {
-  this.stakewiseTxs.ETH.push(tx);
+export type Actions = {
+  INIT_STORE: () => void;
+  addToPendingTxs: (tx: any) => void;
+  addToPendingTxsGoerli: (tx: any) => void;
+  removePendingTxs: (tx: any) => any;
+  removePendingTxsGoerli: (tx: any) => any;
 };
-const addToPendingTxsGoerli = function (this: This, tx: any) {
-  this.stakewiseTxs.GOERLI.push(tx);
-};
-const removePendingTxs = function (this: This, tx: any) {
-  this.stakewiseTxs.ETH = this.stakewiseTxs.ETH.filter((item: any) => {
-    return item.hash !== tx;
-  });
-};
-const removePendingTxsGoerli = function (this: This, tx: any) {
-  this.stakewiseTxs.GOERLI = this.stakewiseTxs.GOERLI.filter((item: any) => {
-    return item.hash !== tx;
-  });
-};
-export interface Actions {
-  INIT_STORE: typeof INIT_STORE;
-  addToPendingTxs: typeof addToPendingTxs;
-  addToPendingTxsGoerli: typeof addToPendingTxsGoerli;
-  removePendingTxs: typeof removePendingTxs;
-  removePendingTxsGoerli: typeof removePendingTxsGoerli;
-}
-export default {
-  INIT_STORE,
-  addToPendingTxs,
-  addToPendingTxsGoerli,
-  removePendingTxs,
-  removePendingTxsGoerli
-};
+
+export default actions;

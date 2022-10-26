@@ -1,18 +1,22 @@
+import { PiniaGetterAdaptor } from './../types';
 import { fromWei } from 'web3-utils/types';
 import { formatFloatingPointValue } from '@/core/helpers/numberFormatHelper';
 import BigNumber from 'bignumber.js/bignumber';
 import { toBNSafe } from '@/core/helpers/numberFormatHelper';
-import { This } from './types';
+import { ThisStore } from './types';
 
-const getPoolSupply = function (this: This) {
-  return fromWei(toBNSafe(this.poolSupply));
+const getters: PiniaGetterAdaptor<Getters, ThisStore> = {
+  getPoolSupply() {
+    return fromWei(toBNSafe(this.poolSupply));
+  },
+  getStakingFee() {
+    return formatFloatingPointValue(BigNumber(this.stakingFee).div(100)).value;
+  }
 };
 
-const getStakingFee = function (this: This) {
-  return formatFloatingPointValue(BigNumber(this.stakingFee).div(100)).value;
+export type Getters = {
+  getPoolSupply: string;
+  getStakingFee: string;
 };
-export interface Getters {
-  getPoolSupply: typeof getPoolSupply;
-  getStakingFee: typeof getStakingFee;
-}
-export default { getPoolSupply, getStakingFee };
+
+export default getters;

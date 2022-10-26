@@ -5,6 +5,6 @@ import { defineStore } from 'pinia';
 
 export const useWalletStore = defineStore('wallet', {
   state,
-  actions,
-  getters
+  getters,
+  actions
 });

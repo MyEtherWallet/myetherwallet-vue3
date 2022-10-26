@@ -1,3 +1,4 @@
+import { Store } from 'pinia';
 import { Actions } from './actions';
 import { Getters } from './getters';
 
@@ -9,4 +10,4 @@ export type State = {
   networkTokens: Map<any, any>; //map of {contract: token}
 };
 
-export interface This extends State, Actions, Getters {}
+export type ThisStore = Store<'external', State, Getters, Actions>;

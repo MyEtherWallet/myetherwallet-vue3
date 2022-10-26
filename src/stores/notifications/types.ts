@@ -1,10 +1,11 @@
+import { Store } from 'pinia';
 import { Actions } from './actions';
 import { Getters } from './getters';
 
-export interface State {
+export type State = {
   localStore: boolean;
   notifications: Array<any>;
   stateVersion: string;
-}
+};
 
-export interface This extends State, Actions, Getters {}
+export type ThisStore = Store<'notifications', State, Getters, Actions>;

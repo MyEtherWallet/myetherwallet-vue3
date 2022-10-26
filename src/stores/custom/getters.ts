@@ -1,20 +1,20 @@
 import { useGlobalStore } from '../global';
-import { This } from './types';
+import { PiniaGetterAdaptor } from '../types';
+import { ThisStore } from './types';
 
-const customTokens = function (this: This): Array<any> {
-  const network = useGlobalStore().currentNetwork;
-  return this.tokens[network.type.name] || [];
+const getters: PiniaGetterAdaptor<Getters, ThisStore> = {
+  customTokens(): Array<any> {
+    const network = useGlobalStore().currentNetwork;
+    return this.tokens[network.type.name] || [];
+  },
+  hasCustom(): boolean {
+    const tokens = this.customTokens;
+    return tokens.length > 0;
+  }
 };
 
-const hasCustom = function (this: This): boolean {
-  const tokens = this.customTokens();
-  return tokens.length > 0;
+export type Getters = {
+  customTokens: Array<any>;
+  hasCustom: boolean;
 };
-export interface Getters {
-  customTokens: typeof customTokens;
-  hasCustom: typeof hasCustom;
-}
-export default {
-  customTokens,
-  hasCustom
-};
+export default getters;

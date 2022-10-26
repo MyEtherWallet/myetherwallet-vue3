@@ -1,3 +1,4 @@
+import { Store } from 'pinia';
 import { Actions } from './actions';
 import { Getters } from './getters';
 
@@ -10,4 +11,4 @@ export interface State {
   hiddenTokens: { [key: string]: any };
 }
 
-export interface This extends State, Actions, Getters {}
+export type ThisStore = Store<'custom', State, Getters, Actions>;

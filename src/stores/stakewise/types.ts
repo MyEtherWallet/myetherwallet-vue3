@@ -1,3 +1,4 @@
+import { Store } from 'pinia';
 import { Actions } from './actions';
 import { Getters } from './getters';
 
@@ -5,7 +6,8 @@ interface StakewiseTxs {
   ETH: Array<any>;
   GOERLI: Array<any>;
 }
-export interface State {
+
+export type State = {
   localStore: Boolean;
   stakewiseTxs: StakewiseTxs;
   validatorApr: string;
@@ -14,6 +16,6 @@ export interface State {
   stateVersion: string;
   rethBalance: string;
   sethBalance: string;
-}
+};
 
-export interface This extends State, Actions, Getters {}
+export type ThisStore = Store<'stakewise', State, Getters, Actions>;

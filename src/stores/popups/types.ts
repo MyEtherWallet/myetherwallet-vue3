@@ -1,3 +1,4 @@
+import { Store } from 'pinia';
 import { Actions } from './actions';
 
 export interface State {
@@ -18,4 +19,4 @@ export interface State {
   enkryptWalletSnackbarCounter: number;
 }
 
-export interface This extends State, Actions {}
+export type ThisStore = Store<'popups', State, Actions>;

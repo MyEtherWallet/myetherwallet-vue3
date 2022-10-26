@@ -1,3 +1,4 @@
+import { Store } from 'pinia';
 import { Actions } from './actions';
 
 export type State = {
@@ -6,4 +7,4 @@ export type State = {
   swapTokens: Array<any>;
 };
 
-export interface This extends State, Actions {}
+export type ThisStore = Store<'swap', State, Actions>;

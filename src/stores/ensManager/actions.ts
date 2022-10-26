@@ -1,20 +1,22 @@
 import localStore from 'store';
+import { PiniaActionAdaptor } from '../types';
 import Configs from './configs';
-import { This } from './types';
+import { ThisStore } from './types';
 
-const INIT_STORE = function (this: This) {
-  if (localStore.get(Configs.LOCAL_STORAGE_KEYS.ensManagerStore)) {
-    const savedStore = localStore.get(
-      Configs.LOCAL_STORAGE_KEYS.ensManagerStore
-    );
-    if (savedStore.stateVersion === Configs.VERSION.ensManagerStore) {
-      Object.assign(this, savedStore);
+const actions: PiniaActionAdaptor<Actions, ThisStore> = {
+  INIT_STORE() {
+    if (localStore.get(Configs.LOCAL_STORAGE_KEYS.ensManagerStore)) {
+      const savedStore = localStore.get(
+        Configs.LOCAL_STORAGE_KEYS.ensManagerStore
+      );
+      if (savedStore.stateVersion === Configs.VERSION.ensManagerStore) {
+        Object.assign(this, savedStore);
+      }
     }
   }
 };
-export interface Actions {
-  INIT_STORE: typeof INIT_STORE;
-}
-export default {
-  INIT_STORE
+
+export type Actions = {
+  INIT_STORE: () => void;
 };
+export default actions;

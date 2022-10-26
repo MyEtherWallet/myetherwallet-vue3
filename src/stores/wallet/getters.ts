@@ -1,41 +1,38 @@
 import { fromWei, toBN } from 'web3-utils/types';
-import { State } from './types';
-const balanceInETH = function (this: State) {
-  if (!this.balance) this.balance = '0';
-  return fromWei(this.balance);
+import { PiniaGetterAdaptor } from '../types';
+import { ThisStore } from './types';
+const getters: PiniaGetterAdaptor<Getters, ThisStore> = {
+  balanceInETH(this): string {
+    if (!this.balance) this.balance = '0';
+    return fromWei(this.balance);
+  },
+  balanceInWei(): string {
+    if (!this.balance) this.balance = '0';
+    return this.balance.toString();
+  },
+  totalOwnedDomains(): number {
+    return this.ensDomains ? this.ensDomains.length : 0;
+  },
+  tokensList(): Array<any> {
+    const tokens = this.tokens;
+    return tokens.length > 0
+      ? tokens.map(item => {
+          if (!Object.prototype.hasOwnProperty.call(item, 'balance')) {
+            item.balance = toBN(0);
+          } else {
+            item.balance = toBN(item.balance);
+          }
+          return item;
+        })
+      : [];
+  }
 };
 
-const balanceInWei = function (this: State) {
-  if (!this.balance) this.balance = '0';
-  return this.balance.toString();
-};
+export default getters;
 
-const totalOwnedDomains = function (this: State) {
-  return this.ensDomains ? this.ensDomains.length : 0;
-};
-
-const tokensList = function (this: State) {
-  const tokens = this.tokens;
-  return tokens.length > 0
-    ? tokens.map(item => {
-        if (!Object.prototype.hasOwnProperty.call(item, 'balance')) {
-          item.balance = toBN(0);
-        } else {
-          item.balance = toBN(item.balance);
-        }
-        return item;
-      })
-    : [];
-};
-export interface Getters {
-  balanceInETH: typeof balanceInETH;
-  balanceInWei: typeof balanceInWei;
-  totalOwnedDomains: typeof totalOwnedDomains;
-  tokensList: typeof tokensList;
-}
-export default {
-  balanceInETH,
-  balanceInWei,
-  totalOwnedDomains,
-  tokensList
+export type Getters = {
+  balanceInETH: string;
+  balanceInWei: string;
+  totalOwnedDomains: number;
+  tokensList: Array<any>;
 };

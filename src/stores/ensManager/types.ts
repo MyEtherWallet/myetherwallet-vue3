@@ -1,3 +1,4 @@
+import { Store } from 'pinia';
 import { Actions } from './actions';
 
 export interface State {
@@ -6,4 +7,4 @@ export interface State {
   stateVersion: string;
 }
 
-export interface This extends State, Actions {}
+export type ThisStore = Store<'ensManager', State, Actions>;
