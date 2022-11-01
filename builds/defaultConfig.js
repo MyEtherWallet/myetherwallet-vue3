@@ -1,24 +1,18 @@
-const imageminMozjpeg = require('imagemin-mozjpeg');
-const ImageminPlugin = require('imagemin-webpack-plugin').default;
-// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-const webpack = require('webpack');
-//const CopyWebpackPlugin = require('copy-webpack-plugin');
-const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
-//const UglifyJS = require('uglify-es');
-const env_vars = require('../ENV_VARS');
-const allowedConnections = require('../connections');
+import imageminMozjpeg from 'imagemin-mozjpeg';
 
-type SourceMapConfig = {
-  filename: string;
-  exclude?: RegExp;
-};
-const sourceMapsConfig: SourceMapConfig = {
+import ImageminPlugin from 'imagemin-webpack-plugin';
+// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+import webpack from 'webpack';
+//const CopyWebpackPlugin = require('copy-webpack-plugin');
+import NodePolyfillPlugin from 'node-polyfill-webpack-plugin';
+//const UglifyJS = require('uglify-es');
+import env_vars from '../ENV_VARS.cjs';
+import allowedConnections from '../connections.js';
+const sourceMapsConfig = {
   filename: 'sourcemaps/[file].map'
 };
-console.log('in');
 const webpackConfig = {
   devtool: 'inline-source-map',
-  externalsPresets: { node: true },
   resolve: {
     // fallback: {
     //   assert: require.resolve('assert'),
@@ -28,14 +22,14 @@ const webpackConfig = {
     //   crypto: require.resolve('crypto-browserify'),
     //   domain: require.resolve('domain-browser'),
     //   events: require.resolve('events'),
-    //   http: require.resolve('stream-http'),
-    //   https: require.resolve('https-browserify'),
+    //http: require.resolve('stream-http/'),
+    //https: require.resolve('https-browserify/'),
     //   os: require.resolve('os-browserify/browser'),
     //   path: require.resolve('path-browserify'),
     //   punycode: require.resolve('punycode'),
     //   process: require.resolve('process/browser'),
     //   querystring: require.resolve('querystring-es3'),
-    //   stream: require.resolve('stream-browserify'),
+    //stream: require.resolve('stream-browserify/')
     //   string_decoder: require.resolve('string_decoder'),
     //   sys: require.resolve('util'),
     //   timers: require.resolve('timers-browserify'),
@@ -94,20 +88,20 @@ const webpackConfig = {
     //   vm: 'vm-browserify',
     //   zlib: 'browserify-zlib'
     // }),
-    new ImageminPlugin({
-      disable: process.env.NODE_ENV !== 'production',
-      test: /\.(jpe?g|png|gif|svg)$/i,
-      pngquant: {
-        quality: '100'
-      },
-      plugins: [
-        imageminMozjpeg({
-          quality: 100,
-          progressive: true,
-          chunks: 'all'
-        })
-      ]
-    }),
+    // new ImageminPlugin({
+    //   disable: process.env.NODE_ENV !== 'production',
+    //   test: /\.(jpe?g|png|gif|svg)$/i,
+    //   pngquant: {
+    //     quality: '100'
+    //   },
+    //   plugins: [
+    //     imageminMozjpeg({
+    //       quality: 100,
+    //       progressive: true,
+    //       chunks: 'all'
+    //     })
+    //   ]
+    // }),
     // new CopyWebpackPlugin({
     //   patterns: [
     //     {

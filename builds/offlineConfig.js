@@ -1,7 +1,8 @@
-import config from './defaultConfig';
+import config from './defaultConfig.js';
+import { defineConfig } from '@vue/cli-service';
 if (JSON.parse(config.env_vars.FULL_SOURCEMAPS) === 'false')
   config.sourceMapsConfig.exclude = /vendors.*.*/;
-module.exports = {
+export default defineConfig({
   publicPath: './',
   configureWebpack: config.webpackConfig,
   lintOnSave: process.env.NODE_ENV === 'production' ? 'error' : true,
@@ -16,4 +17,4 @@ module.exports = {
       .loader('graphql-tag/loader')
       .end();
   }
-};
+});
