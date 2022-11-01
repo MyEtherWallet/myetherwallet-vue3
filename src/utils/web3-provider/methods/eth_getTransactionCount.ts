@@ -3,15 +3,19 @@ import { toPayload } from '../jsonrpc';
 import EthCalls from '../web3Calls';
 import * as locstore from 'store';
 import sanitizeHex from '@/core/helpers/sanitizeHex';
+import { Web3Method } from '.';
+import { useGlobalStore } from '@/stores/global';
 
-export default async ({ payload, store, requestManager }, res, next) => {
+export default <Web3Method>(async ({ payload, requestManager }, res, next) => {
   if (payload.method !== 'eth_getTransactionCount') return next();
   const ethCalls = new EthCalls(requestManager);
   const addr = payload.params[0].toLowerCase();
-  let cached = {};
-  const storeKey = utils.sha3(
-    `${store.getters['global/network'].type.name}-${addr}`
-  );
+  let cached: { nonce: string; timestamp: number } = {
+    nonce: '',
+    timestamp: 0
+  };
+  const globalStore = useGlobalStore();
+  const storeKey = utils.sha3(`${globalStore.network.type.name}-${addr}`);
   if (!locstore.get(storeKey)) {
     cached = {
       nonce: '0x00',
@@ -24,7 +28,8 @@ export default async ({ payload, store, requestManager }, res, next) => {
   const timeDiff =
     Math.round((new Date().getTime() - cached.timestamp) / 1000) / 60;
   if (timeDiff > 1) {
-    const liveNonce = await ethCalls.getTransactionCount(addr);
+    //await ethCalls.getTransactionCount(addr)
+    const liveNonce = 0;
     const liveNonceBN = toBN(liveNonce);
     const cachedNonceBN = toBN(cached.nonce);
     if (timeDiff > 15) {
@@ -41,4 +46,4 @@ export default async ({ payload, store, requestManager }, res, next) => {
     locstore.set(storeKey, cached);
   }
   res(null, toPayload(payload.id, cached.nonce));
-};
+});

@@ -1,4 +1,4 @@
-import { Network } from "../types/types";
+import { Network } from '../types/types';
 export type Node = {
   type: Network;
   service: string;

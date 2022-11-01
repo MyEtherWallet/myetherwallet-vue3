@@ -1,10 +1,10 @@
-import { Node } from "@/utils/networks/nodes/types";
-import { Hardfork, Common } from "@ethereumjs/common";
+import { Node } from '@/utils/networks/nodes/types';
+import { Hardfork, Common } from '@ethereumjs/common';
 
 const commonGenerator = (network: Node) => {
   return Common.custom({
     chainId: network.type.chainID,
-    hardfork: Hardfork.London,
+    hardfork: Hardfork.London
   });
 };
 

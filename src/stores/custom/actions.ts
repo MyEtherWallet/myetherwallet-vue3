@@ -1,5 +1,5 @@
 import { useCustomStore } from './index';
-import BigNumber from 'bignumber.js/bignumber';
+import BigNumber from 'bignumber.js';
 import { fromBase } from '@/core/helpers/unit';
 import {
   formatFloatingPointValue,
@@ -22,7 +22,7 @@ const actions: PiniaActionAdaptor<Actions, ThisStore> = {
       customTokensByNetwork = [];
     }
     const found = customTokensByNetwork.findIndex(
-      t => t.contract.toLowerCase() === token.contract.toLowerCase()
+      (t: any) => t.contract.toLowerCase() === token.contract.toLowerCase()
     );
     if (found !== -1) {
       customTokensByNetwork[found] = token;
@@ -36,7 +36,7 @@ const actions: PiniaActionAdaptor<Actions, ThisStore> = {
     const { network } = useGlobalStore();
     const { customTokens } = useCustomStore();
     const currentCustomTokens = this.tokens[network.type.name].filter(
-      currentTokens => {
+      (currentTokens: any) => {
         const found = token.find((item: any) => {
           if (item.address === currentTokens.contract) {
             return item;
@@ -45,7 +45,7 @@ const actions: PiniaActionAdaptor<Actions, ThisStore> = {
         // Check if token is in hiddenTokens
         const hiddenTokens = customTokens;
         if (found && hiddenTokens.length > 0) {
-          const newHiddenTokens = hiddenTokens.filter(item => {
+          const newHiddenTokens = hiddenTokens.filter((item: any) => {
             return found.address !== item.address;
           });
           //Vue.set(state.hiddenTokens, network.type.name, newHiddenTokens);
@@ -107,7 +107,7 @@ const actions: PiniaActionAdaptor<Actions, ThisStore> = {
   },
 
   deleteCustomPath(path: any) {
-    this.paths = this.paths.filter(p => p.value !== path.value);
+    this.paths = this.paths.filter((p: any) => p.value !== path.value);
   },
   deleteAllCustomPaths() {
     this.paths = [];

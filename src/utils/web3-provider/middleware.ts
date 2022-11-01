@@ -1,14 +1,14 @@
 class Middleware {
-  middlewares: Array<Function>;
+  middlewares: Array<() => void>;
   constructor() {
     this.middlewares = [];
   }
-  use(fn: Function) {
+  use(fn: (...args: any[]) => void) {
     this.middlewares.push(fn);
   }
   executeMiddleware(req: any, res: any, done: any) {
     this.middlewares.reduceRight(
-      (done, next) => () => next(req, res, done),
+      (done, next: (...args: any[]) => void) => () => next(req, res, done),
       done
     )(req, res);
   }

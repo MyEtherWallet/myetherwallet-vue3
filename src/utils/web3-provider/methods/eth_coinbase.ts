@@ -1,9 +1,11 @@
+import { useWalletStore } from '@/stores/wallet';
+import { Web3Method } from '.';
 import { toPayload } from '../jsonrpc';
-export default async ({ payload, store }, res, next) => {
+export default <Web3Method>(async ({ payload }, res, next) => {
   if (payload.method !== 'eth_coinbase') return next();
-  if (!store.state.wallet.instance) res(null, toPayload(payload.id, null));
+  if (!useWalletStore().instance) res(null, toPayload(payload.id, null));
   res(
     null,
-    toPayload(payload.id, store.state.wallet.instance.getAddressString())
+    toPayload(payload.id, useWalletStore().instance.getAddressString())
   );
-};
+});

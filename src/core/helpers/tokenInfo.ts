@@ -1,52 +1,52 @@
-import Web3 from "web3/types";
+import { AbiItem } from 'web3-utils';
 
-const ERC20 = [
+const ERC20: Array<AbiItem> = [
   {
     constant: true,
     inputs: [],
-    name: "name",
+    name: 'name',
     outputs: [
       {
-        name: "",
-        type: "string",
-      },
+        name: '',
+        type: 'string'
+      }
     ],
     payable: false,
-    stateMutability: "view",
-    type: "function",
+    stateMutability: 'view',
+    type: 'function'
   },
   {
     constant: true,
     inputs: [],
-    name: "decimals",
+    name: 'decimals',
     outputs: [
       {
-        name: "",
-        type: "uint8",
-      },
+        name: '',
+        type: 'uint8'
+      }
     ],
     payable: false,
-    stateMutability: "view",
-    type: "function",
+    stateMutability: 'view',
+    type: 'function'
   },
   {
     constant: true,
     inputs: [],
-    name: "symbol",
+    name: 'symbol',
     outputs: [
       {
-        name: "",
-        type: "string",
-      },
+        name: '',
+        type: 'string'
+      }
     ],
     payable: false,
-    stateMutability: "view",
-    type: "function",
-  },
+    stateMutability: 'view',
+    type: 'function'
+  }
 ];
 const getTokenInfo = async (
   contractAddress: string,
-  web3: Web3
+  web3: any
 ): Promise<token | null> => {
   const contract = new web3.eth.Contract(ERC20, contractAddress);
   try {
@@ -56,7 +56,7 @@ const getTokenInfo = async (
     return {
       name,
       symbol,
-      decimals: parseInt(decimals),
+      decimals: parseInt(decimals)
     };
   } catch (e) {
     return null;

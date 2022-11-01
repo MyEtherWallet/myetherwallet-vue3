@@ -17,12 +17,12 @@
 <script setup lang="ts">
 import AaveSummary from './AaveSummary.vue';
 import { ACTION_TYPES } from '@/dapps/aave-dapp/handlers/helpers';
-import { computed } from '@vue/reactivity';
+import { computed } from 'vue';
 import { useAaveOverlay, useProps } from '../handlers/aaveOverlayMixin';
 import { useWalletStore } from '@/stores/wallet';
 const collateral = ACTION_TYPES.collateral;
 const props = defineProps({ ...useProps });
-const {address} = useWalletStore()
+const { address } = useWalletStore();
 
 const title = computed(() => {
   return Object.keys(props.preSelectedToken).length === 0
@@ -32,7 +32,7 @@ const title = computed(() => {
     : 'Disable usage as collateral';
 });
 
-const {actualToken} = useAaveOverlay(props)
+const { actualToken } = useAaveOverlay(props);
 const callSwitchCollateral = () => {
   const param = {
     aavePool: 'proto',

@@ -1,6 +1,6 @@
 import BN from 'bn.js';
-import BigNumber from 'bignumber.js/bignumber';
-import { toBN, toWei } from 'web3-utils/types';
+import BigNumber from 'bignumber.js';
+import { toBN, toWei } from 'web3-utils';
 const MED_CONST = 21428571428.571;
 const MED_MULTIPLIER = 1.0714285714286;
 const FAST_CONST = 42857142857.145;
@@ -129,7 +129,7 @@ const getBaseFeeBasedOnType = (baseFeeBN: BN, gasPriceType: GasTypes) => {
  */
 const estimateGasList = (
   network: 'ETH' | 'GOERLI' | 'BSC' | 'MATIC',
-  txs: Array<Object>
+  txs: Array<any>
 ) => {
   // eslint-disable-next-line no-async-promise-executor
   return new Promise(async (resolve, reject) => {

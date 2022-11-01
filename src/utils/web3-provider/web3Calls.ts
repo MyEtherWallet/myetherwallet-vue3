@@ -1,9 +1,11 @@
-import Method from 'web3-core-method/types';
-import utils from 'web3-utils/types';
+import Method from 'web3-core-method/src';
+import utils from 'web3-utils';
 import { formatters } from 'web3-core-helpers';
+import { CustomRequestManager } from './providers/given-provider';
 class Web3Calls {
-  constructor(requestManager) {
-    const ethereumCalls = [
+  ethereumCalls: any;
+  constructor(requestManager: CustomRequestManager) {
+    const ethereumCalls: Array<typeof Method> = [
       new Method({
         name: 'getId',
         call: 'net_version',
@@ -62,7 +64,7 @@ class Web3Calls {
         call: 'eth_getTransactionCount',
         params: 2,
         inputFormatter: [
-          function (address) {
+          function (address: string) {
             if (utils.isAddress(address.toLowerCase())) {
               return address;
             }

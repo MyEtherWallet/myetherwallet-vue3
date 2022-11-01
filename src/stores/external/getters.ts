@@ -1,5 +1,5 @@
 import { PiniaGetterAdaptor } from './../types';
-import BigNumber from 'bignumber.js/bignumber';
+import BigNumber from 'bignumber.js';
 import platformList from '@/_generated/platformlist.json';
 import {
   formatFiatValue,
@@ -29,15 +29,18 @@ const getters: PiniaGetterAdaptor<Getters, ThisStore> = {
   totalTokenFiatValue(): BigNumber | number {
     const { tokensList } = useWalletStore();
     if (!tokensList.length) return new BigNumber(0);
-    const totalValue = tokensList.reduce((total, currentVal) => {
-      const balance =
-        currentVal.usdBalance !== null &&
-        (currentVal.price_change_percentage_24h !== null ||
-          currentVal.market_cap !== 0)
-          ? currentVal.usdBalance
-          : 0;
-      return new BigNumber(total).plus(balance);
-    }, 0);
+    const totalValue = tokensList.reduce(
+      (total: number | string, currentVal: any) => {
+        const balance =
+          currentVal.usdBalance !== null &&
+          (currentVal.price_change_percentage_24h !== null ||
+            currentVal.market_cap !== 0)
+            ? currentVal.usdBalance
+            : 0;
+        return new BigNumber(total).plus(balance);
+      },
+      0
+    );
     return totalValue;
   },
 

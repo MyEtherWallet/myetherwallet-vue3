@@ -1,4 +1,6 @@
-export default [
+import { AbiItem } from 'web3-utils';
+
+export default <Array<AbiItem>>[
   {
     constant: false,
     inputs: [

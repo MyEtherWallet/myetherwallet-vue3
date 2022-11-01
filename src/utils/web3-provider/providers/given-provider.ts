@@ -1,7 +1,7 @@
 import { Manager as Web3RequestManager } from 'web3-core-requestmanager';
 import MiddleWare from '../middleware';
-import { EventBus } from '@/core/plugins/eventBus';
-import VuexStore from '@/core/store';
+//import { EventBus } from '@/core/plugins/eventBus';
+//import VuexStore from '@/core/store';
 import {
   ethSendTransaction,
   ethSendRawTransaction,
@@ -12,12 +12,12 @@ import {
   ethAccounts
 } from '../methods';
 class CustomRequestManager extends Web3RequestManager {
-  constructor(host) {
+  constructor(host: any) {
     super(host);
   }
-  request(payload) {
+  request(payload: any) {
     return new Promise((resolve, reject) => {
-      const callback = (error, result) => {
+      const callback = (error: any, result: any) => {
         if (error) return reject(error.error);
         if (result.error) return reject(result.error);
         return resolve(result.result);
@@ -31,15 +31,15 @@ class CustomRequestManager extends Web3RequestManager {
       }
     });
   }
-  send(data, callback) {
+  send(data: any, callback: any) {
     const { method, params } = data;
     if (this.provider.request_) {
       this.provider
         .request_({ method, params })
-        .then(res => {
+        .then((res: any) => {
           callback(null, res);
         })
-        .catch(err => callback(err));
+        .catch((err: any) => callback(err));
     } else {
       this.request({ method, params })
         .then(res => {
@@ -50,23 +50,24 @@ class CustomRequestManager extends Web3RequestManager {
   }
 }
 class GivenProvider {
-  constructor(host) {
+  givenProvider: any;
+  constructor(host: any) {
     this.givenProvider = host;
     const requestManager = new CustomRequestManager(this.givenProvider);
     if (this.givenProvider.request && !this.givenProvider.request_) {
       this.givenProvider.request_ = this.givenProvider.request;
     }
-    this.givenProvider.request = payload => {
+    this.givenProvider.request = (payload: any) => {
       return new Promise((resolve, reject) => {
-        const callback = (error, result) => {
+        const callback = (error: any, result: any) => {
           if (error) return reject(error.error);
           return resolve(result.result);
         };
         const req = {
           payload,
-          store: VuexStore,
-          requestManager,
-          eventHub: EventBus
+          // store: VuexStore,
+          requestManager
+          // eventHub: EventBus
         };
         const middleware = new MiddleWare();
         middleware.use(ethSendTransaction);

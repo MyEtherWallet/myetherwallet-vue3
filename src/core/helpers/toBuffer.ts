@@ -1,4 +1,4 @@
-import { isHexString, toBuffer as utilsToBuffer } from "ethereumjs-util";
+import { isHexString, toBuffer as utilsToBuffer } from 'ethereumjs-util/dist';
 
 const toBuffer = (v: string) => {
   if (isHexString(v)) {

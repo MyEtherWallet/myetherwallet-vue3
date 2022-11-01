@@ -1,5 +1,5 @@
 import languages from '@/translations';
-import { createI18n } from 'vue-i18n/dist/vue-i18n';
+import { createI18n } from 'vue-i18n';
 import axios from 'axios';
 
 const i18n = createI18n({

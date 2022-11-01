@@ -1,5 +1,5 @@
 import { createApp } from 'vue';
-import App from './App.vue';
+import App from './views/TheDefaultView.vue';
 import router from './router';
 import vuetify from './plugins/vuetify';
 import { loadFonts } from './plugins/webfontloader';
@@ -19,8 +19,8 @@ app.config.globalProperties.lokalise = {
   }
 };
 app
-  .use(router)
   .use(vuetify)
+  .use(router)
   .use(i18n)
   .use(PiniaPlugin)
   .use(pinia)

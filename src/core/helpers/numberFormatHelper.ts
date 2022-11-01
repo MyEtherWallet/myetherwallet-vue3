@@ -1,6 +1,6 @@
 import BN from 'bn.js';
-import BigNumber from 'bignumber.js/bignumber';
-import { fromWei, toBN } from 'web3-utils/types';
+import BigNumber from 'bignumber.js';
+import { fromWei, toBN } from 'web3-utils';
 import { isNaN as lodashIsNaN } from 'lodash';
 import { localizeCurrency } from './localization';
 

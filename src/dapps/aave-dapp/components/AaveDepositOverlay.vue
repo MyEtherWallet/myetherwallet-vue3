@@ -62,7 +62,7 @@ import AaveSummary from './AaveSummary.vue';
 import AaveAmountForm from './AaveAmountForm.vue';
 import { AAVE_TABLE_HEADER, convertToFixed } from '../handlers/helpers';
 import { isEmpty } from 'lodash';
-import BigNumber from 'bignumber.js/bignumber';
+import BigNumber from 'bignumber.js';
 import { computed, reactive, watch } from 'vue';
 import { useWalletStore } from '@/stores/wallet';
 import { useGlobalStore } from '@/stores/global';
@@ -119,7 +119,7 @@ const aaveDepositForm = computed(() => {
     .times(hasDeposit?.currentUnderlyingBalance)
     .toFixed(2)}`;
 
-  const balance = `${tokenBalance} ${state.selectedToken.token}`;
+  const balance = `${tokenBalance.value} ${state.selectedToken.token}`;
   const usd = `$ ${BigNumber(tokenBalance.value)
     .times(selectedTokenUSDValue.value)
     .toFixed(2)}`;

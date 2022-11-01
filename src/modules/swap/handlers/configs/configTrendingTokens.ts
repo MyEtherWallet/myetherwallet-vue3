@@ -1,6 +1,6 @@
 import { ETH, BSC, MATIC } from '@/utils/networks/types';
 interface Coin {
-  contract: String;
+  contract: string;
   decimals?: number;
   img?: string;
   symbol?: string;

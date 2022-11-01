@@ -1,40 +1,40 @@
-import { Network } from "./types";
-import rop from "@/assets/images/networks/network.svg";
-import { ROP } from "../tlds";
+import { Network } from './types';
+import rop from '@/assets/images/networks/network.svg';
+import { ROP } from '../tlds';
 
 export default <Network>{
-  name: "ROP",
-  name_long: "Ropsten",
-  homePage: "https://github.com/ethereum/ropsten",
-  blockExplorer: "Etherscan",
-  blockExplorerTX: "https://ropsten.etherscan.io/tx/[[txHash]]",
-  blockExplorerAddr: "https://ropsten.etherscan.io/address/[[address]]",
+  name: 'ROP',
+  name_long: 'Ropsten',
+  homePage: 'https://github.com/ethereum/ropsten',
+  blockExplorer: 'Etherscan',
+  blockExplorerTX: 'https://ropsten.etherscan.io/tx/[[txHash]]',
+  blockExplorerAddr: 'https://ropsten.etherscan.io/address/[[address]]',
   chainID: 3,
-  tokens: import("@/_generated/tokens/tokens-rop.json").then(
-    (val) => val.default
+  tokens: import('@/_generated/tokens/tokens-rop.json').then(
+    val => val.default
   ),
-  contracts: import("@/_generated/contracts/contract-abi-rop.json").then(
-    (val) => val.default
+  contracts: import('@/_generated/contracts/contract-abi-rop.json').then(
+    val => val.default
   ),
   isTestNetwork: true,
   ens: {
-    registry: "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
-    registrarTLD: "eth",
-    registrarType: "permanent",
+    registry: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
+    registrarTLD: 'eth',
+    registrarType: 'permanent',
     supportedTld: ROP,
     subgraphPath:
-      "https://api.thegraph.com/subgraphs/name/ensdomains/ensropsten",
+      'https://api.thegraph.com/subgraphs/name/ensdomains/ensropsten'
   },
   icon: rop,
-  currencyName: "ROP",
+  currencyName: 'ROP',
   isEthVMSupported: {
     supported: false,
     url: null,
-    blockExplorerTX: "",
-    blockExplorerAddr: "",
-    websocket: null,
+    blockExplorerTX: '',
+    blockExplorerAddr: '',
+    websocket: null
   },
   gasPriceMultiplier: 1,
   canBuy: false,
-  coingeckoID: null,
+  coingeckoID: null
 };

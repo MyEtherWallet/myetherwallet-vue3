@@ -13,7 +13,7 @@ import { isEmpty } from 'lodash';
 import { formatFiatValue } from '@/core/helpers/numberFormatHelper';
 import WALLET_TYPES from '@/modules/access-wallet/common/walletTypes';
 import { ThisStore } from './types';
-import BigNumber from 'bignumber.js/bignumber';
+import BigNumber from 'bignumber.js';
 import { useExternalStore } from '../external';
 import { useWalletStore } from '../wallet';
 import { Node } from '@/utils/networks/nodes/types';

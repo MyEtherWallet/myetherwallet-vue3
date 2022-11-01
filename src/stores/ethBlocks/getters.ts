@@ -9,7 +9,7 @@ const getters: PiniaGetterAdaptor<Getters, ThisStore> = {
    */
   getAllEthBlocksTxs() {
     const currentNetworkType = useGlobalStore().network;
-    const filteredArray = this.ethBlocksTxs.filter(item => {
+    const filteredArray = this.ethBlocksTxs.filter((item: any) => {
       if (item.network === currentNetworkType) return item;
     });
     return this.ethBlocksTxs.length > 0 ? filteredArray : [];
@@ -22,7 +22,7 @@ const getters: PiniaGetterAdaptor<Getters, ThisStore> = {
    */
   getEthBlockTx() {
     return () => (block: any) => {
-      const filteredArray = this.ethBlocksTxs.filter(item => {
+      const filteredArray = this.ethBlocksTxs.filter((item: any) => {
         if (
           block.blockNumber === item.blockNumber &&
           item.network === block.network

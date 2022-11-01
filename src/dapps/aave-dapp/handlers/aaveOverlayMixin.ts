@@ -1,5 +1,5 @@
 import { isEmpty } from 'lodash';
-import BigNumber from 'bignumber.js/bignumber';
+import BigNumber from 'bignumber.js';
 import { computed, Prop } from 'vue';
 interface Props {
   handler: Prop<any>;

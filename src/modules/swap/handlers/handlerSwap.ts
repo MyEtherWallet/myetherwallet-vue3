@@ -1,15 +1,14 @@
 import { OneInch, ZEROX, ParaSwap, Changelly } from './providers';
-import BigNumber from 'bignumber.js/bignumber';
+import BigNumber from 'bignumber.js';
 import Configs from './configs/providersConfigs';
 import hasValidDecimals from '@/core/helpers/hasValidDecimals.js';
 import { isObject } from 'lodash';
-import Web3 from 'web3/types';
 import { SwapPairData } from './providers/mew-provider-class';
 
 class Swap {
   providers: Array<any>;
   chain: string;
-  constructor(web3: Web3, chain: string) {
+  constructor(web3: any, chain: string) {
     this.providers = [
       new OneInch(web3, chain),
       new ZEROX(web3, chain),

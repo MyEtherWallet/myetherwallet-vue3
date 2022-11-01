@@ -1,40 +1,40 @@
-import rin from "@/assets/images/networks/network.svg";
-import { Network } from "./types";
-import { RIN } from "../tlds";
+import rin from '@/assets/images/networks/network.svg';
+import { Network } from './types';
+import { RIN } from '../tlds';
 
 export default <Network>{
-  name: "RIN",
-  name_long: "Rinkeby",
-  homePage: "https://www.rinkeby.io/",
-  blockExplorer: "Etherscan",
-  blockExplorerTX: "https://rinkeby.etherscan.io/tx/[[txHash]]",
-  blockExplorerAddr: "https://rinkeby.etherscan.io/address/[[address]]",
+  name: 'RIN',
+  name_long: 'Rinkeby',
+  homePage: 'https://www.rinkeby.io/',
+  blockExplorer: 'Etherscan',
+  blockExplorerTX: 'https://rinkeby.etherscan.io/tx/[[txHash]]',
+  blockExplorerAddr: 'https://rinkeby.etherscan.io/address/[[address]]',
   chainID: 4,
-  tokens: import("@/_generated/tokens/tokens-etc.json").then(
-    (val) => val.default
+  tokens: import('@/_generated/tokens/tokens-etc.json').then(
+    val => val.default
   ),
-  contracts: import("@/_generated/contracts/contract-abi-etc.json").then(
-    (val) => val.default
+  contracts: import('@/_generated/contracts/contract-abi-etc.json').then(
+    val => val.default
   ),
   isTestNetwork: true,
   ens: {
-    registry: "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
-    registrarTLD: "eth",
-    registrarType: "permanent",
+    registry: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
+    registrarTLD: 'eth',
+    registrarType: 'permanent',
     supportedTld: RIN,
     subgraphPath:
-      "https://api.thegraph.com/subgraphs/name/ensdomains/ensrinkeby",
+      'https://api.thegraph.com/subgraphs/name/ensdomains/ensrinkeby'
   },
   icon: rin,
-  currencyName: "RIN",
+  currencyName: 'RIN',
   isEthVMSupported: {
     supported: false,
     url: null,
-    blockExplorerTX: "",
-    blockExplorerAddr: "",
-    websocket: null,
+    blockExplorerTX: '',
+    blockExplorerAddr: '',
+    websocket: null
   },
   gasPriceMultiplier: 1,
   canBuy: false,
-  coingeckoID: null,
+  coingeckoID: null
 };

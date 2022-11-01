@@ -1,18 +1,18 @@
-import vuexStore from '@/core/store';
-import { mapState } from 'vuex';
-import { Toast, ERROR } from '@/modules/toast/handler/handlerToast';
+//import { Toast, ERROR } from '@/modules/toast/handler/handlerToast';
 import {
-  LiquidityRateHistoryUpdate,
   UsdPriceEth,
   UserPositionUpdateSubscription,
   ReserveUpdateSubscription
 } from './aave.graphql';
 import Configs from '../configs';
+import ApolloClient, { ApolloError } from 'apollo-client';
+import { useWalletStore } from '@/stores/wallet';
+import { LiquidityRateHistoryUpdate } from './aave';
 export default class AaveCalls {
+  address: string;
   constructor(apollo) {
     this.apollo = apollo;
-    this.$store = vuexStore;
-    Object.assign(this, mapState('wallet', ['address']));
+    this.address = useWalletStore().address || '';
   }
 
   getLiquidityRateHistoryUpdate(param, next) {
@@ -28,8 +28,8 @@ export default class AaveCalls {
     // Subscribe
     connector.subscribe({
       next: next,
-      error: function (err) {
-        Toast(err.message ? err.message : err, {}, ERROR);
+      error: function (err: ApolloError) {
+        //Toast(err.message ? err.message : err, {}, ERROR);
       }
     });
   }
@@ -44,8 +44,8 @@ export default class AaveCalls {
     // Subscribe
     connector.subscribe({
       next: next,
-      error: function (err) {
-        Toast(err.message ? err.message : err, {}, ERROR);
+      error: function (err: ApolloError) {
+        //Toast(err.message ? err.message : err, {}, ERROR);
       }
     });
   }
@@ -56,7 +56,7 @@ export default class AaveCalls {
       query: UserPositionUpdateSubscription,
       client: 'aave',
       variables: {
-        userAddress: this.address(),
+        userAddress: this.address,
         poolId: Configs.POOL_ID
       }
     });
@@ -64,8 +64,8 @@ export default class AaveCalls {
     // Subscribe
     connector.subscribe({
       next: next,
-      error: function (err) {
-        Toast(err.message ? err.message : err, {}, ERROR);
+      error: function (err: ApolloError) {
+        //Toast(err.message ? err.message : err, {}, ERROR);
       }
     });
   }
@@ -83,8 +83,8 @@ export default class AaveCalls {
     // Subscribe
     connector.subscribe({
       next: next,
-      error: function (err) {
-        Toast(err.message ? err.message : err, {}, ERROR);
+      error: function (err: ApolloError) {
+        //Toast(err.message ? err.message : err, {}, ERROR);
       }
     });
   }

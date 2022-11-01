@@ -1,22 +1,22 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
-import TheDefaultView from "@/views/TheDefaultView.vue";
+import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
+import TheDefaultView from '@/views/TheDefaultView.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
-    path: "/",
+    path: '/',
     component: TheDefaultView,
     props: true,
     children: [
       {
-        path: "",
-        name: "HomeLayout",
-        component: () => import("@/views/layouts-default/TheHomeLayout.vue"),
+        path: '',
+        name: 'HomeLayout',
+        component: () => import('@/views/layouts-default/TheHomeLayout.vue'),
         meta: {
-          noAuth: true,
-        },
-      },
-    ],
-  },
+          noAuth: true
+        }
+      }
+    ]
+  }
   // {
   //   path: "/about",
   //   name: "About",
@@ -30,7 +30,7 @@ const routes: Array<RouteRecordRaw> = [
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
-  routes,
+  routes
 });
 
 export default router;

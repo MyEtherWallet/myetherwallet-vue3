@@ -26,7 +26,7 @@
         :flat="isStable"
         :color="isStable ? 'greyLight' : 'white'"
         class="cursor-pointer d-flex flex-column py-6 px-8"
-        @click.native="setTypeToStable"
+        @click="setTypeToStable"
       >
         <v-icon color="textMedium">mdi-arrow-right-circle</v-icon>
         <span class="textLight--text my-2">Stable</span>
@@ -42,7 +42,7 @@
         :flat="isVariable"
         :color="isVariable ? 'greyLight' : 'white'"
         class="cursor-pointer d-flex flex-column py-6 px-8 ml-5"
-        @click.native="setTypeToVariable"
+        @click="setTypeToVariable"
       >
         <!-- need to update this icon once we have it -->
         <v-icon x-large color="orangePrimary">mdi-arrow-right-circle</v-icon>
@@ -75,7 +75,7 @@
 
 <script setup lang="ts">
 import { INTEREST_TYPES, roundPercentage } from '../handlers/helpers';
-import BigNumber from 'bignumber.js/bignumber';
+import BigNumber from 'bignumber.js';
 import { computed, reactive } from 'vue';
 const props = defineProps({
   selectedToken: {

@@ -87,7 +87,7 @@
               </div>
             </v-col>
             <v-col cols="12" class="pt-md-2">
-              <aave-table
+              <!-- <aave-table
                 :table-header="state.depositsTableHeader"
                 :handler="state.handler"
                 :has-search="false"
@@ -95,7 +95,7 @@
                 @selectedDeposit="openDepositOverlayWithToken"
                 @withdrawToken="openWithdrawOverlay"
                 @collateralChange="openCollateralOverlay"
-              />
+              /> -->
             </v-col>
           </v-row>
 
@@ -103,7 +103,7 @@
             <mew-button
               title="Deposit"
               btn-size="xlarge"
-              @click.native="openDepositOverlay"
+              @click="openDepositOverlay"
             />
           </div>
         </v-sheet>
@@ -228,7 +228,7 @@
               </div>
             </v-col>
             <v-col cols="12" class="pt-md-2">
-              <aave-table
+              <!-- <aave-table
                 :table-header="state.borrowTableHeader"
                 :handler="state.handler"
                 :has-search="false"
@@ -236,14 +236,14 @@
                 @selectedBorrow="openBorrowOverlayWithToken"
                 @repayBorrowing="openRepayOverlay"
                 @changeAprType="openAprTypeOverlay"
-              />
+              /> -->
             </v-col>
           </v-row>
           <div class="d-flex justify-center mt-9">
             <mew-button
               title="Borrow"
               btn-size="xlarge"
-              @click.native="openBorrowOverlay"
+              @click="openBorrowOverlay"
             />
           </div>
         </v-sheet>
@@ -305,7 +305,7 @@ import AaveSetAprOverlay from './components/AaveSetAprOverlay.vue';
 import BG from '@/assets/images/backgrounds/bg-unstoppable-domain.png';
 import handlerAave from './handlers/handlerAave';
 import AaveCalls from './apollo/queries/queries';
-import BigNumber from 'bignumber.js/bignumber';
+import BigNumber from 'bignumber.js';
 import { AAVE_TABLE_HEADER } from '@/dapps/aave-dapp/handlers/helpers';
 import AaveTable from './components/AaveTable.vue';
 //import { ERROR, SUCCESS, Toast } from '@/modules/toast/handler/handlerToast';
@@ -703,7 +703,7 @@ const closeAprTypeOverlay = () => {
 };
 const setCallerAndHandler = () => {
   state.handler = new handlerAave();
-  state.caller = new AaveCalls(this.$apollo);
+  //state.caller = new AaveCalls(this.$apollo);
   state.caller.getUserData((res: any) => {
     state.handler?._userDataHandler(res);
   });
@@ -715,7 +715,11 @@ const setCallerAndHandler = () => {
   });
 };
 </script>
-
+<script>
+export default {
+  name: 'AaveDapp'
+};
+</script>
 <style lang="scss" scoped>
 .loan-value-container {
   border-radius: 5px;

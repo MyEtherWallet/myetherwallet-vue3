@@ -1,4 +1,4 @@
-const toPayload = (id: number, result: any) => {
+const toPayload = (id: number, result: string | null) => {
   return {
     jsonrpc: '2.0',
     id,

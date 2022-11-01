@@ -1,7 +1,7 @@
 import { PiniaGetterAdaptor } from './../types';
-import { fromWei } from 'web3-utils/types';
+import { fromWei } from 'web3-utils';
 import { formatFloatingPointValue } from '@/core/helpers/numberFormatHelper';
-import BigNumber from 'bignumber.js/bignumber';
+import BigNumber from 'bignumber.js';
 import { toBNSafe } from '@/core/helpers/numberFormatHelper';
 import { ThisStore } from './types';
 

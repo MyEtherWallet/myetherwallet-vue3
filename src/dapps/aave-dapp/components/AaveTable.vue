@@ -47,7 +47,7 @@ import {
   roundPercentage,
   AAVE_TABLE_HEADER
 } from '@/dapps/aave-dapp/handlers/helpers';
-import BigNumber from 'bignumber.js/bignumber';
+import BigNumber from 'bignumber.js';
 import { ROUTES_WALLET } from '@/core/configs/configRoutes';
 import { computed, onMounted, reactive } from 'vue';
 import { useGlobalStore } from '@/stores/global';

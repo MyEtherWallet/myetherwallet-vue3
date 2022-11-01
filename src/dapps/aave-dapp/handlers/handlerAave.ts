@@ -15,7 +15,7 @@ import {
   normalize
 } from '@aave/protocol-js/dist';
 import moment from 'moment/moment';
-import BigNumber from 'bignumber.js/bignumber';
+import BigNumber from 'bignumber.js';
 import { useWalletStore } from '@/stores/wallet';
 import { useGlobalStore } from '@/stores/global';
 
@@ -210,7 +210,7 @@ export default class AaveHandler {
 
   // aave calls
 
-  getLiquidityRateHistoryUpdate(id: any, next: Function) {
+  getLiquidityRateHistoryUpdate(id: any, next: () => void) {
     //this.aaveCalls.getLiquidityRateHistoryUpdate(id, next);
   }
 

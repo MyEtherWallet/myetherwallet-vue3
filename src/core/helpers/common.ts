@@ -1,4 +1,4 @@
-import { toBN } from "web3-utils/types";
+import { toBN } from 'web3-utils';
 const isInt = (num: number): boolean => {
   try {
     toBN(num);
@@ -8,12 +8,12 @@ const isInt = (num: number): boolean => {
   }
 };
 const stringToArray = (str: string) => {
-  return str.replace(/[^a-zA-Z0-9_,]+/g, "").split(",");
+  return str.replace(/[^a-zA-Z0-9_,]+/g, '').split(',');
 };
-const MAIN_TOKEN_ADDRESS = "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee";
+const MAIN_TOKEN_ADDRESS = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
 const PWA_EVENTS = {
-  PWA_UPDATED: "PWA_UPDATED",
-  PWA_MOUNT_ERROR: "PWA_MOUNT_ERROR",
-  PWA_UPDATE_FOUND: "PWA_UPDATE_FOUND",
+  PWA_UPDATED: 'PWA_UPDATED',
+  PWA_MOUNT_ERROR: 'PWA_MOUNT_ERROR',
+  PWA_UPDATE_FOUND: 'PWA_UPDATE_FOUND'
 };
 export { isInt, stringToArray, MAIN_TOKEN_ADDRESS, PWA_EVENTS };

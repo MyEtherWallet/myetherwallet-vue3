@@ -1,5 +1,5 @@
 import url from 'url';
-import web3 from 'web3/types';
+import web3 from 'web3';
 import MEWProvider from '@/utils/web3-provider';
 import WALLET_TYPES from '@/modules/access-wallet/common/walletTypes';
 import { formatters } from 'web3-core-helpers';

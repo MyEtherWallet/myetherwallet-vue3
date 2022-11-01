@@ -1,32 +1,31 @@
-import moonbeam from "@/assets/images/networks/moonbeam.svg";
-import { Network } from "./types";
+import moonbeam from '@/assets/images/networks/moonbeam.svg';
+import { Network } from './types';
 
-export default <Network> {
-  name: "Moonbeam",
-  name_long: "Moonbeam",
-  homePage: "https://moonbeam.network/",
-  blockExplorer: "Moonscan",
-  blockExplorerTX: "https://moonscan.io/tx/[[txHash]]",
-  blockExplorerAddr: "https://moonscan.io/addr/[[address]]",
+export default <Network>{
+  name: 'Moonbeam',
+  name_long: 'Moonbeam',
+  homePage: 'https://moonbeam.network/',
+  blockExplorer: 'Moonscan',
+  blockExplorerTX: 'https://moonscan.io/tx/[[txHash]]',
+  blockExplorerAddr: 'https://moonscan.io/addr/[[address]]',
   chainID: 1284,
-  tokens: import("@/_generated/tokens/tokens-moonbeam.json").then(
-    (val) => val.default
+  tokens: import('@/_generated/tokens/tokens-moonbeam.json').then(
+    val => val.default
   ),
-  contracts: import("@/_generated/contracts/contract-abi-moonbeam.json").then(
-    (val) => val.default
+  contracts: import('@/_generated/contracts/contract-abi-moonbeam.json').then(
+    val => val.default
   ),
   icon: moonbeam,
-  currencyName: "GLMR",
+  currencyName: 'GLMR',
   isTestNetwork: false,
   isEthVMSupported: {
     supported: false,
     url: null,
-    blockExplorerTX: "",
-    blockExplorerAddr: "",
-    websocket: null,
+    blockExplorerTX: '',
+    blockExplorerAddr: '',
+    websocket: null
   },
   gasPriceMultiplier: 1,
   canBuy: false,
-  coingeckoID: "moonbeam",
+  coingeckoID: 'moonbeam'
 };
-

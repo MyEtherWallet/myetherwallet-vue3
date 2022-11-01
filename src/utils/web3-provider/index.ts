@@ -1,14 +1,12 @@
 import GivenProvider from './providers/given-provider';
 import WSProvider from './providers/ws-provider';
 import WALLET_TYPES from '@/modules/access-wallet/common/walletTypes';
-import VuexStore from '@/core/store';
+import { useWalletStore } from '@/stores/wallet';
 class MEWProvider {
-  constructor(host, options) {
-    if (
-      VuexStore.state.wallet &&
-      VuexStore.state.wallet.identifier === WALLET_TYPES.WEB3_WALLET
-    ) {
-      return new GivenProvider(host, options);
+  constructor(host: any, options: any) {
+    const { identifier } = useWalletStore();
+    if (identifier === WALLET_TYPES.WEB3_WALLET) {
+      return new GivenProvider(host);
     } else if (host && typeof host === 'string') {
       if (host.includes('etherscan')) {
         throw new Error('Not supported network type');

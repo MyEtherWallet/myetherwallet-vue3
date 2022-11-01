@@ -30,7 +30,7 @@
 <script setup lang="ts">
 import { useGlobalStore } from '@/stores/global';
 import { useWalletStore } from '@/stores/wallet';
-import BigNumber from 'bignumber.js/bignumber';
+import BigNumber from 'bignumber.js';
 import { computed } from 'vue';
 import { useProps, useAaveOverlay } from '../handlers/aaveOverlayMixin';
 import { convertToFixed } from '../handlers/helpers';

@@ -1,7 +1,8 @@
 import { toPayload } from '../jsonrpc';
 import { randomHex } from 'web3-utils';
 import * as locStore from 'store';
-export default async ({ payload }, res, next) => {
+import { Web3Method } from '.';
+export default <Web3Method>(async ({ payload }, res, next) => {
   if (payload.method !== 'eth_sendRawTransaction') return next();
   const val = locStore.get('mew-testing');
   if (val) {
@@ -9,4 +10,4 @@ export default async ({ payload }, res, next) => {
   } else {
     next();
   }
-};
+});

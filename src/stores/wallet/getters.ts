@@ -1,4 +1,4 @@
-import { fromWei, toBN } from 'web3-utils/types';
+import { fromWei, toBN } from 'web3-utils';
 import { PiniaGetterAdaptor } from '../types';
 import { ThisStore } from './types';
 const getters: PiniaGetterAdaptor<Getters, ThisStore> = {

@@ -1,16 +1,16 @@
-import ETC from "./ETC.js";
-import ETH from "./ETH.js";
-import GOERLI from "./GOERLI.js";
-import KOV from "./KOV.js";
-import RIN from "./RIN.js";
-import ROP from "./ROP.js";
-import BSC from "./BSC.js";
-import MATIC from "./MATIC.js";
-import GO from "./GO.js";
-import MINTME from "./MINTME";
-import XDC from "./XDC";
-import MOONBEAM from "./MOONBEAM";
-import MOONRIVER from "./MOONRIVER";
+import ETC from './ETC';
+import ETH from './ETH';
+import GOERLI from './GOERLI';
+import KOV from './KOV';
+import RIN from './RIN';
+import ROP from './ROP';
+import BSC from './BSC';
+import MATIC from './MATIC';
+import GO from './GO';
+import MINTME from './MINTME';
+import XDC from './XDC';
+import MOONBEAM from './MOONBEAM';
+import MOONRIVER from './MOONRIVER';
 
 export {
   ETH,
@@ -25,5 +25,5 @@ export {
   MINTME,
   XDC,
   MOONBEAM,
-  MOONRIVER,
+  MOONRIVER
 };

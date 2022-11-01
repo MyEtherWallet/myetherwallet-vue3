@@ -1,9 +1,9 @@
-import Web3WSProvider from './ws-web3-provider';
+import Web3WSProvider, { WSProviderType } from './ws-web3-provider';
 import { Manager as Web3RequestManager } from 'web3-core-requestmanager';
 import MiddleWare from '../middleware';
-import { EventBus } from '@/core/plugins/eventBus';
-import VuexStore from '@/core/store';
-import { Toast, SENTRY } from '@/modules/toast/handler/handlerToast';
+//import { EventBus } from '@/core/plugins/eventBus';
+//import VuexStore from '@/core/store';
+//import { Toast, SENTRY } from '@/modules/toast/handler/handlerToast';
 import { v4 as uuidv4 } from 'uuid';
 import {
   ethSendTransaction,
@@ -17,7 +17,12 @@ import {
 } from '../methods';
 const MAX_RETRIES = 10;
 class WSProvider {
-  constructor(host, options) {
+  wsProvider: WSProviderType;
+  oWSProvider: WSProviderType;
+  lastMessage: number;
+  connectionRetries: number;
+
+  constructor(host: any, options: any) {
     this.wsProvider = new Web3WSProvider(host, options);
     this.oWSProvider = new Web3WSProvider(host, options);
     this.lastMessage = new Date().getTime();
@@ -30,7 +35,7 @@ class WSProvider {
         this.wsProvider.connection.CONNECTING
       ) {
         setTimeout(() => {
-          this.wsProvider.send(payload, callback);
+          this.wsProvider.send?.(payload, callback);
         }, 100);
         return;
       }
@@ -44,7 +49,7 @@ class WSProvider {
           delete tempConn['send'];
           Object.assign(this.wsProvider, tempConn);
           setTimeout(() => {
-            this.wsProvider.send(payload, callback);
+            this.wsProvider.send?.(payload, callback);
           }, 1000);
           return;
         }
@@ -59,7 +64,7 @@ class WSProvider {
           delete tempConn['send'];
           Object.assign(this.oWSProvider, tempConn);
           setTimeout(() => {
-            this.wsProvider.send(payload, callback);
+            this.wsProvider.send?.(payload, callback);
           }, 1000);
           return;
         }
@@ -68,15 +73,15 @@ class WSProvider {
         this.wsProvider.connection.readyState !==
         this.wsProvider.connection.OPEN
       ) {
-        Toast('connection not open', {}, SENTRY);
+        //Toast('connection not open', {}, SENTRY);
         return;
       }
 
       const req = {
         payload,
-        store: VuexStore,
-        requestManager: new Web3RequestManager(this.oWSProvider),
-        eventHub: EventBus
+        //store: VuexStore,
+        requestManager: new Web3RequestManager(this.oWSProvider)
+        //eventHub: EventBus
       };
       const middleware = new MiddleWare();
       middleware.use(ethSendTransaction);
@@ -93,16 +98,16 @@ class WSProvider {
       });
     };
 
-    this.wsProvider.request = payload => {
+    this.wsProvider.request = (payload: any) => {
       return new Promise((resolve, reject) => {
-        this.wsProvider.send(
+        this.wsProvider.send?.(
           {
             jsonrpc: '2.0',
             id: uuidv4(),
             method: payload.method,
             params: payload.params
           },
-          (err, res) => {
+          (err: any, res: any) => {
             if (err) return reject(err);
             else if (res.error) return reject(res.error);
             resolve(res.result);

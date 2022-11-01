@@ -83,7 +83,7 @@
 </template>
 
 <script setup lang="ts">
-import BigNumber from 'bignumber.js/bignumber';
+import BigNumber from 'bignumber.js';
 import { computed, onMounted, reactive } from 'vue';
 const props = defineProps({
   selectedToken: {

@@ -29,7 +29,7 @@ const actions: PiniaActionAdaptor<Actions, ThisStore> = {
   },
   setOnlineStatus(status: boolean) {
     const walletStore = useWalletStore();
-    //if (status) walletStore.setWeb3Instance(null);
+    if (status) walletStore.setWeb3Instance('');
     this.online = status;
   },
   updateGasPrice() {

@@ -1,14 +1,14 @@
 import axios from 'axios';
-import BigNumber from 'bignumber.js/bignumber';
+import BigNumber from 'bignumber.js';
 const HOST_URL = 'https://mainnet.mewwallet.dev/v3';
 const GET_LIST = '/swap/list';
 const GET_QUOTE = '/swap/quote';
 const GET_TRADE = '/swap/trade';
 const REQUEST_CACHER = 'https://requestcache.mewapi.io/?url=';
-import { isAddress } from 'web3-utils/types';
+import { isAddress } from 'web3-utils';
 import Configs from '../configs/providersConfigs';
 import { ETH } from '@/utils/networks/types';
-import Web3 from 'web3/types';
+import Web3 from 'web3';
 //import { Toast, ERROR } from '@/modules/toast/handler/handlerToast';
 class MEWPClass {
   web3: CustomWeb3;

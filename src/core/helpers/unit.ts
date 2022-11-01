@@ -6,8 +6,8 @@ https://github.com/ethers-io
 Note, Richard is a god of ether gods. Follow and respect him, and use Ethers.io!
 */
 
-import BN from "bn.js";
-import { toBN } from "web3-utils/types";
+import BN from 'bn.js';
+import { toBN } from 'web3-utils';
 
 const zero = toBN(0);
 const negative1 = toBN(-1);
@@ -26,17 +26,17 @@ const getValueOfUnit = (decimals: number) => {
 };
 
 const numberToString = (arg: any): string => {
-  if (typeof arg === "string") {
+  if (typeof arg === 'string') {
     if (!arg.match(/^-?[0-9.]+$/)) {
       throw new Error(
         `while converting number to string, invalid number value '${arg}', should be a number matching (^-?[0-9.]+).`
       );
     }
     return arg;
-  } else if (typeof arg === "number") {
+  } else if (typeof arg === 'number') {
     return String(arg);
   } else if (
-    typeof arg === "object" &&
+    typeof arg === 'object' &&
     arg.toString &&
     (arg.toTwos || arg.dividedToIntegerBy)
   ) {
@@ -75,16 +75,16 @@ const fromBase = (
   }
   if (!options.pad) {
     const match = fraction.match(/^([0-9]*[1-9]|0)(0*)/);
-    fraction = match ? match[1] : "0";
+    fraction = match ? match[1] : '0';
   }
 
   let whole = wei.div(base).toString(10);
 
   if (options.commify) {
-    whole = whole.replace(/\B(?=(\d{3})+(?!\d))/g, ","); // eslint-disable-line
+    whole = whole.replace(/\B(?=(\d{3})+(?!\d))/g, ','); // eslint-disable-line
   }
 
-  let value = `${whole}${fraction == "0" ? "" : `.${fraction}`}`;
+  let value = `${whole}${fraction == '0' ? '' : `.${fraction}`}`;
 
   if (negative) {
     value = `-${value}`;
@@ -99,19 +99,19 @@ const toBase = (etherInput: any, decimals: number) => {
   const baseLength = base.toString().length - 1 || 1;
 
   // Is it negative?
-  const negative = ether.substring(0, 1) === "-";
+  const negative = ether.substring(0, 1) === '-';
   if (negative) {
     ether = ether.substring(1);
   }
 
-  if (ether === ".") {
+  if (ether === '.') {
     throw new Error(
       `[ethjs-unit] while converting number ${etherInput} to wei, invalid value`
     );
   }
 
   // Split it into a whole and fractional part
-  const comps = ether.split(".");
+  const comps = ether.split('.');
   if (comps.length > 2) {
     throw new Error(
       `[ethjs-unit] while converting number ${etherInput} to wei,  too many decimal points`
@@ -122,10 +122,10 @@ const toBase = (etherInput: any, decimals: number) => {
   let fraction = comps[1];
 
   if (!whole) {
-    whole = "0";
+    whole = '0';
   }
   if (!fraction) {
-    fraction = "0";
+    fraction = '0';
   }
   if (fraction.length > baseLength) {
     throw new Error(
@@ -134,7 +134,7 @@ const toBase = (etherInput: any, decimals: number) => {
   }
 
   while (fraction.length < baseLength) {
-    fraction += "0";
+    fraction += '0';
   }
 
   let wei = toBN(whole).mul(base).add(toBN(fraction));

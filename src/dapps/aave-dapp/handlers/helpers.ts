@@ -1,5 +1,5 @@
-import { toBN } from 'web3-utils/types';
-import BigNumber from 'bignumber.js/bignumber';
+import { toBN } from 'web3-utils';
+import BigNumber from 'bignumber.js';
 const checkAmount = (total: string | number, amount: string | number) => {
   if (toBN(amount).gt(toBN(total))) {
     return true;

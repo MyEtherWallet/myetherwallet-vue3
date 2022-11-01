@@ -1,38 +1,37 @@
-import BN from "bn.js";
-import BigNumber from "bignumber.js";
-import { isNull } from "lodash";
-import { isBigNumber } from "web3-utils/types";
+import BigNumber from 'bignumber.js';
+import { isNull } from 'lodash';
+import { isBigNumber } from 'web3-utils';
 /**
  * Localizes numbers to its specified currency
  * @returns {string} converted number
  */
 export const localizeCurrency = ({
-  currency = "USD",
-  number = "0.00",
+  currency = 'USD',
+  number = '0.00',
   rate = 1,
   small = false,
-  verySmall = false,
+  verySmall = false
 }: localizeCurrencyParam) => {
   if (isNull(number)) {
     return convertNumber({ currency, options: {}, convertedPrice: 0.0 });
   }
-  const options = number.tooltipText
+  const options: Options | any = number.tooltipText
     ? {
-        notation: "compact",
+        notation: 'compact',
         minimumFractionDigits: 3,
-        maximumFractionDigits: 4,
+        maximumFractionDigits: 4
       }
     : small
     ? {
-        notation: "compact",
+        notation: 'compact',
         minimumFractionDigits: 5,
-        maximumFractionDigits: 6,
+        maximumFractionDigits: 6
       }
     : {};
 
-  rate = typeof rate === "string" ? currencyToNumber(rate) : rate;
+  rate = typeof rate === 'string' ? currencyToNumber(rate) : rate;
   const convertedNumber: number =
-    typeof number === "string"
+    typeof number === 'string'
       ? currencyToNumber(number)
       : number.tooltipText
       ? currencyToNumber(number.tooltipText)
@@ -48,7 +47,11 @@ export const localizeCurrency = ({
     : verySmall
     ? new BigNumber(number).times(rate).toFixed(7)
     : new BigNumber(number).times(rate);
-  return convertNumber({ currency, options, convertedPrice });
+  return convertNumber({
+    currency,
+    options,
+    convertedPrice: new BigNumber(convertedPrice).toNumber()
+  });
 };
 
 /**
@@ -57,7 +60,7 @@ export const localizeCurrency = ({
  * @returns {Number}
  */
 export const currencyToNumber = (currency: string): number =>
-  parseFloat(currency.replace(/[,$₽<\s]/g, ""));
+  parseFloat(currency.replace(/[,$₽<\s]/g, ''));
 
 /**
  * Converts number to a local currency
@@ -66,24 +69,29 @@ export const currencyToNumber = (currency: string): number =>
 const convertNumber = ({
   currency,
   options,
-  convertedPrice,
+  convertedPrice
 }: ConvertNumberParam): string => {
   try {
     return new Intl.NumberFormat(undefined, {
-      style: "currency",
+      style: 'currency',
       currency,
-      currencyDisplay: "narrowSymbol",
-      ...options,
+      currencyDisplay: 'narrowSymbol',
+      ...options
     }).format(convertedPrice);
-  } catch (e) {
+  } catch (e: any) {
     throw new Error(e);
   }
 };
-type ConvertNumberParam = {
+interface Options {
+  notation: string;
+  minimumFractionDigits: number;
+  maximumFractionDigits: number;
+}
+interface ConvertNumberParam {
   currency: string;
-  options: { notation?: string; minimumFractionDigits?: number };
-  convertedPrice: number;
-};
+  options: Options | any;
+  convertedPrice: number | bigint;
+}
 interface localizeCurrencyParam {
   currency?: string;
   number?: string | any;

@@ -1,11 +1,11 @@
 import { formatters } from 'web3-core-helpers';
-import Notification, {
-  NOTIFICATION_TYPES,
-  NOTIFICATION_STATUS
-} from '@/modules/notifications/handlers/handlerNotification';
+// import Notification, {
+//   NOTIFICATION_TYPES,
+//   NOTIFICATION_STATUS
+// } from '@/modules/notifications/handlers/handlerNotification';
 import { clone } from 'lodash';
-import { Toast, ERROR } from '@/modules/toast/handler/handlerToast';
-const getSanitizedTx = tx => {
+//import { Toast, ERROR } from '@/modules/toast/handler/handlerToast';
+const getSanitizedTx = (tx: any) => {
   return new Promise((resolve, reject) => {
     if (!tx.gas && !tx.gasLimit && !tx.chainId)
       return reject(new Error('"gas" or "chainId" is missing'));
@@ -28,19 +28,19 @@ const getSanitizedTx = tx => {
   });
 };
 
-const setEvents = (promiObj, tx, dispatch) => {
+const setEvents = (promiObj: any, tx: any, dispatch: any) => {
   // create a no reference copy specifically for notification
   const newTxObj = clone(tx);
-  newTxObj.type = NOTIFICATION_TYPES.OUT;
-  const isExempt = newTxObj.hasOwnProperty('handleNotification');
+  //newTxObj.type = NOTIFICATION_TYPES.OUT;
+  const isExempt = newTxObj.handleNotification ? true : false;
 
   if (!newTxObj.to) {
     newTxObj['to'] = '0x0000000000000000000000000000000000000000';
   }
 
   promiObj
-    .once('transactionHash', hash => {
-      newTxObj.status = NOTIFICATION_STATUS.PENDING;
+    .once('transactionHash', (hash: any) => {
+      //newTxObj.status = NOTIFICATION_STATUS.PENDING;
       newTxObj.hash = hash;
       if (!isExempt) {
         const notification = new Notification(newTxObj);
@@ -51,7 +51,7 @@ const setEvents = (promiObj, tx, dispatch) => {
     })
     .once('receipt', () => {
       if (!isExempt) {
-        newTxObj.status = NOTIFICATION_STATUS.SUCCESS;
+        //newTxObj.status = NOTIFICATION_STATUS.SUCCESS;
         const notification = new Notification(newTxObj);
         setTimeout(() => {
           dispatch(
@@ -67,15 +67,15 @@ const setEvents = (promiObj, tx, dispatch) => {
         });
       }
     })
-    .on('error', err => {
+    .on('error', (err: any) => {
       if (!isExempt) {
         if (!newTxObj.hash) {
-          Toast(err, {}, ERROR);
+          //Toast(err, {}, ERROR);
           return;
         }
-        newTxObj.status = NOTIFICATION_STATUS.FAILED;
+        //newTxObj.status = NOTIFICATION_STATUS.FAILED;
         newTxObj.errMessage = err.message;
-        if (!newTxObj.hasOwnProperty('hash')) {
+        if (!newTxObj.hash) {
           newTxObj['hash'] = '0x';
         }
         const notification = new Notification(newTxObj);

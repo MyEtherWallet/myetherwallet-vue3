@@ -1,7 +1,5 @@
-'use strict';
-
 //import { Toast, SENTRY } from '@/modules/toast/handler/handlerToast';
-const errors = require('web3-core-helpers/types').errors;
+import { errors } from 'web3-core-helpers';
 import { isArray, isFunction } from 'lodash';
 const Ws = function (url: string, protocols: string | Array<string>) {
   if (protocols) return new window.WebSocket(url, protocols);
@@ -11,14 +9,28 @@ const _btoa = btoa;
 const parseURL = function (url: string) {
   return new URL(url);
 };
-interface ThisWSProvider {
+export interface WSProviderType {
   responseCallbacks: any;
   notificationCallbacks: Array<any>;
   _customTimeout?: number;
   connection: WebSocket;
+  addDefaultEvents: Function;
+  _parseResponse: (data: any) => Array<any>;
+  _addResponseCallback: (payload: any, callback: Function) => void;
+  _timeout: Function;
+  send?: (payload: any, callback: Function) => void;
+  on: (type: string, callback: Function) => void;
+  removeListener: (type: string, callback: Function) => void;
+  removeAllListeners: (type: string) => void;
+  reset: () => void;
+  disconnect: () => void;
+  request?: Function;
+}
+interface WSProviderConstructor {
+  new (host: string, options?: any): WSProviderType;
 }
 const WebsocketProvider = function WebsocketProvider(
-  this: ThisWSProvider,
+  this: WSProviderType,
   url: string,
   options?: any
 ) {
@@ -36,25 +48,25 @@ const WebsocketProvider = function WebsocketProvider(
       'Basic ' + _btoa(parsedURL.username + ':' + parsedURL.password);
   }
   const clientConfig = options.clientConfig || undefined;
-  if (parsedURL.auth) {
-    headers.authorization = 'Basic ' + _btoa(parsedURL.auth);
-  }
-  this.connection = new Ws(
+  // if (parsedURL.auth) {
+  //   headers.authorization = 'Basic ' + _btoa(parsedURL.auth);
+  // }
+  this.connection = Ws(
     url,
-    protocol,
-    undefined,
-    headers,
-    undefined,
-    clientConfig
+    protocol
+    // undefined,
+    // headers,
+    // undefined,
+    // clientConfig
   );
 
   this.addDefaultEvents();
   this.connection.onmessage = function (e) {
     const data = typeof e.data === 'string' ? e.data : '';
-    _this._parseResponse(data).forEach(function (result) {
+    _this._parseResponse(data).forEach(function (result: any) {
       let id = null;
       if (isArray(result)) {
-        result.forEach(function (load) {
+        result.forEach(function (load: any) {
           if (_this.responseCallbacks[load.id]) id = load.id;
         });
       } else {
@@ -84,22 +96,20 @@ const WebsocketProvider = function WebsocketProvider(
     set: function () {},
     enumerable: true
   });
-};
+} as any as WSProviderConstructor;
+
 WebsocketProvider.prototype.addDefaultEvents = function () {
-  const _this = this;
-
   this.connection.onerror = function () {
-    _this._timeout();
+    this._timeout();
   };
-
   this.connection.onclose = function () {
-    _this._timeout();
-    _this.reset();
+    this._timeout();
+    this.reset();
   };
 };
-WebsocketProvider.prototype._parseResponse = function (data) {
-  const _this = this,
-    returnValues = [];
+
+WebsocketProvider.prototype._parseResponse = function (data: any) {
+  const returnValues: Array<any> = [];
   const dechunkedData = data
     .replace(/\}[\n\r]?\{/g, '}|--|{') // }{
     .replace(/\}\][\n\r]?\[\{/g, '}]|--|[{') // }][{
@@ -107,23 +117,23 @@ WebsocketProvider.prototype._parseResponse = function (data) {
     .replace(/\}\][\n\r]?\{/g, '}]|--|{') // }]{
     .split('|--|');
 
-  dechunkedData.forEach(function (data) {
-    if (_this.lastChunk) data = _this.lastChunk + data;
+  dechunkedData.forEach(function ( data: any) {
+    if (this.lastChunk) data = this.lastChunk + data;
     let result = null;
     try {
       result = JSON.parse(data);
     } catch (e) {
-      _this.lastChunk = data;
-      clearTimeout(_this.lastChunkTimeout);
-      _this.lastChunkTimeout = setTimeout(function () {
-        _this._timeout();
+      this.lastChunk = data;
+      clearTimeout(this.lastChunkTimeout);
+      this.lastChunkTimeout = setTimeout(function () {
+        this._timeout();
         throw errors.InvalidResponse(data);
       }, 1000 * 15);
 
       return;
     }
-    clearTimeout(_this.lastChunkTimeout);
-    _this.lastChunk = null;
+    clearTimeout(this.lastChunkTimeout);
+    this.lastChunk = null;
 
     if (result) returnValues.push(result);
   });
@@ -132,8 +142,8 @@ WebsocketProvider.prototype._parseResponse = function (data) {
 };
 
 WebsocketProvider.prototype._addResponseCallback = function (
-  payload,
-  callback
+  payload: any,
+  callback: () => void
 ) {
   const id = payload.id || payload[0].id;
   const method = payload.method || payload[0].method;
@@ -161,7 +171,7 @@ WebsocketProvider.prototype._timeout = function () {
     }
   }
 };
-WebsocketProvider.prototype.send = function (payload, callback) {
+WebsocketProvider.prototype.send = function (payload: any, callback: Function) {
   const _this = this;
 
   if (this.connection.readyState === this.connection.CONNECTING) {
@@ -171,20 +181,20 @@ WebsocketProvider.prototype.send = function (payload, callback) {
     return;
   }
   if (this.connection.readyState !== this.connection.OPEN) {
-    Toast('connection not open', {}, SENTRY);
+    //Toast('connection not open', {}, SENTRY);
     return;
   }
 
   this.connection.send(JSON.stringify(payload));
   this._addResponseCallback(payload, callback);
 };
-WebsocketProvider.prototype.on = function (type, callback) {
+WebsocketProvider.prototype.on = function (type: string, callback: Function) {
   if (typeof callback !== 'function')
     throw new Error('The second parameter callback must be a function.');
 
   switch (type) {
     case 'message':
-      this.notificationCallbacks.push(resp =>
+      this.notificationCallbacks.push((resp: any) =>
         callback({ data: resp.params, type: resp.method })
       );
       break;
@@ -206,18 +216,24 @@ WebsocketProvider.prototype.on = function (type, callback) {
       break;
   }
 };
-WebsocketProvider.prototype.removeListener = function (type, callback) {
+WebsocketProvider.prototype.removeListener = function (
+  type: string,
+  callback: Function
+) {
   const _this = this;
 
   switch (type) {
     case 'data':
-      this.notificationCallbacks.forEach(function (cb, index) {
+      this.notificationCallbacks.forEach(function (
+        cb: Function,
+        index: number
+      ) {
         if (cb === callback) _this.notificationCallbacks.splice(index, 1);
       });
       break;
   }
 };
-WebsocketProvider.prototype.removeAllListeners = function (type) {
+WebsocketProvider.prototype.removeAllListeners = function (type: string) {
   switch (type) {
     case 'data':
       this.notificationCallbacks = [];

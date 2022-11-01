@@ -30,7 +30,7 @@ const actions: PiniaActionAdaptor<Actions, ThisStore> = {
    * @param {Object} val - block number
    */
   deleteEthBlockTx(val: any) {
-    const idx = this.ethBlocksTxs.findIndex(item => {
+    const idx = this.ethBlocksTxs.findIndex((item: any) => {
       if (item.hash === val.hash) {
         return item;
       }
@@ -67,7 +67,7 @@ const actions: PiniaActionAdaptor<Actions, ThisStore> = {
    * @param {string} val
    */
   removeBlockFromCart(val: string) {
-    this.cart.ETH = this.cart.ETH.filter(item => {
+    this.cart.ETH = this.cart.ETH.filter((item: any) => {
       if (item !== val) return item;
     });
   },
@@ -77,7 +77,7 @@ const actions: PiniaActionAdaptor<Actions, ThisStore> = {
    * @param {string} val
    */
   removeTestBlockFromCart(val: string) {
-    this.cart.RIN = this.cart.RIN.filter(item => {
+    this.cart.RIN = this.cart.RIN.filter((item: any) => {
       if (item !== val) return item;
     });
   },

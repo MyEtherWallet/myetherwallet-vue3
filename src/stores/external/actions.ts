@@ -2,13 +2,13 @@
 //import { Toast, ERROR } from '@/modules/toast/handler/handlerToast';
 import { ETH, BSC, MATIC } from '@/utils/networks/types';
 import { MAIN_TOKEN_ADDRESS } from '@/core/helpers/common';
-import BigNumber from 'bignumber.js/bignumber';
+import BigNumber from 'bignumber.js';
 import {
   formatFiatValue,
   formatFloatingPointValue,
   formatIntegerValue
 } from '@/core/helpers/numberFormatHelper';
-import { toBN } from 'web3-utils/types';
+import { toBN } from 'web3-utils';
 import getTokenInfo from '@/core/helpers/tokenInfo';
 import { ThisStore } from './types';
 import { useWalletStore } from '../wallet';

@@ -1,11 +1,10 @@
 //import { gasPriceTypes } from '@/core/helpers/gasPriceHelper';
-import Web3 from 'web3/types';
 import axios from 'axios';
-import BigNumber from 'bignumber.js/bignumber';
+import BigNumber from 'bignumber.js';
 import { v4 as uuidv4 } from 'uuid';
 import erc20Abi from '../abi/erc20';
 import Configs from '../configs/providersConfigs';
-import { toBN, toHex, toWei } from 'web3-utils/types';
+import { toBN, toHex, toWei } from 'web3-utils';
 import Web3Contract from 'web3-eth-contract/types';
 import { ETH } from '@/utils/networks/types';
 //import { Toast, ERROR } from '@/modules/toast/handler/handlerToast';
@@ -17,12 +16,12 @@ import { SwapTradeParams } from './mew-provider-class';
 const HOST_URL = 'https://swap.mewapi.io/changelly';
 const REQUEST_CACHER = 'https://requestcache.mewapi.io/?url=';
 class Changelly {
-  web3: Web3;
+  web3: any;
   provider: string;
   supportedNetworks: Array<string>;
   chain: string;
 
-  constructor(web3: Web3, chain: string) {
+  constructor(web3: any, chain: string) {
     this.web3 = web3;
     this.provider = 'changelly';
     this.supportedNetworks = [ETH.name];
@@ -192,7 +191,7 @@ class Changelly {
   }: SwapTradeParams) {
     const fromAmountBN = new BigNumber(fromAmount || 0);
     const queryAmount = fromAmountBN.div(
-      new BigNumber(10).pow(new BigNumber(fromT.decimals))
+      new BigNumber(10).pow(new BigNumber(fromT.decimals || 0))
     );
     const providedRefundAddress = refundAddress ? refundAddress : fromAddress;
     return axios
@@ -245,7 +244,7 @@ class Changelly {
               response.data.result.amountExpectedFrom
             );
             amountBN = amountBN
-              .times(new BigNumber(10).pow(new BigNumber(fromT.decimals)))
+              .times(new BigNumber(10).pow(new BigNumber(fromT.decimals || 0)))
               .toFixed(0);
             amountBN = toBN(amountBN);
             const erc20contract = new Web3Contract.Contract(erc20Abi);
@@ -254,7 +253,7 @@ class Changelly {
               .encodeABI();
             txObj.to = toT.contract;
           }
-          return this.web3.eth.estimateGas(txObj).then(gas => {
+          return this.web3.eth.estimateGas(txObj).then((gas: any) => {
             txObj.gas = gas;
             return {
               provider: this.provider,
@@ -289,7 +288,7 @@ class Changelly {
               confirmInfo: confirmInfo
             })
           )
-          .on('transactionHash', hash => {
+          .on('transactionHash', (hash: any) => {
             return resolve({
               hashes: [hash],
               provider: this.provider,
@@ -319,7 +318,7 @@ class Changelly {
       }
     });
   }
-  getStatus(statusObj:any ) {
+  getStatus(statusObj: any) {
     statusObj = statusObj.statusObj;
     return axios
       .post(

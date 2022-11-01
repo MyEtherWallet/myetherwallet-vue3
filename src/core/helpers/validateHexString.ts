@@ -1,7 +1,7 @@
-import { isHexStrict } from "web3-utils/types";
+import { isHexStrict } from 'web3-utils';
 
 const validateHexString = (str: string): boolean => {
-  if (str === "") return true;
+  if (str === '') return true;
   return isHexStrict(str);
 };
 
