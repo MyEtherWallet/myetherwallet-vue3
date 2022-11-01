@@ -81,7 +81,7 @@
 </template>
 
 <script setup lang="ts">
-import TheLayoutHeader from '../components-default/TheLayoutHeader.vue';
+import TheLayoutHeader from '../TheDefaultHeader.vue';
 const buttons = [
   {
     logoImg: require('@/assets/images/hardware-wallets/logo-ledger.svg'),

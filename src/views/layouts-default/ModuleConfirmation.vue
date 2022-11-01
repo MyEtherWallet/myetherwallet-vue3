@@ -272,9 +272,9 @@ import {
   toWei,
   sha3,
   isHex
-} from 'web3-utils/types';
+} from 'web3-utils';
 import { isEmpty, isArray, cloneDeep } from 'lodash';
-import BigNumber from 'bignumber.js/bignumber';
+import BigNumber from 'bignumber.js';
 import * as locStore from 'store';
 
 import WALLET_TYPES from '@/modules/access-wallet/common/walletTypes';

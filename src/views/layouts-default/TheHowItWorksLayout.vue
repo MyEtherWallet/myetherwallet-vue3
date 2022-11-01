@@ -8,23 +8,23 @@
       </v-sheet>
     </v-container>
 
-    <how-it-works-send />
+    <!-- <how-it-works-send />
     <how-it-works-swap />
     <how-it-works-dapps-center />
     <how-it-works-tokens />
     <how-it-works-more />
-    <app-get-started />
+    <app-get-started /> -->
   </div>
 </template>
 
 <script setup lang="ts">
-import TheLayoutHeader from '../components-default/TheLayoutHeader.vue';
-import AppGetStarted from '@/core/components/AppGetStarted.vue';
-import HowItWorksSwap from '../components-default/HowItWorksSwap.vue';
-import HowItWorksSend from '../components-default/HowItWorksSend.vue';
-import HowItWorksDappsCenter from '../components-default/HowItWorksDappsCenter.vue';
-import HowItWorksTokens from '../components-default/HowItWorksTokens.vue';
-import HowItWorksMore from '../components-default/HowItWorksMore.vue';
+import TheLayoutHeader from '../TheLayoutHeader.vue';
+// import AppGetStarted from '@/core/components/AppGetStarted.vue';
+// import HowItWorksSwap from '../components-default/HowItWorksSwap.vue';
+// import HowItWorksSend from '../components-default/HowItWorksSend.vue';
+// import HowItWorksDappsCenter from '../components-default/HowItWorksDappsCenter.vue';
+// import HowItWorksTokens from '../components-default/HowItWorksTokens.vue';
+// import HowItWorksMore from '../components-default/HowItWorksMore.vue';
 </script>
 
 <style lang="scss" scoped>

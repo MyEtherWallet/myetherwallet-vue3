@@ -73,7 +73,7 @@ import { formatFloatingPointValue } from '@/core/helpers/numberFormatHelper';
 import { ROUTES_HOME as Routes } from '@/core/configs/configRoutes';
 import { isEmpty } from 'lodash';
 import { computed, onMounted, reactive, watch } from 'vue';
-import Web3 from 'web3/types';
+import Web3 from 'web3';
 import { SwapPairData } from '@/modules/swap/handlers/providers/mew-provider-class';
 import { useGlobalStore } from '@/stores/global';
 import { useWalletStore } from '@/stores/wallet';

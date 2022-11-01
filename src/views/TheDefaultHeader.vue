@@ -3,7 +3,7 @@
     <v-container class="pl-4 pr-4 d-flex align-center pt-8">
       <v-row align="center" no-gutters>
         <v-col class="d-md-none" cols="2" md="4">
-          <the-default-mobile-navigation class="ml-n2" />
+          <!-- <the-default-mobile-navigation class="ml-n2" /> -->
         </v-col>
         <v-col cols="8" md="8" class="d-flex align-center">
           <v-img
@@ -16,18 +16,18 @@
           />
 
           <div class="d-none d-md-flex">
-            <router-link
+            <!-- <router-link
               class="white--text text-decoration--none menu-item"
               :to="{ name: ROUTES_HOME.HOW_IT_WORKS.NAME }"
             >
               {{ $t('header.what-is-mew') }}
-            </router-link>
+            </router-link> -->
             <div class="mx-8">
-              <mew-menu
+              <!-- <mew-menu
                 activator-text-color="white--text"
                 :list-obj="menuObj"
                 @goToPage="routeTo"
-              />
+              /> -->
             </div>
             <a class="white--text text-decoration--none menu-item">
               {{ $t('header.buy-eth') }}
@@ -35,7 +35,7 @@
           </div>
         </v-col>
         <v-col cols="2" md="4" class="d-flex justify-end">
-          <mew-tools class="ml-auto" />
+          <!-- <mew-tools class="ml-auto" /> -->
         </v-col>
       </v-row>
     </v-container>
@@ -43,11 +43,12 @@
 </template>
 
 <script setup lang="ts">
-import MewTools from '@/components/mew-tools/MewTools.vue';
-import TheDefaultMobileNavigation from './TheDefaultMobileNavigation.vue';
+//import MewTools from '@/components/mew-tools/MewTools.vue';
+import TheDefaultMobileNavigation from './components-default/TheDefaultMobileNavigation.vue';
 import { ROUTES_HOME, ROUTES_WALLET } from '@/core/configs/configRoutes';
+import { useRouter } from 'vue-router';
 //import buyMore from '@/core/mixins/buyMore.mixin.js';
-
+const router = useRouter();
 const menuObj = {
   name: 'Wallet actions',
   items: [
@@ -95,8 +96,8 @@ const menuObj = {
     }
   ]
 };
-const routeTo = function (this: any, route: string) {
-  this.$router.push(route);
+const routeTo = function (route: string) {
+  router.push(route);
 };
 </script>
 

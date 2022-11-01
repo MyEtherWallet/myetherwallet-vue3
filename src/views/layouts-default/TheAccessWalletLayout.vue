@@ -117,12 +117,12 @@
 import { mapActions, mapState, mapGetters } from 'vuex';
 import Web3 from 'web3';
 
-import {
-  Toast,
-  ERROR,
-  WARNING,
-  SENTRY
-} from '@/modules/toast/handler/handlerToast';
+// import {
+//   Toast,
+//   ERROR,
+//   WARNING,
+//   SENTRY
+// } from '@/modules/toast/handler/handlerToast';
 import { ACCESS_VALID_OVERLAYS } from '@/core/router/helpers';
 import { Web3Wallet, MewConnectWallet } from '@/modules/access-wallet/common';
 import { ROUTES_HOME, ROUTES_WALLET } from '@/core/configs/configRoutes';

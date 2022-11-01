@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import HomeEnkrypt from "../components-default/HomeEnkrypt.vue";
-import HomeLanding from "../components-default/HomeLanding.vue";
-import HomeFeatures from "../components-default/HomeFeatures.vue";
-import HomeEthBlocks from "../components-default/HomeEthBlocks.vue";
-import HomeSocials from "../components-default/HomeSocials.vue.vue";
-import HomeWhyMew from "../components-default/HomeWhyMew.vue";
-import AppMewtopiaBlock from "@/core/components/AppMewtopiaBlock.vue";
-import AppGetStarted from "@/core/components/AppGetStarted.vue";
-import AppPartnersBlock from "@/core/components/AppPartnersBlock.vue";
+// import HomeEnkrypt from "../components-default/HomeEnkrypt.vue";
+// import HomeLanding from "../components-default/HomeLanding.vue";
+// import HomeFeatures from "../components-default/HomeFeatures.vue";
+// import HomeEthBlocks from "../components-default/HomeEthBlocks.vue";
+// import HomeSocials from "../components-default/HomeSocials.vue.vue";
+// import HomeWhyMew from "../components-default/HomeWhyMew.vue";
+// import AppMewtopiaBlock from "@/core/components/AppMewtopiaBlock.vue";
+// import AppGetStarted from "@/core/components/AppGetStarted.vue";
+// import AppPartnersBlock from "@/core/components/AppPartnersBlock.vue";
 </script>
 
 <template>
   <div>
-    <HomeEnkrypt />
+    <!-- <HomeEnkrypt />
     <HomeLanding />
     <HomeFeatures />
     <HomeEthBlocks />
@@ -20,6 +20,6 @@ import AppPartnersBlock from "@/core/components/AppPartnersBlock.vue";
     <HomeWhyMew />
     <AppMewtopiaBlock />
     <AppGetStarted />
-    <AppPartnersBlock />
+    <AppPartnersBlock /> -->
   </div>
 </template>

@@ -828,7 +828,7 @@
 <script setup lang="ts">
 import axios from 'axios';
 import { reactive } from 'vue';
-import web3 from 'web3/types';
+import web3 from 'web3';
 import TheLayoutHeader from '../components-default/TheLayoutHeader.vue';
 interface StateForm {
   [key: string]: any;

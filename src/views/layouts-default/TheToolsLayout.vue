@@ -36,13 +36,13 @@
 
 <script setup lang="ts">
 import { ROUTES_HOME } from '@/core/configs/configRoutes';
-import TheLayoutHeader from '../components-default/TheLayoutHeader.vue';
-import AppGetStarted from '@/core/components/AppGetStarted.vue';
-import ModuleToolsWatchOnly from '@/modules/tools/ModuleToolsWatchOnly.vue';
-import ModuleToolsConvert from '@/modules/tools/ModuleToolsConvert.vue';
-import ModuleToolsGenerateKeystore from '@/modules/tools/ModuleToolsGenerateKeystore/ModuleToolsGenerateKeystore.vue';
-import ModuleToolsOfflineHelper from '@/modules/tools/ModuleToolsOfflineHelper.vue';
-import ModuleMessageVerify from '@/modules/message/ModuleMessageVerify.vue';
+import TheLayoutHeader from '../TheLayoutHeader.vue';
+// import AppGetStarted from '@/core/components/AppGetStarted.vue';
+// import ModuleToolsWatchOnly from '@/modules/tools/ModuleToolsWatchOnly.vue';
+// import ModuleToolsConvert from '@/modules/tools/ModuleToolsConvert.vue';
+// import ModuleToolsGenerateKeystore from '@/modules/tools/ModuleToolsGenerateKeystore/ModuleToolsGenerateKeystore.vue';
+// import ModuleToolsOfflineHelper from '@/modules/tools/ModuleToolsOfflineHelper.vue';
+// import ModuleMessageVerify from '@/modules/message/ModuleMessageVerify.vue';
 import { reactive, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { tryOnMounted } from '@vueuse/shared';
@@ -94,7 +94,7 @@ const setCurrentTool = () => {
   useRoute;
   // Check if tool value from URL is valid
   if (tools.includes(route.fullPath)) {
-    state.currentTool = route.query.tool;
+    //state.currentTool = route.query.tool;
 
     switch (state.currentTool) {
       case 'verify':
