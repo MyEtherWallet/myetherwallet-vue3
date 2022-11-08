@@ -1,15 +1,17 @@
-import { WebSocketLink } from 'apollo-link-ws/lib';
-import { InMemoryCache } from 'apollo-cache-inmemory/lib';
-import { HttpLink } from 'apollo-link-http/lib';
-import { split } from 'apollo-link/lib';
-import { getMainDefinition } from 'apollo-utilities/lib';
-import { onError } from 'apollo-link-error/lib';
-import * as Sentry from '@sentry/vue/types';
-import ApolloClient from 'apollo-client';
+import { WebSocketLink } from '@apollo/client/link/ws';
+import {
+  InMemoryCache,
+  createHttpLink,
+  ApolloClient,
+  split
+} from '@apollo/client/core';
+import { getMainDefinition } from '@apollo/client/utilities';
+import { onError } from '@apollo/client/link/error';
+import * as Sentry from '@sentry/vue';
 import { SubscriptionClient } from 'subscriptions-transport-ws/dist';
 
 export function createApolloClient(httpsEndpoint: string, wsEndpoint: string) {
-  const httpLink = new HttpLink({
+  const httpLink = createHttpLink({
     uri: httpsEndpoint
   });
 

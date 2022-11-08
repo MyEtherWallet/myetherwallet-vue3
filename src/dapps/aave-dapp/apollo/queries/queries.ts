@@ -1,28 +1,30 @@
 //import { Toast, ERROR } from '@/modules/toast/handler/handlerToast';
+import Configs from '../configs';
+import { useWalletStore } from '@/stores/wallet';
 import {
+  LiquidityRateHistoryUpdate,
   UsdPriceEth,
   UserPositionUpdateSubscription,
   ReserveUpdateSubscription
-} from './aave.graphql';
-import Configs from '../configs';
-import ApolloClient, { ApolloError } from 'apollo-client';
-import { useWalletStore } from '@/stores/wallet';
-import { LiquidityRateHistoryUpdate } from './aave';
+} from './aave';
+import { ApolloError } from '@apollo/client/errors';
+import { ApolloClient, InMemoryCache } from '@apollo/client/core';
 export default class AaveCalls {
+  apollo: ApolloClient<InMemoryCache>;
   address: string;
-  constructor(apollo) {
+  constructor(apollo: ApolloClient<InMemoryCache>) {
     this.apollo = apollo;
     this.address = useWalletStore().address || '';
   }
 
-  getLiquidityRateHistoryUpdate(param, next) {
+  getLiquidityRateHistoryUpdate(param: string, next: (...args: any[]) => any) {
     // Create subscription
     const connector = this.apollo.subscribe({
       query: LiquidityRateHistoryUpdate,
       variables: {
         reserveAddress: param
-      },
-      client: 'aave'
+      }
+      //client: 'aave'
     });
 
     // Subscribe
@@ -34,11 +36,11 @@ export default class AaveCalls {
     });
   }
 
-  getUsdPriceEth(next) {
+  getUsdPriceEth(next: (...args: any[]) => any) {
     // Create subscription
     const connector = this.apollo.subscribe({
-      query: UsdPriceEth,
-      client: 'aave'
+      query: UsdPriceEth
+      //client: 'aave'
     });
 
     // Subscribe
@@ -50,11 +52,11 @@ export default class AaveCalls {
     });
   }
 
-  getUserData(next) {
+  getUserData(next: (...args: any[]) => any) {
     // Create subscription
     const connector = this.apollo.subscribe({
       query: UserPositionUpdateSubscription,
-      client: 'aave',
+      //client: 'aave',
       variables: {
         userAddress: this.address,
         poolId: Configs.POOL_ID
@@ -70,14 +72,14 @@ export default class AaveCalls {
     });
   }
 
-  getReserveData(next) {
+  getReserveData(next: (...args: any[]) => any) {
     // Create subscription
     const connector = this.apollo.subscribe({
       query: ReserveUpdateSubscription,
       variables: {
         poolId: Configs.POOL_ID
-      },
-      client: 'aave'
+      }
+      //client: 'aave'
     });
 
     // Subscribe
