@@ -9,6 +9,7 @@ import PiniaPlugin from 'vue-cli-plugin-pinia';
 import { createPinia } from 'pinia';
 import lokalise from './filters/lokalise';
 import { MatomoOptions } from './main/matomo';
+import apolloProvider from './main/apolloProvider';
 loadFonts();
 
 const app = createApp(App);
@@ -25,4 +26,5 @@ app
   .use(PiniaPlugin)
   .use(pinia)
   .use(VueMatomo, MatomoOptions)
+  .use(apolloProvider)
   .mount('#app');

@@ -1,5 +1,4 @@
-import VueApollo from 'vue-apollo';
-
+import { createApolloProvider } from '@vue/apollo-option';
 import aave from '@/dapps/aave-dapp/apollo';
 import { createApolloClient } from '@/core/helpers/createApolloClient';
 
@@ -8,7 +7,7 @@ const main = createApolloClient(
   'wss://apiws-v2.ethvm.dev'
 );
 
-const apolloProvider = new VueApollo({
+const apolloProvider = createApolloProvider({
   clients: {
     main,
     aave: aave
