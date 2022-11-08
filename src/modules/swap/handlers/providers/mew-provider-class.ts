@@ -8,7 +8,7 @@ const REQUEST_CACHER = 'https://requestcache.mewapi.io/?url=';
 import { isAddress } from 'web3-utils';
 import Configs from '../configs/providersConfigs';
 import { ETH } from '@/utils/networks/types';
-import Web3 from 'web3';
+import Web3 from 'web3/types';
 //import { Toast, ERROR } from '@/modules/toast/handler/handlerToast';
 class MEWPClass {
   web3: CustomWeb3;

@@ -1,4 +1,4 @@
-import utils, { toBN } from 'web3-utils';
+import { toBN, sha3 } from 'web3-utils';
 import { toPayload } from '../jsonrpc';
 import EthCalls from '../web3Calls';
 import * as locstore from 'store';
@@ -15,7 +15,7 @@ export default <Web3Method>(async ({ payload, requestManager }, res, next) => {
     timestamp: 0
   };
   const globalStore = useGlobalStore();
-  const storeKey = utils.sha3(`${globalStore.network.type.name}-${addr}`);
+  const storeKey = sha3(`${globalStore.network.type.name}-${addr}`);
   if (!locstore.get(storeKey)) {
     cached = {
       nonce: '0x00',

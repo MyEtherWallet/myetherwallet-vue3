@@ -14,17 +14,20 @@ export interface WSProviderType {
   notificationCallbacks: Array<any>;
   _customTimeout?: number;
   connection: WebSocket;
-  addDefaultEvents: Function;
+  addDefaultEvents: () => void;
   _parseResponse: (data: any) => Array<any>;
-  _addResponseCallback: (payload: any, callback: Function) => void;
-  _timeout: Function;
-  send?: (payload: any, callback: Function) => void;
-  on: (type: string, callback: Function) => void;
-  removeListener: (type: string, callback: Function) => void;
+  _addResponseCallback: (
+    payload: any,
+    callback: (...args: any[]) => any
+  ) => void;
+  _timeout: () => void;
+  send?: (payload: any, callback: (...args: any[]) => any) => void;
+  on: (type: string, callback: (...args: any[]) => any) => void;
+  removeListener: (type: string, callback: (...args: any[]) => any) => void;
   removeAllListeners: (type: string) => void;
   reset: () => void;
   disconnect: () => void;
-  request?: Function;
+  request?: (...args: any[]) => any;
 }
 interface WSProviderConstructor {
   new (host: string, options?: any): WSProviderType;
@@ -34,7 +37,6 @@ const WebsocketProvider = function WebsocketProvider(
   url: string,
   options?: any
 ) {
-  const _this = this;
   this.responseCallbacks = {};
   this.notificationCallbacks = [];
 
@@ -61,13 +63,13 @@ const WebsocketProvider = function WebsocketProvider(
   );
 
   this.addDefaultEvents();
-  this.connection.onmessage = function (e) {
+  this.connection.onmessage = function (this: any, e) {
     const data = typeof e.data === 'string' ? e.data : '';
-    _this._parseResponse(data).forEach(function (result: any) {
+    this._parseResponse(data).forEach(function (this: any, result: any) {
       let id = null;
       if (isArray(result)) {
-        result.forEach(function (load: any) {
-          if (_this.responseCallbacks[load.id]) id = load.id;
+        result.forEach(function (this: any, load: any) {
+          if (this.responseCallbacks[load.id]) id = load.id;
         });
       } else {
         id = result.id;
@@ -78,12 +80,12 @@ const WebsocketProvider = function WebsocketProvider(
         result.method &&
         result.method.indexOf('_subscription') !== -1
       ) {
-        _this.notificationCallbacks.forEach(function (callback) {
+        this.notificationCallbacks.forEach(function (callback: any) {
           if (isFunction(callback)) callback(result);
         });
-      } else if (_this.responseCallbacks[id]) {
-        _this.responseCallbacks[id](null, result);
-        delete _this.responseCallbacks[id];
+      } else if (this.responseCallbacks[id]) {
+        this.responseCallbacks[id](null, result);
+        delete this.responseCallbacks[id];
       }
     });
   };
@@ -93,7 +95,9 @@ const WebsocketProvider = function WebsocketProvider(
         this.connection && this.connection.readyState === this.connection.OPEN
       );
     },
-    set: function () {},
+    set: function () {
+      return;
+    },
     enumerable: true
   });
 } as any as WSProviderConstructor;
@@ -117,7 +121,7 @@ WebsocketProvider.prototype._parseResponse = function (data: any) {
     .replace(/\}\][\n\r]?\{/g, '}]|--|{') // }]{
     .split('|--|');
 
-  dechunkedData.forEach(function ( data: any) {
+  dechunkedData.forEach(function (this: any, data: any) {
     if (this.lastChunk) data = this.lastChunk + data;
     let result = null;
     try {
@@ -125,7 +129,7 @@ WebsocketProvider.prototype._parseResponse = function (data: any) {
     } catch (e) {
       this.lastChunk = data;
       clearTimeout(this.lastChunkTimeout);
-      this.lastChunkTimeout = setTimeout(function () {
+      this.lastChunkTimeout = setTimeout(function (this: any) {
         this._timeout();
         throw errors.InvalidResponse(data);
       }, 1000 * 15);
@@ -143,7 +147,7 @@ WebsocketProvider.prototype._parseResponse = function (data: any) {
 
 WebsocketProvider.prototype._addResponseCallback = function (
   payload: any,
-  callback: () => void
+  callback: (...args: any[]) => any
 ) {
   const id = payload.id || payload[0].id;
   const method = payload.method || payload[0].method;
@@ -151,32 +155,32 @@ WebsocketProvider.prototype._addResponseCallback = function (
   this.responseCallbacks[id] = callback;
   this.responseCallbacks[id].method = method;
 
-  const _this = this;
   if (this._customTimeout) {
-    setTimeout(function () {
-      if (_this.responseCallbacks[id]) {
-        _this.responseCallbacks[id](
-          errors.ConnectionTimeout(_this._customTimeout)
+    setTimeout(function (this: any) {
+      if (this.responseCallbacks[id]) {
+        this.responseCallbacks[id](
+          errors.ConnectionTimeout(this._customTimeout)
         );
-        delete _this.responseCallbacks[id];
+        delete this.responseCallbacks[id];
       }
     }, this._customTimeout);
   }
 };
 WebsocketProvider.prototype._timeout = function () {
   for (const key in this.responseCallbacks) {
-    if (this.responseCallbacks.hasOwnProperty(key)) {
+    if (this.responseCallbacks.key) {
       this.responseCallbacks[key](errors.InvalidConnection('on WS'));
       delete this.responseCallbacks[key];
     }
   }
 };
-WebsocketProvider.prototype.send = function (payload: any, callback: Function) {
-  const _this = this;
-
+WebsocketProvider.prototype.send = function (
+  payload: any,
+  callback: (...args: any[]) => any
+) {
   if (this.connection.readyState === this.connection.CONNECTING) {
-    setTimeout(function () {
-      _this.send(payload, callback);
+    setTimeout(function (this: any) {
+      this.send(payload, callback);
     }, 10);
     return;
   }
@@ -188,7 +192,10 @@ WebsocketProvider.prototype.send = function (payload: any, callback: Function) {
   this.connection.send(JSON.stringify(payload));
   this._addResponseCallback(payload, callback);
 };
-WebsocketProvider.prototype.on = function (type: string, callback: Function) {
+WebsocketProvider.prototype.on = function (
+  type: string,
+  callback: (...args: any[]) => any
+) {
   if (typeof callback !== 'function')
     throw new Error('The second parameter callback must be a function.');
 
@@ -218,17 +225,16 @@ WebsocketProvider.prototype.on = function (type: string, callback: Function) {
 };
 WebsocketProvider.prototype.removeListener = function (
   type: string,
-  callback: Function
+  callback: (...args: any[]) => any
 ) {
-  const _this = this;
-
   switch (type) {
     case 'data':
       this.notificationCallbacks.forEach(function (
-        cb: Function,
+        this: any,
+        cb: (...args: any[]) => any,
         index: number
       ) {
-        if (cb === callback) _this.notificationCallbacks.splice(index, 1);
+        if (cb === callback) this.notificationCallbacks.splice(index, 1);
       });
       break;
   }

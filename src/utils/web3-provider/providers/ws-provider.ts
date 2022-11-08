@@ -115,7 +115,7 @@ class WSProvider {
         );
       });
     };
-    return this.wsProvider;
+    return this;
   }
 }
 export default WSProvider;
