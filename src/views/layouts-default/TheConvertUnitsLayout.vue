@@ -102,7 +102,7 @@
 <script setup lang="ts">
 import { BigNumber } from 'bignumber.js';
 import { unitMap, Unit } from 'web3-utils';
-import TheLayoutHeader from '../TheLayoutHeader.vue';
+import TheLayoutHeader from '../components-default/TheLayoutHeader.vue';
 //import AppGetStarted from '@/core/components/AppGetStarted.vue';
 import { reactive, watch } from 'vue';
 import { useWalletStore } from '@/stores/wallet';

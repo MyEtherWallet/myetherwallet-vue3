@@ -39,7 +39,7 @@
                 $t('home.eth-blocks.btn-text') ||
                 lokalise('home.eth-blocks.btn-text')
               "
-              @click.native="
+              @click="
                 $router.push({
                   name: 'EthBlocks',
                   params: {}
@@ -54,10 +54,8 @@
 </template>
 
 <script setup lang="ts">
-import ethBlocksThree from '@/assets/images/icons/eth-blocks-3.jpg';
-import ethBlocksSix from '@/assets/images/icons/eth-blocks-6.jpg';
-const three = ethBlocksThree;
-const six = ethBlocksSix;
+import three from '@/assets/images/icons/eth-blocks-6.jpg';
+import six from '@/assets/images/icons/eth-blocks-6.jpg';
 </script>
 
 <style lang="scss" scoped>

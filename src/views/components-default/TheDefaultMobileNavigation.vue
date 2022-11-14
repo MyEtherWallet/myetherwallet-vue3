@@ -1,7 +1,6 @@
 <template>
   <div class="mew-component--landing-page-menu-mobile">
-    <!-- <app-btn-menu @click="state.isOpen = !state.isOpen" /> -->
-
+    <app-btn-menu @click="state.isOpen = !state.isOpen" />
     <v-navigation-drawer
       v-model="state.isOpen"
       width="280px"
@@ -28,8 +27,11 @@
 
       <v-list color="white" class="px-2">
         <template v-for="(item, index) in menu">
-          <!--<v-list-item v-if="!item.sub" :key="index">
-             <v-list-item-content v-if="item.to" @click="pushRoute(item.to)">
+          <v-list-item v-if="!item.sub" :key="index">
+            <v-list-item-content
+              v-if="item.to"
+              @click="pushRoute(item.to || '')"
+            >
               <div class="mew-heading-3 font-weight-medium textDark--text">
                 {{ item.label }}
               </div>
@@ -45,17 +47,16 @@
                   {{ item.label }}
                 </div>
               </v-list-item-content>
-            </a> 
-          </v-list-item> -->
-
+            </a>
+          </v-list-item>
           <v-list-group v-if="item.sub" :key="index" prepend-icon="">
             <template #activator>
               <div></div>
-              <!-- <v-list-item-content>
+              <v-list-item-content>
                 <div class="mew-heading-3 font-weight-medium textDark--text">
                   {{ item.label }}
                 </div>
-              </v-list-item-content> -->
+              </v-list-item-content>
             </template>
             <v-list-item
               v-for="(child, ckey) in item.sub"
@@ -63,11 +64,11 @@
               dense
               class="pl-4"
             >
-              <!-- <v-list-item-content>
+              <v-list-item-content>
                 <v-list-item-title
                   v-if="child.to"
                   class="pl-4 textDark--text font-weight-regular mew-body"
-                  @click="pushRoute(child.to)"
+                  @click="pushRoute(child.to || '')"
                 >
                   {{ child.label }}
                 </v-list-item-title>
@@ -82,20 +83,20 @@
                   >
                     {{ child.label }}
                   </v-list-item-title>
-                </a> 
-              </v-list-item-content> -->
+                </a>
+              </v-list-item-content>
             </v-list-item>
           </v-list-group>
         </template>
         <v-list-item>
-          <!-- <v-list-item-content @click="openMoonpay">
+          <v-list-item-content @click="openMoonpay">
             <div class="mew-heading-3 font-weight-medium textDark--text">
               Buy ETH
             </div>
-          </v-list-item-content> -->
+          </v-list-item-content>
         </v-list-item>
         <v-list-item>
-          <!-- <v-list-item-content>
+          <v-list-item-content>
             <div class="mew-heading-3 font-weight-medium textDark--text mb-6">
               Products
             </div>
@@ -116,7 +117,7 @@
                 {{ product.label }}
               </div>
             </a>
-          </v-list-item-content> -->
+          </v-list-item-content>
         </v-list-item>
       </v-list>
       <div class="pa-4 bottom-buttons">
@@ -125,7 +126,7 @@
           has-full-width
           title="Create a new wallet"
           class="mb-2"
-          @click.native="
+          @click="
             $router.push({
               name: ROUTES_HOME.CREATE_WALLET.NAME,
               params: {}
@@ -137,7 +138,7 @@
           btn-size="large"
           has-full-width
           title="Access my wallet"
-          @click.native="
+          @click="
             $router.push({
               name: ROUTES_HOME.ACCESS_WALLET.NAME,
               params: {}
@@ -207,7 +208,13 @@ const state = reactive({
     }
   ]
 });
-const menu = computed(() => [
+type MenuItem = {
+  label: string;
+  to?: { name: string; query?: { tool: string } };
+  url?: string;
+  sub?: MenuItem[];
+};
+const menu = computed((): MenuItem[] => [
   { label: 'How it works', to: { name: ROUTES_HOME.HOW_IT_WORKS.NAME } },
   {
     label: 'Popular actions',

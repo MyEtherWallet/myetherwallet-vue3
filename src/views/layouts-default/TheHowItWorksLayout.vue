@@ -18,7 +18,7 @@
 </template>
 
 <script setup lang="ts">
-import TheLayoutHeader from '../TheLayoutHeader.vue';
+import TheLayoutHeader from '../components-default/TheLayoutHeader.vue';
 // import AppGetStarted from '@/core/components/AppGetStarted.vue';
 // import HowItWorksSwap from '../components-default/HowItWorksSwap.vue';
 // import HowItWorksSend from '../components-default/HowItWorksSend.vue';

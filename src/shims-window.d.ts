@@ -14,4 +14,5 @@ type CustomEthereum = {
   isMewWallet: any;
   isTrust: any;
   isMetaMask: any;
+  isEnkrypt;
 };

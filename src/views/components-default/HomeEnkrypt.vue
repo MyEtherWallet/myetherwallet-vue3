@@ -41,7 +41,7 @@
                 href="href=https://chrome.google.com/webstore/detail/enkrypt/kkpllkodjeloidieedojogacfhpaihoh?hl=en"
                 target="_blank"
               >
-                <!-- <mew-button
+                <mew-button
                   class="extension-btn"
                   color-theme="#7E44F2"
                   style="border-radius: 100px !important"
@@ -49,13 +49,13 @@
                   @click="openEnkrypt"
                 >
                   <img
-                    :src="browserLogo"
+                    :src="browserLogoComputed"
                     alt="Chrome"
                     height="25"
                     class="mr-2"
                   />
                   <span class="font-weight-bold"> Install for Chrome </span>
-                </mew-button> -->
+                </mew-button>
               </a>
               <a
                 class="text-decoration-underline textSecondary--text ml-5"
@@ -88,16 +88,16 @@
 
 <script setup lang="ts">
 //import enkryptMarketing from '@/core/mixins/enkryptMarketing.mixin.js';
+import { useEnkryptMarketing } from '@/core/Common/enkryptMarketing';
 import { computed } from 'vue';
-const isMobile = true;
+import { useDisplay } from 'vuetify/lib/framework.mjs';
+const { openEnkrypt, isMobile, browserLogoComputed } = useEnkryptMarketing();
+const display = useDisplay();
 const bgStyle = computed(function (this: any) {
-  if (
-    this.$vuetify.breakpoint.mdAndUp &&
-    this.$vuetify.breakpoint.width < 2300
-  ) {
+  if (display.mdAndUp && display.width.value < 2300) {
     return 'bgLarge';
   }
-  if (this.$vuetify.breakpoint.width >= 2300) {
+  if (display.width.value >= 2300) {
     return 'bgXLarge';
   }
   return 'bgSmall';

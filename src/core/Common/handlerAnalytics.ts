@@ -24,11 +24,11 @@ export const useAnalytics = () => {
   /**
    * Tracks when user lands on landing page
    */
-  // const trackLandingPage = ()=> {
-  //      if (this.$matomo && popupStore.consentToTrack) {
-  //        this.$matomo.trackEvent(categories.landingPage, 'landed on');
-  //      }
-  //    }
+  const trackLandingPage = () => {
+    //  if (this.$matomo && popupStore.consentToTrack) {
+    //    this.$matomo.trackEvent(categories.landingPage, 'landed on');
+    //  }
+  };
   /**
    * Tracks when user lands on create wallet
    * also tracks what type of wallet user creates
@@ -145,6 +145,7 @@ export const useAnalytics = () => {
   return {
     shouldDisplayTrackingPopup,
     setConsent,
+    trackLandingPage,
     trackCreateWallet,
     trackAccessWallet,
     trackNetworkSwitch,

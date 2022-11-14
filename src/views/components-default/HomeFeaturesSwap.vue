@@ -58,9 +58,7 @@
         title="Swap"
         btn-size="xlarge"
         class="mx-auto mt-12 d-block"
-        @click.native="
-          $router.push({ name: Routes.ACCESS_WALLET.NAME, params: {} })
-        "
+        @click="$router.push({ name: Routes.ACCESS_WALLET.NAME, params: {} })"
       />
     </div>
   </mew6-white-sheet>
@@ -72,8 +70,8 @@ import { formatFloatingPointValue } from '@/core/helpers/numberFormatHelper';
 //import { Toast, ERROR } from "@/modules/toast/handler/handlerToast";
 import { ROUTES_HOME as Routes } from '@/core/configs/configRoutes';
 import { isEmpty } from 'lodash';
-import { computed, onMounted, reactive, watch } from 'vue';
-import Web3 from 'web3';
+import { onMounted, reactive, watch } from 'vue';
+import Web3 from 'web3/types';
 import { SwapPairData } from '@/modules/swap/handlers/providers/mew-provider-class';
 import { useGlobalStore } from '@/stores/global';
 import { useWalletStore } from '@/stores/wallet';

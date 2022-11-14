@@ -98,7 +98,7 @@ import axios from 'axios';
 import { reactive } from 'vue';
 
 //import { Toast, ERROR } from '@/modules/toast/handler/handlerToast';
-import TheLayoutHeader from '../TheLayoutHeader.vue';
+import TheLayoutHeader from '../components-default/TheLayoutHeader.vue';
 const state: State = reactive({ loadingCareers: true, jobs: {} });
 tryOnMounted(() => {
   fetchJobs();

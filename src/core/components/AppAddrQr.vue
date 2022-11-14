@@ -1,0 +1,132 @@
+<template>
+  <div class="core-components--app-addr-qr">
+    <!--
+    =====================================================================================
+      Title
+    =====================================================================================
+    -->
+    <div class="mew-heading-2 mb-3">
+      {{ $t('interface.qr.title') }}
+    </div>
+
+    <!--
+    =====================================================================================
+      Subtext
+    =====================================================================================
+    -->
+    <div class="textDark--text mb-8">
+      {{ $t('interface.qr.desc', { network: getNetwork() }) }}
+    </div>
+    <!--
+    =====================================================================================
+      Identicon and acount
+    =====================================================================================
+    -->
+    <div class="d-flex align-center mb-4">
+      <mew-blockie :address="walletStore.address" width="22px" height="22px" />
+      <div class="pl-1 mew-body font-weight-bold">
+        {{ $t('interface.qr.my-main-account') }}
+      </div>
+    </div>
+
+    <!--
+    =====================================================================================
+      QR / Address / Card
+    =====================================================================================
+    -->
+    <div class="wallet-card-container">
+      <img
+        class="wallet-card"
+        :src="'https://mewcard.mewapi.io/?address=' + walletStore.address"
+        alt="MEW Card"
+        @load="animateMewCard()"
+      />
+      <div class="inner-content pa-3 pa-sm-8 d-flex align-center">
+        <div class="white pa-1" style="border-radius: 7px">
+          <qr-code :data="walletStore.address" :height="132" :width="132" />
+        </div>
+        <div class="pl-3">
+          <div
+            class="d-block monospace textDark-text container-qr--addr BalanceCardAddress"
+          >
+            {{ getChecksumAddressString }}
+          </div>
+          <div
+            class="d-inline-flex align-center cursor--pointer mt-4 pa-1"
+            @click="copyAddress"
+          >
+            <v-icon small color="white">mdi-content-copy</v-icon>
+            <div class="ml-1 white--text">Copy</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+<script setup lang="ts">
+import { useClipboard } from '@vueuse/core';
+import anime from 'animejs/lib/anime.es.js';
+//import { Toast, SUCCESS } from '@/modules/toast/handler/handlerToast';
+import { toChecksumAddress } from '@/core/helpers/addressUtils';
+import { useWalletStore } from '@/stores/wallet';
+import { useGlobalStore } from '@/stores/global';
+import { computed } from 'vue';
+const { copy } = useClipboard();
+const walletStore = useWalletStore();
+const globalStore = useGlobalStore();
+const getChecksumAddressString = computed(() => {
+  return toChecksumAddress(walletStore.address || '');
+});
+const copyAddress = () => {
+  copy(walletStore.address || '');
+  //Toast(`Copied ${this.address} successfully!`, {}, SUCCESS);
+};
+const getNetwork = () => {
+  return globalStore.network ? globalStore.network.type.currencyName : 'ETH';
+};
+const animateMewCard = () => {
+  const el: any = document.querySelector('.mew-card');
+  el.style.opacity = 0;
+  anime({
+    targets: el,
+    opacity: 1,
+    delay: 1300,
+    duration: 500,
+    easing: 'easeInOutQuad'
+  });
+};
+</script>
+
+<style lang="scss">
+.core-components--app-addr-qr {
+  canvas {
+    // Replace "inline" with "block" to remove line-height spacing
+    display: block !important;
+  }
+}
+</style>
+
+<style lang="scss" scoped>
+.wallet-card-container {
+  overflow: hidden;
+  border-radius: 20px;
+  position: relative;
+  .container-qr--addr {
+    word-break: break-all;
+    color: white;
+    text-shadow: 0px 2px 8px rgba(0, 0, 0, 0.24),
+      0px 1px 4px rgba(0, 0, 0, 0.24);
+  }
+  .wallet-card {
+    width: 100%;
+    display: block;
+  }
+  .inner-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+  }
+}
+</style>

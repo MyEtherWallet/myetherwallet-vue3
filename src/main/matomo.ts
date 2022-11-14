@@ -1,4 +1,4 @@
-import router from '@/router';
+import router from '@/core/router';
 export const MatomoOptions = {
   host: 'https://myetherwallet.matomo.cloud',
   siteId: 1,

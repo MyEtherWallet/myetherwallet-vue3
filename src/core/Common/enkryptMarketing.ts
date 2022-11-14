@@ -41,9 +41,9 @@ export const useEnkryptMarketing = () => {
       ? `Install for ${platform.name}`
       : 'Download Now';
   });
-  const browserLogoComputed = () => {
+  const browserLogoComputed = computed(() => {
     return withState.extensionLinks[browser.value].img;
-  };
+  });
   const browserLink = computed(() => {
     return withState.extensionLinks[browser.value].link;
   });

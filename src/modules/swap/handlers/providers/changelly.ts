@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import erc20Abi from '../abi/erc20';
 import Configs from '../configs/providersConfigs';
 import { toBN, toHex, toWei } from 'web3-utils';
-import Web3Contract from 'web3-eth-contract/types';
+import Web3Contract from 'web3-eth-contract';
 import { ETH } from '@/utils/networks/types';
 //import { Toast, ERROR } from '@/modules/toast/handler/handlerToast';
 //import { EventBus } from '@/core/plugins/eventBus';

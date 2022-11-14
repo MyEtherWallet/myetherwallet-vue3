@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/vue';
 import { Integrations } from '@sentry/tracing/types';
 // import { EventBus } from '@/core/plugins/eventBus';
-// import errorHandler from '@/main/errorHandler';
+import errorHandler from '@/main/errorHandler';
 import { useGlobalStore } from '@/stores/global';
 import { useWalletStore } from '@/stores/wallet';
 // Sentry
@@ -29,7 +29,7 @@ Sentry.init({
       walletType: identifier
     };
     const err = event.exception?.values?.[0].value;
-    //if (errorHandler(err)) return null;
+    if (errorHandler(err)) return null;
     return new Promise(resolve => {
       //EventBus.$emit('issueModal', event, resolve);
     }).then(res => {

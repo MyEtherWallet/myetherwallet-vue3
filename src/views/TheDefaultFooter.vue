@@ -173,13 +173,13 @@ watch(select, select => {
             <div class="subtitle-1 font-weight-bold mb-1">{{ f.title }}</div>
             <v-list>
               <v-list-item v-for="(d, dkey) in f.data" :key="dkey" class="px-0">
-                <!-- <router-link
+                <router-link
                   v-if="d.routerLink"
                   :to="{ name: d.routerLink, query: d.query }"
                   :class="d.class"
                 >
                   {{ d.label }}
-                </router-link> -->
+                </router-link>
                 <a
                   v-if="d.link"
                   :href="d.link"
@@ -201,12 +201,12 @@ watch(select, select => {
               target="_blank"
               :href="`https://etherscan.io/address/${ethDonationAddress}`"
             >
-              <!-- <mew-icon
+              <mew-icon
                 icon-name="eth"
                 icon-type="mew"
                 :img-height="35"
                 class="mr-2"
-              /> -->
+              />
               <div>
                 <div>{{ $t('footer.donation.ether') }}</div>
                 <div v-show="false" class="overline">
@@ -219,12 +219,12 @@ watch(select, select => {
               target="_blank"
               :href="`https://blockchain.info/address/${btcDonationAddress}`"
             >
-              <!-- <mew-icon
+              <mew-icon
                 icon-name="btc"
                 icon-type="mew"
                 :img-height="35"
                 class="mr-2"
-              /> -->
+              />
               <div>
                 <div>{{ $t('footer.donation.bitcoin') }}</div>
                 <div v-show="false" class="overline">
@@ -247,14 +247,14 @@ watch(select, select => {
                 </a>
               </div>
               <div class="px-6 border-right">
-                <!-- <router-link :to="{ name: ROUTES_HOME.PRIVACY_POLICY.NAME }">
+                <router-link :to="{ name: ROUTES_HOME.PRIVACY_POLICY.NAME }">
                   {{ $t('footer.privacy') }}
-                </router-link> -->
+                </router-link>
               </div>
               <div class="px-6">
-                <!-- <router-link :to="{ name: ROUTES_HOME.TERMS_OF_SERVICE.NAME }">
+                <router-link :to="{ name: ROUTES_HOME.TERMS_OF_SERVICE.NAME }">
                   {{ $t('footer.tos') }}
-                </router-link> -->
+                </router-link>
               </div>
             </div>
           </div>
@@ -276,7 +276,7 @@ watch(select, select => {
               target="_blank"
               class="ml-4"
             >
-              <!-- <mew-icon v-if="i.icon" :img-height="20" :icon-name="i.icon" /> -->
+              <mew-icon v-if="i.icon" :img-height="20" :icon-name="i.icon" />
               <img
                 v-if="i.iconImage"
                 :src="i.iconImage"
@@ -307,7 +307,7 @@ watch(select, select => {
               >.
             </p>
             <v-spacer />
-            <!-- <v-sheet width="150" color="transparent">
+            <v-sheet width="150" color="transparent">
               <v-select
                 v-model="select"
                 append-icon="mdi-chevron-down"
@@ -318,7 +318,7 @@ watch(select, select => {
                 single-line
                 dark
               ></v-select>
-            </v-sheet> -->
+            </v-sheet>
           </div>
         </v-container>
       </v-sheet>
@@ -327,24 +327,24 @@ watch(select, select => {
     <div class="mobile-content d-block d-lg-none">
       <v-expansion-panels accordion>
         <v-expansion-panel v-for="(mf, mfkey) in footers" :key="mfkey">
-          <v-expansion-panel-header>
+          <v-expansion-panel-title>
             <v-container>
               <v-sheet color="transparent" max-width="500px" class="mx-auto">
                 <h3>{{ mf.title }}</h3>
               </v-sheet>
             </v-container>
-          </v-expansion-panel-header>
-          <v-expansion-panel-content>
+          </v-expansion-panel-title>
+          <v-expansion-panel-text>
             <v-container>
               <v-sheet color="transparent" max-width="500px" class="mx-auto">
                 <ul>
                   <li v-for="(md, mdkey) in mf.data" :key="mdkey">
-                    <!-- <router-link
+                    <router-link
                       v-if="md.routerLink"
                       :to="{ name: md.routerLink, query: md.query }"
                     >
                       {{ md.label }}
-                    </router-link> -->
+                    </router-link>
                     <a v-if="md.link" :href="md.link" target="_blank">
                       {{ md.label }}
                     </a>
@@ -352,7 +352,7 @@ watch(select, select => {
                 </ul>
               </v-sheet>
             </v-container>
-          </v-expansion-panel-content>
+          </v-expansion-panel-text>
         </v-expansion-panel>
       </v-expansion-panels>
 
@@ -368,12 +368,12 @@ watch(select, select => {
               target="_blank"
               :href="`https://etherscan.io/address/${ethDonationAddress}`"
             >
-              <!-- <mew-icon
+              <mew-icon
                 icon-name="eth"
                 icon-type="mew"
                 :img-height="35"
                 class="mr-2"
-              /> -->
+              />
               <div>
                 <div>{{ $t('footer.donation.ether') }}</div>
                 <div v-show="false" class="overline">
@@ -386,12 +386,12 @@ watch(select, select => {
               target="_blank"
               :href="`https://blockchain.info/address/${btcDonationAddress}`"
             >
-              <!-- <mew-icon
+              <mew-icon
                 icon-name="btc"
                 icon-type="mew"
                 :img-height="35"
                 class="mr-2"
-              /> -->
+              />
               <div>
                 <div>{{ $t('footer.donation.bitcoin') }}</div>
                 <div v-show="false" class="overline">
@@ -412,7 +412,7 @@ watch(select, select => {
               style="height: 23px"
               class="px-4 my-5"
             >
-              <!-- <mew-icon v-if="i.icon" :img-height="23" :icon-name="i.icon" /> -->
+              <mew-icon v-if="i.icon" :img-height="23" :icon-name="i.icon" />
               <img
                 v-if="i.iconImage"
                 :src="i.iconImage"
@@ -434,14 +434,14 @@ watch(select, select => {
                 </a>
               </div>
               <div class="px-4 px-lg-6 border-right">
-                <!-- <router-link :to="{ name: ROUTES_HOME.PRIVACY_POLICY.NAME }">
+                <router-link :to="{ name: ROUTES_HOME.PRIVACY_POLICY.NAME }">
                   Privacy
-                </router-link> -->
+                </router-link>
               </div>
               <div class="px-4 px-lg-6">
-                <!-- <router-link :to="{ name: ROUTES_HOME.TERMS_OF_SERVICE.NAME }">
+                <router-link :to="{ name: ROUTES_HOME.TERMS_OF_SERVICE.NAME }">
                   Terms
-                </router-link> -->
+                </router-link>
               </div>
             </div>
           </div>

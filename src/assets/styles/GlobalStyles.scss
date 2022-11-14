@@ -34,38 +34,38 @@ div {
 
 p {
   /* size - 14px,  height - 19px, normal */
-  @extend .mew-body;
+  @extend .mew-body !optional;
 }
 
 h1 {
   /* size - 30px,  height - 36px, bold */
-  @extend .mew-subtitle;
+  @extend .mew-subtitle !optional;
 }
 
 h2 {
   /* size - 22px,  height - 26px, bold */
-  @extend .mew-heading-2;
+  @extend .mew-heading-2 !optional;
 }
 
 h3 {
   /* size - 16px,  height - 22px, bold */
-  @extend .mew-heading-3;
+  @extend .mew-heading-3 !optional;
 }
 
 h4 {
   /* size - 16px,  height - 22px, normal */
-  @extend .mew-heading-4;
+  @extend .mew-heading-4 !optional;
 
   font-weight: 400;
 }
 
 h5 {
-  @extend .mew-body;
+  @extend .mew-body !optional;
 }
 
 h6 {
   /* size - 12px,  height - 14px, normal */
-  @extend .mew-label;
+  @extend .mew-label !optional;
 }
 
 /* ========== Text ========== */

@@ -112,7 +112,7 @@ const mewTabs = [
 .mew-component--features {
   .desktop-content {
     .features-tabs-container {
-      background-image: url(../../assets/images/backgrounds/bg-waves-color.png);
+      background-image: url(../../assets/images/backgrounds/bg-waves-color.jpg);
       background-size: contain;
       background-position: bottom center;
     }

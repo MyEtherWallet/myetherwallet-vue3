@@ -1,7 +1,7 @@
 import { OneInch, ZEROX, ParaSwap, Changelly } from './providers';
 import BigNumber from 'bignumber.js';
 import Configs from './configs/providersConfigs';
-import hasValidDecimals from '@/core/helpers/hasValidDecimals.js';
+import hasValidDecimals from '@/core/helpers/hasValidDecimals';
 import { isObject } from 'lodash';
 import { SwapPairData } from './providers/mew-provider-class';
 

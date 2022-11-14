@@ -19,7 +19,7 @@
         title="Get tokens"
         btn-size="xlarge"
         class="mx-auto mt-12 d-block"
-        @click.native="
+        @click="
           $router.push({ name: ROUTES_HOME.ACCESS_WALLET.NAME, params: {} })
         "
       />

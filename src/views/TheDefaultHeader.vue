@@ -3,31 +3,31 @@
     <v-container class="pl-4 pr-4 d-flex align-center pt-8">
       <v-row align="center" no-gutters>
         <v-col class="d-md-none" cols="2" md="4">
-          <!-- <the-default-mobile-navigation class="ml-n2" /> -->
+          <the-default-mobile-navigation class="ml-n2" />
         </v-col>
         <v-col cols="8" md="8" class="d-flex align-center">
           <v-img
             :class="$vuetify.display.smAndDown ? 'mx-auto' : ''"
             class="cursor--pointer mr-md-14"
-            src="@/assets/images/icons/logo-mew.svg"
+            :src="Logo"
             max-height="36"
             max-width="130"
             @click="$router.push({ name: ROUTES_HOME.HOME.NAME })"
           />
 
           <div class="d-none d-md-flex">
-            <!-- <router-link
+            <router-link
               class="white--text text-decoration--none menu-item"
               :to="{ name: ROUTES_HOME.HOW_IT_WORKS.NAME }"
             >
               {{ $t('header.what-is-mew') }}
-            </router-link> -->
+            </router-link>
             <div class="mx-8">
-              <!-- <mew-menu
+              <mew-menu
                 activator-text-color="white--text"
                 :list-obj="menuObj"
                 @goToPage="routeTo"
-              /> -->
+              />
             </div>
             <a class="white--text text-decoration--none menu-item">
               {{ $t('header.buy-eth') }}
@@ -35,7 +35,7 @@
           </div>
         </v-col>
         <v-col cols="2" md="4" class="d-flex justify-end">
-          <!-- <mew-tools class="ml-auto" /> -->
+          <mew-tools class="ml-auto" />
         </v-col>
       </v-row>
     </v-container>
@@ -43,7 +43,8 @@
 </template>
 
 <script setup lang="ts">
-//import MewTools from '@/components/mew-tools/MewTools.vue';
+import MewTools from '@/components/mew-tools/MewTools.vue';
+import Logo from '@/assets/images/icons/logo-mew.svg';
 import TheDefaultMobileNavigation from './components-default/TheDefaultMobileNavigation.vue';
 import { ROUTES_HOME, ROUTES_WALLET } from '@/core/configs/configRoutes';
 import { useRouter } from 'vue-router';

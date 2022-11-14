@@ -8,7 +8,7 @@ interface StakewiseTxs {
 }
 
 export type State = {
-  localStore: Boolean;
+  localStore: boolean;
   stakewiseTxs: StakewiseTxs;
   validatorApr: string;
   poolSupply: string;

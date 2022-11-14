@@ -1,4 +1,4 @@
-<template functional>
+<template>
   <div class="terms-of-service py-12">
     <v-container>
       <div class="wrap">

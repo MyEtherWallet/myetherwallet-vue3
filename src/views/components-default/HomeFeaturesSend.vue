@@ -18,16 +18,16 @@
             :label="$t('sendTx.amount')"
           />
         </v-col>
-        <v-col cols="12" class="mt-n5">
+        <!-- <v-col cols="12" class="mt-n5">
           <module-address-book is-home-page />
-        </v-col>
+        </v-col> -->
       </v-row>
     </div>
   </mew6-white-sheet>
 </template>
 
 <script setup lang="ts">
-import ModuleAddressBook from '@/modules/address-book/ModuleAddressBook.vue';
+//import ModuleAddressBook from '@/modules/address-book/ModuleAddressBook.vue';
 import { useGlobalStore } from '@/stores/global';
 import { useWalletStore } from '@/stores/wallet';
 import { computed, reactive } from 'vue';

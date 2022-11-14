@@ -30,7 +30,7 @@
 
 <script setup lang="ts">
 import axios from 'axios';
-import TheLayoutHeader from '../TheLayoutHeader.vue';
+import TheLayoutHeader from '../components-default/TheLayoutHeader.vue';
 //import AppBlockTitle from '@/core/components/AppBlockTitle.vue';
 import { reactive } from 'vue';
 import { tryOnMounted } from '@vueuse/shared';

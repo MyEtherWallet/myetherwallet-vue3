@@ -1,7 +1,7 @@
 import { Store } from 'pinia';
 import { Actions } from './actions';
 
-export interface State {
+export type State = {
   localStore: boolean;
   stateVersion: string;
   consentToTrack: boolean;
@@ -17,6 +17,6 @@ export interface State {
   enkryptWalletSnackbar: boolean;
   enkryptWalletSnackbarClosed: number;
   enkryptWalletSnackbarCounter: number;
-}
+};
 
-export type ThisStore = Store<'popups', State, Actions>;
+export type ThisStore = Store<'popups', State, any, Actions>;

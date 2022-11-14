@@ -53,7 +53,7 @@
             style="height: initial; min-height: 157px"
             :color-theme="btn.color"
             :btn-style="btn.style === 'outline' ? 'outline' : ''"
-            @click.native="btn.fn"
+            @click="btn.fn"
           >
             <div class="width--full d-flex align-center text-left">
               <img
@@ -113,9 +113,9 @@
 //import { Toast, ERROR } from '@/modules/toast/handler/handlerToast';
 import { ROUTES_HOME } from '@/core/configs/configRoutes';
 //import enkryptMarketing from '@/core/mixins/enkryptMarketing.mixin';
-import ModuleCreateWalletSoftware from '@/modules/create-wallet/ModuleCreateWalletSoftware.vue';
+//import ModuleCreateWalletSoftware from '@/modules/create-wallet/ModuleCreateWalletSoftware.vue';
 import { usePopupStore } from '@/stores/popups';
-import { reactive, defineProps } from 'vue';
+import { reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import TheLayoutHeader from '../components-default/TheLayoutHeader.vue';
 

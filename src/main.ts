@@ -1,6 +1,6 @@
 import { createApp } from 'vue';
-import App from './views/TheDefaultView.vue';
-import router from './router';
+import App from './main/mainApp.vue';
+import router from './core/router';
 import vuetify from './plugins/vuetify';
 import { loadFonts } from './plugins/webfontloader';
 import i18n from './main/i18n';
