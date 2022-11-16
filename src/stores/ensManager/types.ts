@@ -7,4 +7,4 @@ export interface State {
   stateVersion: string;
 }
 
-export type ThisStore = Store<'ensManager', State, Actions>;
+export type ThisStore = Store<'ensManager', State, any, Actions>;

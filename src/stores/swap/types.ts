@@ -7,4 +7,4 @@ export type State = {
   swapTokens: Array<any>;
 };
 
-export type ThisStore = Store<'swap', State, Actions>;
+export type ThisStore = Store<'swap', State, any, Actions>;

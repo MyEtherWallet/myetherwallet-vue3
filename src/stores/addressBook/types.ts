@@ -8,4 +8,4 @@ export interface State {
   stateVersion: string;
 }
 
-export type ThisStore = Store<'addressBook', State, Actions>;
+export type ThisStore = Store<'addressBook', State, any, Actions>;

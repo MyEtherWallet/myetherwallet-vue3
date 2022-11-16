@@ -8,4 +8,4 @@ export interface State {
   stateVersion: string;
 }
 
-export type ThisStore = Store<'article', State, Actions>;
+export type ThisStore = Store<'article', State, any, Actions>;
