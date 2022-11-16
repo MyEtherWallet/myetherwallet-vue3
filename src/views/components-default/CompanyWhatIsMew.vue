@@ -6,10 +6,7 @@
           <app-block-title no-page-title :data="state.titleData" class="pr-8" />
         </v-col>
         <v-col cols="7">
-          <v-img
-            src="@/assets/images/backgrounds/bg-spaceman.jpg"
-            max-width="100%"
-          />
+          <v-img :src="SpaceMan" max-width="100%" />
         </v-col>
       </v-row>
     </v-container>
@@ -18,6 +15,7 @@
 
 <script setup lang="ts">
 import AppBlockTitle from '@/core/components/AppBlockTitle.vue';
+import SpaceMan from '@/assets/images/backgrounds/bg-spaceman.jpg';
 import { reactive } from 'vue';
 import { useI18n } from 'vue-i18n';
 const { t } = useI18n({ useScope: 'global' });

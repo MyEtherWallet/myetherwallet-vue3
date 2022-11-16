@@ -18,9 +18,9 @@
             :label="$t('sendTx.amount')"
           />
         </v-col>
-        <!-- <v-col cols="12" class="mt-n5">
+        <v-col cols="12" class="mt-n5">
           <module-address-book is-home-page />
-        </v-col> -->
+        </v-col>
       </v-row>
     </div>
   </mew6-white-sheet>
