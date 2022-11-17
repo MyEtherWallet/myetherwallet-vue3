@@ -1,16 +1,37 @@
-declare module 'vuetify';
-declare module 'vuetify/lib/components';
-declare module 'vuetify/lib/directives';
-declare module 'store';
-declare module 'ethereumjs-util';
-declare module 'web3';
-declare module '@ethereumjs/common';
-declare module 'eth-ens-namehash';
-declare module 'lodash';
-declare module 'vue-cli-plugin-pinia';
-declare module 'uuid';
-declare module 'web3-core-requestmanager';
-declare module 'web3-core-method/src';
-declare module 'platform';
-declare module 'vue-matomo';
-declare module 'animejs/lib/anime.es.js';
+import { ExternalProvider } from '@ethersproject/providers';
+
+export {};
+declare global {
+  interface Window {
+    opera?: any;
+    MSStream?: any;
+    ethereum?: Ethereum;
+    Piwik?: Matomo;
+  }
+  const BUILD: 'production' | 'development';
+}
+interface Ethereum extends ExternalProvider, CustomEthereum {}
+
+type CustomEthereum = {
+  isMewWallet: any;
+  isTrust: any;
+  isMetaMask: any;
+  isEnkrypt: any;
+};
+
+interface Matomo {
+  getTracker: (trackerUrl: string, siteId: string) => MatomoObject;
+  getAsyncTracker: (
+    optionalMatomoUrl?: string,
+    optionalMatomoSiteId?: string
+  ) => MatomoObject;
+}
+type MatomoObject = {
+  trackPageView: (customTitle?: string) => void;
+  trackEvent: (
+    category: string,
+    action: string,
+    name?: string,
+    value?: string
+  ) => void;
+};
