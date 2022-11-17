@@ -42,9 +42,12 @@ const createWalletProps = (route: RouteLocation) => {
   }
 };
 const createRouteGuard: NavigationGuard = (to, from, next) => {
+  console.log('hey');
   if (to.params.overlay === undefined) {
+    console.log('1');
     next();
   } else if (to.params.overlay === 'software') {
+    console.log('2');
     const validTypes = ['keystore', 'mnemonic', 'overview'];
     if (validTypes.includes(to.query.type?.toString() || '')) {
       next();
