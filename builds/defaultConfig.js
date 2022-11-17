@@ -1,11 +1,11 @@
-import imageminMozjpeg from 'imagemin-mozjpeg';
+// import imageminMozjpeg from 'imagemin-mozjpeg';
 
-import ImageminPlugin from 'imagemin-webpack-plugin';
+// import ImageminPlugin from 'imagemin-webpack-plugin';
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 import webpack from 'webpack';
-//const CopyWebpackPlugin = require('copy-webpack-plugin');
+import CopyWebpackPlugin from 'copy-webpack-plugin';
 import NodePolyfillPlugin from 'node-polyfill-webpack-plugin';
-//const UglifyJS = require('uglify-es');
+import UglifyJS from 'uglify-js';
 import env_vars from '../ENV_VARS.cjs';
 import allowedConnections from '../connections.js';
 const sourceMapsConfig = {
