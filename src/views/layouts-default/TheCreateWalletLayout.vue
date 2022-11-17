@@ -111,19 +111,19 @@
 
 <script setup lang="ts">
 //import { Toast, ERROR } from '@/modules/toast/handler/handlerToast';
+import { useEnkryptMarketing } from '@/core/Common/enkryptMarketing';
 import { ROUTES_HOME } from '@/core/configs/configRoutes';
-//import enkryptMarketing from '@/core/mixins/enkryptMarketing.mixin';
 //import ModuleCreateWalletSoftware from '@/modules/create-wallet/ModuleCreateWalletSoftware.vue';
 import { usePopupStore } from '@/stores/popups';
 import { reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import TheLayoutHeader from '../components-default/TheLayoutHeader.vue';
-
+const { isMobile, openEnkrypt, openMewWallet } = useEnkryptMarketing();
 const popupStore = usePopupStore();
 popupStore.showEnkryptPromo = true;
 
 const router = useRouter();
-const props = defineProps({
+defineProps({
   showSoftwareModule: {
     type: Boolean
   },

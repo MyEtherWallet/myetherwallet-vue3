@@ -37,7 +37,7 @@
 <script setup lang="ts">
 import { ROUTES_HOME } from '@/core/configs/configRoutes';
 import TheLayoutHeader from '../components-default/TheLayoutHeader.vue';
-// import AppGetStarted from '@/core/components/AppGetStarted.vue';
+import AppGetStarted from '@/core/components/AppGetStarted.vue';
 // import ModuleToolsWatchOnly from '@/modules/tools/ModuleToolsWatchOnly.vue';
 // import ModuleToolsConvert from '@/modules/tools/ModuleToolsConvert.vue';
 // import ModuleToolsGenerateKeystore from '@/modules/tools/ModuleToolsGenerateKeystore/ModuleToolsGenerateKeystore.vue';
