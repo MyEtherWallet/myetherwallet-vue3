@@ -262,7 +262,6 @@ const buttonClasses = computed(() => {
     classes.push('btn-' + props.btnStyle.toLowerCase());
   }
 
-  console.log(classes);
   return classes;
 });
 /**

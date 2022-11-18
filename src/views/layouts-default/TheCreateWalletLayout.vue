@@ -224,7 +224,7 @@ const closeSoftwareModule = () => {
 };
 
 const isMobile = computed(() => {
-  return useDisplay().smAndDown;
+  return useDisplay().smAndDown.value;
 });
 </script>
 

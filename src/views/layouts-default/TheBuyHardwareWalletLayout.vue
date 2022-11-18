@@ -65,8 +65,8 @@
                     <v-img
                       :src="b.walletImg"
                       alt="Hardware Wallet"
-                      max-width="90px"
-                      max-height="100px"
+                      width="90px"
+                      height="100px"
                       contain
                     />
                   </div>
@@ -81,7 +81,8 @@
 </template>
 
 <script setup lang="ts">
-import TheLayoutHeader from '../TheDefaultHeader.vue';
+import TheLayoutHeader from '../components-default/TheLayoutHeader.vue';
+import MewButton from '@/tempComponents/MewButton.vue';
 const buttons = [
   {
     logoImg: require('@/assets/images/hardware-wallets/logo-ledger.svg'),

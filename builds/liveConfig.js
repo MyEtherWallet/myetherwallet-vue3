@@ -4,7 +4,7 @@ if (JSON.parse(config.env_vars.FULL_SOURCEMAPS) === 'false')
   config.sourceMapsConfig.exclude = /vendors.*.*/;
 
 export default defineConfig({
-  publicPath: process.env.ROUTER_MODE === 'history' ? '/' : './',
+  // publicPath: process.env.ROUTER_MODE === 'history' ? '/' : './',
   configureWebpack: config.webpackConfig,
   lintOnSave: process.env.NODE_ENV === 'production' ? 'error' : true,
   integrity: process.env.WEBPACK_INTEGRITY === 'false' ? false : true,
