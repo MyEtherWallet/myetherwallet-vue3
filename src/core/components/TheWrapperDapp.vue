@@ -158,15 +158,13 @@
   </mew6-white-sheet>
 </template>
 
-<script>
+<script setup lang="ts">
 import bannerImage from '@/assets/images/backgrounds/bg-dapps-center.jpg';
-import BlockHeader from '@/core/components/AppBlockHeader';
-import TheDappHeader from '@/core/components/TheDappHeader';
-import { Toast, ERROR } from '@/modules/toast/handler/handlerToast';
-import { mapGetters } from 'vuex';
-export default {
-  components: { BlockHeader, TheDappHeader },
-  props: {
+import { reactive } from 'vue';
+// import BlockHeader from '@/core/components/AppBlockHeader';
+// import TheDappHeader from '@/core/components/TheDappHeader';
+// import { Toast, ERROR } from '@/modules/toast/handler/handlerToast';
+  const props = defineProps({
     // OLD
     hasExitBtn: {
       default: false,
@@ -249,12 +247,10 @@ export default {
       default: false,
       type: Boolean
     }
-  },
-  data() {
-    return {
+  })
+  const state = reactive({
       bannerTextObj: {}
-    };
-  },
+    }
   computed: {
     ...mapGetters('global', ['network']),
     isValidNetwork() {

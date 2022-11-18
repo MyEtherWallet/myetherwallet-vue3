@@ -1,7 +1,7 @@
 import Web3WSProvider, { WSProviderType } from './ws-web3-provider';
 import { Manager as Web3RequestManager } from 'web3-core-requestmanager';
 import MiddleWare from '../middleware';
-//import { EventBus } from '@/core/plugins/eventBus';
+import { EventBus } from '@/plugins/eventBus';
 //import VuexStore from '@/core/store';
 //import { Toast, SENTRY } from '@/modules/toast/handler/handlerToast';
 import { v4 as uuidv4 } from 'uuid';
@@ -80,8 +80,8 @@ class WSProvider {
       const req = {
         payload,
         //store: VuexStore,
-        requestManager: new Web3RequestManager(this.oWSProvider)
-        //eventHub: EventBus
+        requestManager: new Web3RequestManager(this.oWSProvider),
+        eventHub: EventBus
       };
       const middleware = new MiddleWare();
       middleware.use(ethSendTransaction);

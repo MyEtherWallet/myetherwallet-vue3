@@ -1,7 +1,7 @@
 <template>
   <div class="enkrypt-promo-snackbar">
     <v-snackbar
-      :value="enkryptWalletSnackbar"
+      :value="popupStore.enkryptWalletSnackbar"
       max-width="380px"
       min-width="auto"
       :timeout="-1"
@@ -45,18 +45,18 @@
             class="ml-sm-n4 mt-1 mt-sm-0"
             color-theme="#939fb9"
             btn-style="transparent"
-            @click.native="openHelpCenter"
+            @click="openHelpCenter"
             >Learn More</mew-button
           >
           <mew-button
             class="extension-btn"
             style="border-radius: 40px !important"
             color-theme="#7E44F2"
-            @click.native="openEnkrypt"
+            @click="openEnkrypt"
           >
             <img
               class="mr-3"
-              :src="browserLogo"
+              :src="browserLogoComputed"
               alt="chrome"
               width="25px"
               height="25px"
@@ -68,51 +68,50 @@
     </v-snackbar>
   </div>
 </template>
-<script>
-import { mapActions, mapState } from 'vuex';
-import moment from 'moment';
+<script setup lang="ts">
+import { useEnkryptMarketing } from '@/core/Common/enkryptMarketing';
+import { usePopupStore } from '@/stores/popups';
+import { tryOnMounted } from '@vueuse/shared';
+import moment from 'moment/moment';
+// import enkryptMarketing from '@/core/mixins/enkryptMarketing.mixin';
+const { browserLogoComputed, openEnkrypt, openHelpCenter, text } =
+  useEnkryptMarketing();
+const popupStore = usePopupStore();
 
-import enkryptMarketing from '@/core/mixins/enkryptMarketing.mixin';
-export default {
-  mixins: [enkryptMarketing],
-  computed: {
-    ...mapState('popups', [
-      'enkryptWalletPopup',
-      'enkryptWalletPopupClosed',
-      'enkryptWalletSnackbarClosed',
-      'enkryptWalletSnackbar'
-    ])
-  },
-  mounted() {
-    this.checkIfShouldShow();
-  },
-  methods: {
-    ...mapActions('popups', [
-      'showEnkryptWalletSnackbar',
-      'closeEnkryptWalletSnackbar',
-      'enkryptWalletSnackbarCounter'
-    ]),
-    closeSnackbar() {
-      this.closeEnkryptWalletSnackbar();
-    },
-    /**
-     * checks if the enkrypt wallet ad has been shown
-     * and if it has been 7 days since closing
-     * and if snackbard has not been closed or 7 days since it was closed
-     * and the snacknar has not been shown 3 times
-     */
-    checkIfShouldShow() {
-      if (
-        !this.enkryptWalletPopup &&
-        moment(new Date()).diff(this.enkryptWalletPopupClosed, 'days') >= 7 &&
-        (this.enkryptWalletSnackbarClosed > 0 ||
-          moment(new Date()).diff(this.enkryptWalletSnackbarClosed, 'days') >=
-            7) &&
-        this.enkryptWalletSnackbarCounter <= 3
-      ) {
-        this.showEnkryptWalletSnackbar();
-      }
-    }
+// ...mapState('popups', [
+//   'enkryptWalletPopup',
+//   'enkryptWalletPopupClosed',
+//   'enkryptWalletSnackbarClosed',
+//   'enkryptWalletSnackbar'
+// ])
+
+tryOnMounted(() => {
+  checkIfShouldShow();
+});
+// ...mapActions('popups', [
+//   'showEnkryptWalletSnackbar',
+//   'closeEnkryptWalletSnackbar',
+//   'enkryptWalletSnackbarCounter'
+// ]),
+const closeSnackbar = () => {
+  popupStore.closeEnkryptWalletSnackbar();
+};
+/**
+ * checks if the enkrypt wallet ad has been shown
+ * and if it has been 7 days since closing
+ * and if snackbard has not been closed or 7 days since it was closed
+ * and the snacknar has not been shown 3 times
+ */
+const checkIfShouldShow = () => {
+  if (
+    !popupStore.enkryptWalletPopup &&
+    moment(new Date()).diff(popupStore.enkryptWalletPopupClosed, 'days') >= 7 &&
+    (popupStore.enkryptWalletSnackbarClosed > 0 ||
+      moment(new Date()).diff(popupStore.enkryptWalletSnackbarClosed, 'days') >=
+        7) &&
+    popupStore.enkryptWalletSnackbarCounter <= 3
+  ) {
+    popupStore.showEnkryptWalletSnackbar();
   }
 };
 </script>

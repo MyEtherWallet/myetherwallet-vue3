@@ -4,7 +4,7 @@ import MEWProvider from '@/utils/web3-provider';
 import WALLET_TYPES from '@/modules/access-wallet/common/walletTypes';
 import { formatters } from 'web3-core-helpers';
 //import EventNames from '@/utils/web3-provider/events';
-//import { EventBus } from '@/core/plugins/eventBus';
+import { EventBus } from '@/plugins/eventBus';
 import { ThisStore } from './types';
 import { useGlobalStore } from '../global';
 import { PiniaActionAdaptor } from '../types';
@@ -59,7 +59,7 @@ const actions: PiniaActionAdaptor<Actions, ThisStore> = {
         })
       : {};
     const web3Instance: any = new web3();
-    new MEWProvider(provider ? provider : parsedUrl, options)
+    new MEWProvider(provider ? provider : parsedUrl, options);
     web3Instance.eth.transactionConfirmationBlocks = 1;
     web3Instance['mew'] = {};
     web3Instance['mew'].sendBatchTransactions = (arr: Array<any>) => {
@@ -89,15 +89,15 @@ const actions: PiniaActionAdaptor<Actions, ThisStore> = {
           arr[i] = formatters.inputCallFormatter(arr[i]);
         }
 
-        // const batchSignCallback = promises => {
-        //   resolve(promises);
-        // };
-        // EventBus.$emit(
-        //   EventNames.SHOW_BATCH_TX_MODAL,
-        //   arr,
-        //   batchSignCallback,
-        //   state.isHardware
-        // );
+        const batchSignCallback = (promises: Promise<any>) => {
+          resolve(promises);
+        };
+        EventBus.$emit(
+          EventNames.SHOW_BATCH_TX_MODAL,
+          arr,
+          batchSignCallback,
+          state.isHardware
+        );
       });
     };
     this.web3 = web3Instance;

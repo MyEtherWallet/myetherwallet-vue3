@@ -5,7 +5,7 @@ interface index {
 
 export type PiniaActionAdaptor<
   Type extends Record<string, (...args: any) => any>,
-  StoreType extends Store & index
+  StoreType extends Store
 > = {
   [Key in keyof Type]: (
     this: StoreType,
@@ -14,8 +14,13 @@ export type PiniaActionAdaptor<
 };
 
 export type PiniaGetterAdaptor<GettersType, StoreType extends Store> = {
-  [Key in keyof GettersType]: (
-    this: StoreType,
-    state: StoreType['$state']
-  ) => GettersType[Key];
+  [Key in keyof GettersType]: GettersType[Key] extends (...args: any) => infer R
+    ? (
+        this: StoreType & GettersType,
+        state: StoreType['$state']
+      ) => (...p: Parameters<GettersType[Key]>) => R
+    : (
+        this: StoreType & GettersType,
+        state: StoreType['$state']
+      ) => GettersType[Key];
 };

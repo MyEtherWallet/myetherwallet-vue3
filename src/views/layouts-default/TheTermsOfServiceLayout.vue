@@ -313,9 +313,6 @@
 
 <script setup lang="ts">
 import { useArticleStore } from '@/stores/article';
-import { useI18n } from 'vue-i18n';
-
-const {} = useI18n();
 </script>
 
 <style lang="scss" scoped>

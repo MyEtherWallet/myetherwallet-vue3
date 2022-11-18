@@ -1,6 +1,6 @@
-import { AbiItem } from 'web3-utils';
+import Web3 from 'web3/dist/web3';
 
-const ERC20: Array<AbiItem> = [
+const ERC20 = [
   {
     constant: true,
     inputs: [],
@@ -44,10 +44,7 @@ const ERC20: Array<AbiItem> = [
     type: 'function'
   }
 ];
-const getTokenInfo = async (
-  contractAddress: string,
-  web3: any
-): Promise<token | null> => {
+const getTokenInfo = async (contractAddress: string, web3: Web3) => {
   const contract = new web3.eth.Contract(ERC20, contractAddress);
   try {
     const name = await contract.methods.name().call();
@@ -62,9 +59,5 @@ const getTokenInfo = async (
     return null;
   }
 };
-type token = {
-  name: string;
-  symbol: string;
-  decimals: number;
-};
+
 export default getTokenInfo;

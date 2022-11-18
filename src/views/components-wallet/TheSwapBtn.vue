@@ -4,13 +4,7 @@
   </v-btn>
 </template>
 
-<script>
-export default {
-  name: 'SwapBtn',
-  props: {},
-  data: () => ({})
-};
-</script>
+<script setup lang="ts"></script>
 
 <style lang="scss" scoped>
 .mew-component--swap-btn {

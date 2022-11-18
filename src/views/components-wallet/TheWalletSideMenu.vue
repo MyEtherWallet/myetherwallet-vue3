@@ -1,24 +1,26 @@
 <template>
   <div>
     <v-navigation-drawer
-      v-model="navOpen"
+      v-model="state.navOpen"
       app
       class="wallet-sidemenu"
       width="300"
-      :dark="$vuetify.theme.dark"
+      :dark="$vuetify.theme.current.value.dark"
       color="#07385F"
     >
       <template #prepend>
         <mew-overlay
-          :footer="footer"
-          :show-overlay="isOpenNetworkOverlay || !validNetwork"
+          :footer="state.footer"
+          :show-overlay="
+            state.isOpenNetworkOverlay || !globalStore.validNetwork
+          "
           :title="
-            validNetwork
+            globalStore.validNetwork
               ? 'Select Network'
               : 'Current network is not supported. Select a network below.'
           "
           content-size="large"
-          :close="validNetwork ? closeNetworkOverlay : null"
+          :close="globalStore.validNetwork ? closeNetworkOverlay : null"
         >
           <network-switch
             :filter-types="filterNetworks"
@@ -37,7 +39,11 @@
             <!-- ================================================================================== -->
             <!-- Close Navigation Bar for xs-md screens -->
             <!-- ================================================================================== -->
-            <v-btn icon class="d-block d-lg-none" @click="navOpen = false">
+            <v-btn
+              icon
+              class="d-block d-lg-none"
+              @click="state.navOpen = false"
+            >
               <v-icon color="white">mdi-close</v-icon>
             </v-btn>
           </div>
@@ -45,14 +51,14 @@
           <!-- ================================================================================== -->
           <!-- Wallet balance card -->
           <!-- ================================================================================== -->
-          <balance-card :sidemenu-status="navOpen" />
+          <balance-card :sidemenu-status="state.navOpen" />
         </div>
       </template>
 
       <!-- ================================================================================== -->
       <!-- Buy Sell / Send / Swap buttons -->
       <!-- ================================================================================== -->
-      <v-list v-if="!isOfflineApp" class="px-5">
+      <v-list v-if="!walletStore.isOfflineApp" class="px-5">
         <v-list-item-group>
           <div class="d-flex align-center">
             <v-list-item
@@ -89,7 +95,9 @@
             <v-divider vertical class="mx-3"></v-divider>
 
             <v-list-item
-              :class="[!hasSwap ? 'opacity--30 pointer-event--none' : '']"
+              :class="[
+                !globalStore.hasSwap ? 'opacity--30 pointer-event--none' : ''
+              ]"
               class="px-0 SwapButton"
               :to="{ name: ROUTES_WALLET.SWAP.NAME }"
               @click="trackToSwap"
@@ -205,13 +213,15 @@
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <div v-if="online" class="mt-3 px-8">
+        <div v-if="globalStore.online" class="mt-3 px-8">
           <div class="matomo-tracking-switch">
             <v-switch
               dark
-              :input-value="consentToTrack"
+              :input-value="popupStore.consentToTrack"
               inset
-              :label="`Data Tracking is ${consentToTrack ? 'On' : 'Off'}`"
+              :label="`Data Tracking is ${
+                popupStore.consentToTrack ? 'On' : 'Off'
+              }`"
               color="white"
               off-icon="mdi-alert-circle"
               @change="setConsent"
@@ -220,10 +230,10 @@
           <div class="d-flex align-center justify-space-between">
             <!-- <theme-switch /> -->
             <a
-              :href="`https://github.com/MyEtherWallet/MyEtherWallet/releases/tag/v${version}`"
+              :href="`https://github.com/MyEtherWallet/MyEtherWallet/releases/tag/v${VERSION}`"
               target="_blank"
               class="greyPrimary--text"
-              >v{{ version }}</a
+              >v{{ VERSION }}</a
             >
           </div>
         </div>
@@ -232,7 +242,7 @@
     <mew-popup
       max-width="400px"
       hide-close-btn
-      :show="showLogoutPopup"
+      :show="state.showLogoutPopup"
       :title="$t('interface.menu.logout')"
       :left-btn="{ text: 'Cancel', method: toggleLogout, color: 'basic' }"
       :right-btn="{
@@ -242,7 +252,10 @@
         enabled: true
       }"
     ></mew-popup>
-    <module-settings :on-settings="onSettings" @closeSettings="closeSettings" />
+    <module-settings
+      :on-settings="state.onSettings"
+      @closeSettings="closeSettings"
+    />
     <!--
     =====================================================================================
       Navigation Bar on top of the screen for xs-md screens
@@ -250,27 +263,27 @@
     =====================================================================================
     -->
     <v-system-bar
-      v-if="!$vuetify.breakpoint.lgAndUp"
+      v-if="!$vuetify.display.lgAndUp"
       color="#0b1a40"
       app
       :height="60"
       class="d-flex d-lg-none"
     >
       <v-row class="pa-3 align-center justify-space-between">
-        <app-btn-menu class="mr-3" @click.native="openNavigation" />
+        <app-btn-menu class="mr-3" @click="openNavigation" />
 
         <router-link :to="offlineModeRoute" style="line-height: 0">
           <img height="26" src="@/assets/images/icons/logo-mew.svg" />
         </router-link>
         <v-spacer />
-        <module-notifications v-if="!isOfflineApp" invert-icon />
+        <module-notifications v-if="!walletStore.isOfflineApp" invert-icon />
       </v-row>
     </v-system-bar>
   </div>
 </template>
 
-<script>
-import { mapActions, mapGetters, mapState } from 'vuex';
+<script setup lang="ts">
+import { reactive, computed } from 'vue';
 import send from '@/assets/images/icons/icon-send-enable.svg';
 import dashboard from '@/assets/images/icons/icon-dashboard-enable.svg';
 import nft from '@/assets/images/icons/icon-nft.svg';
@@ -279,252 +292,255 @@ import contract from '@/assets/images/icons/icon-contract-enable.svg';
 import message from '@/assets/images/icons/icon-message-enable.svg';
 import settings from '@/assets/images/icons/icon-setting-enable.svg';
 import logout from '@/assets/images/icons/icon-logout-enable.svg';
-import { EventBus } from '@/core/plugins/eventBus';
+import { tryOnBeforeUnmount, tryOnMounted } from '@vueuse/shared';
+
+import { EventBus } from '@/plugins/eventBus';
 import { ETH, BSC, MATIC } from '@/utils/networks/types';
 import { ROUTES_WALLET } from '@/core/configs/configRoutes';
-import handlerAnalytics from '@/modules/analytics-opt-in/handlers/handlerAnalytics.mixin';
-import dappsMeta from '@/dapps/metainfo-dapps';
+//import handlerAnalytics from '@/modules/analytics-opt-in/handlers/handlerAnalytics.mixin';
+//import dappsMeta from '@/dapps/metainfo-dapps';
+import { from } from '@apollo/client/core';
 import { MOONPAY_EVENT } from '@/modules/moon-pay/helpers';
-import isNew from '@/core/helpers/isNew.js';
+//import isNew from '@/core/helpers/isNew.js';
+import AppBtnMenu from '@/core/components/AppBtnMenu.vue';
+import BalanceCard from '@/modules/balance/ModuleBalanceCard.vue';
+import ModuleSettings from '@/modules/settings/ModuleSettings.vue';
+import ModuleNotifications from '@/modules/notifications/ModuleNotifications.vue';
+import NetworkSwitch from '@/modules/network/components/NetworkSwitch.vue';
+import { useRoute, useRouter } from 'vue-router';
+import { useI18n, VERSION } from 'vue-i18n';
+import { useGlobalStore } from '@/stores/global';
+import { useWalletStore } from '@/stores/wallet';
+import { usePopupStore } from '@/stores/popups';
 
-export default {
-  components: {
-    AppBtnMenu: () => import('@/core/components/AppBtnMenu'),
-    BalanceCard: () => import('@/modules/balance/ModuleBalanceCard'),
-    ModuleSettings: () => import('@/modules/settings/ModuleSettings'),
-    ModuleNotifications: () =>
-      import('@/modules/notifications/ModuleNotifications'),
-    NetworkSwitch: () =>
-      import('@/modules/network/components/NetworkSwitch.vue')
+const { t } = useI18n({ useScope: 'global' });
+const router = useRouter();
+const route = useRoute();
+
+const globalStore = useGlobalStore();
+const walletStore = useWalletStore();
+const popupStore = usePopupStore();
+const state = reactive({
+  isOpenNetworkOverlay: false,
+  navOpen: false,
+  onSettings: false,
+  showLogoutPopup: false,
+  routeNetworks: {
+    [ROUTES_WALLET.SWAP.NAME]: [ETH, BSC, MATIC],
+    [ROUTES_WALLET.NFT_MANAGER.NAME]: [ETH]
   },
-  mixins: [handlerAnalytics],
-  data() {
-    return {
-      isOpenNetworkOverlay: false,
-      navOpen: null,
-      version: VERSION,
-      onSettings: false,
-      showLogoutPopup: false,
-      routeNetworks: {
-        [ROUTES_WALLET.SWAP.NAME]: [ETH, BSC, MATIC],
-        [ROUTES_WALLET.NFT_MANAGER.NAME]: [ETH]
+  footer: {
+    text: 'Need help?',
+    linkTitle: 'Contact support',
+    link: 'mailto:support@myetherwallet.com'
+  }
+});
+// ...mapGetters('global', ['network', 'isEthNetwork', 'hasSwap']),
+// ...mapState('wallet', ['instance', 'isOfflineApp']),
+// ...mapState('global', ['online', 'validNetwork']),
+// ...mapState('popups', ['popupStore.consentToTrack']),
+/**
+ * IMPORTANT TO DO:
+ * @returns {boolean}
+ */
+const filterNetworks = computed(() => {
+  // if (this.isHardware) {
+  //   return [];
+  // }
+  return [];
+});
+/**
+ * Property returns whether or not you are on the swap page
+ * @returns {boolean}
+ */
+const isSwapPage = computed(() => {
+  return route.name === 'Swap';
+});
+const sectionOne = computed(() => {
+  if (globalStore.online) {
+    //dappsMeta
+    const hasNew = Object.values({}).filter(item => {
+      // if (isNew(item.release)) {
+      //   return item;
+      // }
+    });
+    return [
+      {
+        title: t('interface.menu.dashboard'),
+        route: offlineModeRoute.value,
+        icon: dashboard
       },
-      ROUTES_WALLET: ROUTES_WALLET,
-      footer: {
-        text: 'Need help?',
-        linkTitle: 'Contact support',
-        link: 'mailto:support@myetherwallet.com'
-      }
-    };
-  },
-  computed: {
-    ...mapGetters('global', ['network', 'isEthNetwork', 'hasSwap']),
-    ...mapState('wallet', ['instance', 'isOfflineApp']),
-    ...mapState('global', ['online', 'validNetwork']),
-    ...mapState('popups', ['consentToTrack']),
-    /**
-     * IMPORTANT TO DO:
-     * @returns {boolean}
-     */
-    filterNetworks() {
-      if (this.isHardware) {
-        return [];
-      }
-      return [];
-    },
-    /**
-     * Property returns whether or not you are on the swap page
-     * @returns {boolean}
-     */
-    isSwapPage() {
-      return this.$route.name === 'Swap';
-    },
-    sectionOne() {
-      if (this.online) {
-        const hasNew = Object.values(dappsMeta).filter(item => {
-          if (isNew(item.release)) {
-            return item;
+      {
+        title: t('interface.menu.nft'),
+        route: { name: ROUTES_WALLET.NFT_MANAGER.NAME },
+        icon: nft
+      },
+      {
+        title: t('interface.menu.dapps'),
+        route: { name: ROUTES_WALLET.DAPPS.NAME },
+        icon: dapp,
+        hasNew: hasNew.length > 0
+      },
+      {
+        title: t('interface.menu.contract'),
+        icon: contract,
+        children: [
+          {
+            title: t('interface.menu.deploy'),
+            route: { name: ROUTES_WALLET.DEPLOY_CONTRACT.NAME }
+          },
+          {
+            title: t('interface.menu.interact-contract'),
+            route: { name: ROUTES_WALLET.INTERACT_WITH_CONTRACT.NAME }
           }
-        });
-        return [
+        ]
+      },
+      {
+        title: t('interface.menu.message'),
+        icon: message,
+        children: [
           {
-            title: this.$t('interface.menu.dashboard'),
-            route: this.offlineModeRoute,
-            icon: dashboard
+            title: t('interface.menu.sign-message'),
+            route: { name: ROUTES_WALLET.SIGN_MESSAGE.NAME }
           },
           {
-            title: this.$t('interface.menu.nft'),
-            route: { name: ROUTES_WALLET.NFT_MANAGER.NAME },
-            icon: nft
-          },
-          {
-            title: this.$t('interface.menu.dapps'),
-            route: { name: ROUTES_WALLET.DAPPS.NAME },
-            icon: dapp,
-            hasNew: hasNew.length > 0
-          },
-          {
-            title: this.$t('interface.menu.contract'),
-            icon: contract,
-            children: [
-              {
-                title: this.$t('interface.menu.deploy'),
-                route: { name: ROUTES_WALLET.DEPLOY_CONTRACT.NAME }
-              },
-              {
-                title: this.$t('interface.menu.interact-contract'),
-                route: { name: ROUTES_WALLET.INTERACT_WITH_CONTRACT.NAME }
-              }
-            ]
-          },
-          {
-            title: this.$t('interface.menu.message'),
-            icon: message,
-            children: [
-              {
-                title: this.$t('interface.menu.sign-message'),
-                route: { name: ROUTES_WALLET.SIGN_MESSAGE.NAME }
-              },
-              {
-                title: this.$t('interface.menu.verify-message'),
-                route: { name: ROUTES_WALLET.VERIFY_MESSAGE.NAME }
-              }
-            ]
+            title: t('interface.menu.verify-message'),
+            route: { name: ROUTES_WALLET.VERIFY_MESSAGE.NAME }
           }
-        ];
+        ]
       }
-      return [
-        {
-          title: this.$t('sendTx.send-offline'),
-          route: { name: ROUTES_WALLET.SEND_TX_OFFLINE.NAME },
-          icon: send
-        },
-        {
-          title: this.$t('interface.menu.sign-message'),
-          route: { name: ROUTES_WALLET.SIGN_MESSAGE.NAME },
-          icon: message
-        }
-      ];
+    ];
+  }
+  return [
+    {
+      title: t('sendTx.send-offline'),
+      route: { name: ROUTES_WALLET.SEND_TX_OFFLINE.NAME },
+      icon: send
     },
-    sectionTwo() {
-      if (this.online) {
-        return [
-          {
-            title: this.$t('common.settings'),
-            icon: settings,
-            fn: this.openSettings,
-            route: { name: ROUTES_WALLET.SETTINGS.NAME }
-          },
-          {
-            title: this.$t('common.logout'),
-            icon: logout,
-            fn: this.toggleLogout
-          }
-        ];
-      }
-      return [
-        {
-          title: this.$t('common.logout'),
-          icon: logout,
-          fn: this.toggleLogout
-        }
-      ];
-    },
-    offlineModeRoute() {
-      return this.isOfflineApp
-        ? { name: ROUTES_WALLET.WALLETS.NAME }
-        : { name: ROUTES_WALLET.DASHBOARD.NAME };
+    {
+      title: t('interface.menu.sign-message'),
+      route: { name: ROUTES_WALLET.SIGN_MESSAGE.NAME },
+      icon: message
     }
-  },
-  mounted() {
-    // If no menu item is selected on load, redirect user to Dashboard
-    if (!this.isOfflineApp) {
-      this.redirectToDashboard();
-    } else {
-      this.footer = {
-        text: 'Need help? Email us at support@myetherwallet.com',
-        linkTitle: '',
-        link: ''
-      };
+  ];
+});
+const sectionTwo = computed(() => {
+  if (globalStore.online) {
+    return [
+      {
+        title: t('common.settings'),
+        icon: settings,
+        fn: openSettings,
+        route: { name: ROUTES_WALLET.SETTINGS.NAME }
+      },
+      {
+        title: t('common.logout'),
+        icon: logout,
+        fn: toggleLogout
+      }
+    ];
+  }
+  return [
+    {
+      title: t('common.logout'),
+      icon: logout,
+      fn: toggleLogout
     }
+  ];
+});
+const offlineModeRoute = computed(() => {
+  return walletStore.isOfflineApp
+    ? { name: ROUTES_WALLET.WALLETS.NAME }
+    : { name: ROUTES_WALLET.DASHBOARD.NAME };
+});
 
-    if (this.$route.name == ROUTES_WALLET.SETTINGS.NAME) {
-      this.openSettings();
+tryOnMounted(() => {
+  // If no menu item is selected on load, redirect user to Dashboard
+  if (!walletStore.isOfflineApp) {
+    redirectToDashboard();
+  } else {
+    state.footer = {
+      text: 'Need help? Email us at support@myetherwallet.com',
+      linkTitle: '',
+      link: ''
+    };
+  }
+
+  if (route.name == ROUTES_WALLET.SETTINGS.NAME) {
+    openSettings();
+  }
+  EventBus.$on('openSettings', () => {
+    openSettings();
+  });
+  EventBus.$on('openNetwork', () => {
+    openNetwork();
+  });
+});
+
+tryOnBeforeUnmount(() => {
+  EventBus.$off('openSettings');
+  EventBus.$off('openNetwork');
+});
+// ...mapActions('wallet', ['removeWallet']),
+const trackToSwap = () => {
+  //this.trackSwap('fromSideMenu');
+};
+const trackBuySellFunc = () => {
+  //this.trackBuySell('buySellHome');
+};
+const closeNetworkOverlay = () => {
+  if (globalStore.validNetwork) {
+    router.go(-1);
+    state.isOpenNetworkOverlay = false;
+  }
+};
+const shouldShow = (route: { name: string }) => {
+  if (state.routeNetworks[route.name]) {
+    for (const net of state.routeNetworks[route.name]) {
+      if (net.name === globalStore.network.type.name) return true;
     }
-    EventBus.$on('openSettings', () => {
-      this.openSettings();
-    });
-    EventBus.$on('openNetwork', () => {
-      this.openNetwork();
-    });
-  },
-  beforeDestroy() {
-    EventBus.$off('openSettings');
-    EventBus.$off('openNetwork');
-  },
-  methods: {
-    ...mapActions('wallet', ['removeWallet']),
-    trackToSwap() {
-      this.trackSwap('fromSideMenu');
-    },
-    trackBuySellFunc() {
-      this.trackBuySell('buySellHome');
-    },
-    closeNetworkOverlay() {
-      if (this.validNetwork) {
-        this.$router.go(-1);
-        this.isOpenNetworkOverlay = false;
-      }
-    },
-    shouldShow(route) {
-      if (this.routeNetworks[route.name]) {
-        for (const net of this.routeNetworks[route.name]) {
-          if (net.name === this.network.type.name) return true;
-        }
-        return false;
-      }
-      return true;
-    },
-    openNetwork() {
-      this.isOpenNetworkOverlay = true;
-    },
-    openMoonpay() {
-      EventBus.$emit(MOONPAY_EVENT);
-    },
-    openNavigation() {
-      this.navOpen = true;
-    },
-    openSettings() {
-      this.onSettings = true;
-    },
-    closeSettings() {
-      if (this.$router.currentRoute.name === ROUTES_WALLET.SETTINGS.NAME)
-        this.$router.go(-1);
-      this.onSettings = false;
-    },
-    onLogout() {
-      this.showLogoutPopup = false;
-      this.removeWallet();
-    },
-    toggleLogout() {
-      this.showLogoutPopup = !this.showLogoutPopup;
-    },
-    /* =================================================================== */
-    /* If no menu item is selected on load, redirect user to Dashboard     */
-    /* =================================================================== */
-    redirectToDashboard() {
-      if (this.$route.name == ROUTES_WALLET.WALLETS.NAME) {
-        this.$router.push(this.offlineModeRoute);
-      }
-    },
-    /* =================================================================== */
-    /* If sub-menu item is selected on load, expend the sub-menu slot      */
-    /* =================================================================== */
-    expendSubMenu(children) {
-      for (const c of children) {
-        if (this.$route.name == c.route.name) return true;
-      }
-    }
+    return false;
+  }
+  return true;
+};
+const openNetwork = () => {
+  state.isOpenNetworkOverlay = true;
+};
+const openMoonpay = () => {
+  EventBus.$emit(MOONPAY_EVENT);
+};
+const openNavigation = () => {
+  state.navOpen = true;
+};
+const openSettings = () => {
+  state.onSettings = true;
+};
+const closeSettings = () => {
+  if (router.currentRoute.value.name === ROUTES_WALLET.SETTINGS.NAME)
+    router.go(-1);
+  state.onSettings = false;
+};
+const onLogout = () => {
+  state.showLogoutPopup = false;
+  walletStore.removeWallet();
+};
+const toggleLogout = () => {
+  state.showLogoutPopup = !state.showLogoutPopup;
+};
+/* =================================================================== */
+/* If no menu item is selected on load, redirect user to Dashboard     */
+/* =================================================================== */
+const redirectToDashboard = () => {
+  if (route.name == ROUTES_WALLET.WALLETS.NAME) {
+    router.push(offlineModeRoute.value);
+  }
+};
+/* =================================================================== */
+/* If sub-menu item is selected on load, expend the sub-menu slot      */
+/* =================================================================== */
+const expendSubMenu = (children: any) => {
+  for (const c of children) {
+    if (route.name == c.route.name) return true;
   }
 };
 </script>

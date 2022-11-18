@@ -8,15 +8,16 @@
         no-gutters
         dense
         :class="[
-          $vuetify.breakpoint.md ||
-          $vuetify.breakpoint.lg ||
-          $vuetify.breakpoint.xl
+          $vuetify.display.md || $vuetify.display.lg || $vuetify.display.xl
             ? 'set-fixed-height'
             : '',
           'd-flex align-center justify-space-between'
         ]"
       >
-        <div v-if="!promoOver && !isOfflineApp" class="d-flex align-center">
+        <div
+          v-if="!promoOver && !walletStore.isOfflineApp"
+          class="d-flex align-center"
+        >
           <div class="party-popper-container ml-2 mr-3 d-flex pa-3">
             <img
               src="@/assets/images/icons/icon-party-popper.png"
@@ -35,7 +36,7 @@
                 title="Buy crypto"
                 btn-size="medium"
                 class="d-md-none d-lg-none d-xl-none"
-                @click.native="buyCryptoNow"
+                @click="buyCryptoNow"
               />
             </div>
             <div>
@@ -56,7 +57,10 @@
             </div>
           </div>
         </div>
-        <div v-else-if="promoOver && !isOfflineApp" class="eth-banner d-flex">
+        <div
+          v-else-if="promoOver && !walletStore.isOfflineApp"
+          class="eth-banner d-flex"
+        >
           <div class="mr-5">
             <mew6-white-sheet class="pa-3">
               <v-icon color="black"> mdi-bank </v-icon>
@@ -68,9 +72,9 @@
             >
             <span
               :class="[
-                $vuetify.breakpoint.md ||
-                $vuetify.breakpoint.lg ||
-                $vuetify.breakpoint.xl
+                $vuetify.display.md ||
+                $vuetify.display.lg ||
+                $vuetify.display.xl
                   ? ''
                   : 'py-2',
                 'mew-body textMedium--text'
@@ -86,61 +90,57 @@
         </div>
       </v-col>
       <v-col
-        v-if="
-          $vuetify.breakpoint.md ||
-          $vuetify.breakpoint.lg ||
-          $vuetify.breakpoint.xl
-        "
+        v-if="$vuetify.display.md || $vuetify.display.lg || $vuetify.display.xl"
         cols="4"
         class="ml-auto d-flex align-center justify-end"
       >
         <div class="align-center d-none d-lg-block">
-          <notification-overlay v-if="online" />
+          <notification-overlay v-if="globalStore.online" />
         </div>
       </v-col>
     </v-row>
   </v-container>
 </template>
 
-<script>
-import moment from 'moment';
-import { mapState } from 'vuex';
-import handlerAnalytics from '@/modules/analytics-opt-in/handlers/handlerAnalytics.mixin';
+<script setup lang="ts">
+import { useGlobalStore } from '@/stores/global';
+import { useWalletStore } from '@/stores/wallet';
+import { computed } from 'vue';
+import moment from 'moment/moment';
+//import handlerAnalytics from '@/modules/analytics-opt-in/handlers/handlerAnalytics.mixin';
 import { MOONPAY_EVENT, MOONPAY_OFFER_END } from '@/modules/moon-pay/helpers';
-import { EventBus } from '@/core/plugins/eventBus';
-export default {
-  components: {
-    notificationOverlay: () =>
-      import('@/modules/notifications/ModuleNotifications')
-  },
-  mixins: [handlerAnalytics],
-  computed: {
-    ...mapState('wallet', ['identifier', 'isOfflineApp']),
-    ...mapState('global', ['online']),
-    daysLeft() {
-      const eventDate = moment(MOONPAY_OFFER_END);
-      const todaysDate = moment();
-      return eventDate.diff(todaysDate, 'days');
-    },
-    hoursLeft() {
-      const today = moment();
-      const tomorrowsDate = moment().add(1, 'days').startOf('day');
-      const duration = moment.duration(tomorrowsDate.diff(today));
-      return Math.ceil(duration.asHours());
-    },
-    dayText() {
-      return `day${this.daysLeft > 1 ? 's' : ''}`;
-    },
-    promoOver() {
-      return moment(moment()).isAfter(MOONPAY_OFFER_END);
-    }
-  },
-  methods: {
-    buyCryptoNow() {
-      this.trackBuySell('buySellBuyCryptoNow');
-      EventBus.$emit(MOONPAY_EVENT);
-    }
-  }
+import { EventBus } from '@/plugins/eventBus';
+//import notificationOverlay from'@/modules/notifications/ModuleNotifications.vue'
+const walletStore = useWalletStore();
+const globalStore = useGlobalStore();
+
+// ...mapState('wallet', ['identifier', 'isOfflineApp']),
+// ...mapState('global', ['online']),
+
+const daysLeft = computed(() => {
+  const eventDate = moment(MOONPAY_OFFER_END);
+  const todaysDate = moment();
+  return eventDate.diff(todaysDate, 'days');
+});
+
+const hoursLeft = computed(() => {
+  const today = moment();
+  const tomorrowsDate = moment().add(1, 'days').startOf('day');
+  const duration = moment.duration(tomorrowsDate.diff(today));
+  return Math.ceil(duration.asHours());
+});
+
+const dayText = computed(() => {
+  return `day${daysLeft.value > 1 ? 's' : ''}`;
+});
+
+const promoOver = computed(() => {
+  return moment(moment()).isAfter(MOONPAY_OFFER_END);
+});
+
+const buyCryptoNow = () => {
+  //this.trackBuySell('buySellBuyCryptoNow');
+  EventBus.$emit(MOONPAY_EVENT);
 };
 </script>
 

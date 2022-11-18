@@ -4,7 +4,7 @@ import { Store } from 'pinia';
 import { Actions } from './actions';
 import { Getters } from './getters';
 
-export interface State {
+export type State = {
   [key: string]: any;
   localStore: boolean;
   Errors: any;
@@ -24,6 +24,6 @@ export interface State {
     maxPriorityFeePerGas: string;
   };
   testing: boolean;
-}
+};
 
 export type ThisStore = Store<'global', State, Getters, Actions>;

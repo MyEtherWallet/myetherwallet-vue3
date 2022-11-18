@@ -8,7 +8,7 @@ import { toBN, toHex, toWei } from 'web3-utils';
 import Web3Contract from 'web3-eth-contract';
 import { ETH } from '@/utils/networks/types';
 //import { Toast, ERROR } from '@/modules/toast/handler/handlerToast';
-//import { EventBus } from '@/core/plugins/eventBus';
+//import { EventBus } from '@/plugins/eventBus';
 //import EventNames from '@/utils/web3-provider/events.js';
 import BN from 'bn.js';
 import { SwapTradeParams } from './mew-provider-class';

@@ -1,7 +1,7 @@
 <template>
   <v-tooltip open-on-click :open-on-hover="false" bottom open-delay="0">
-    <template #activator="{ on }">
-      <div class="user-select--none" v-on="on"><slot /></div>
+    <template>
+      <div class="user-select--none"><slot /></div>
     </template>
     <v-card color="transparent" width="180px" class="px-1 py-3" flat>
       <div class="d-flex justify-space-between mb-1">
@@ -21,15 +21,7 @@
   </v-tooltip>
 </template>
 
-<script>
-export default {
-  components: {},
-  props: {},
-  data() {
-    return {};
-  }
-};
-</script>
+<script setup lang="ts"></script>
 
 <style lang="scss" scoped>
 .theme--light .v-tooltip__content {

@@ -63,55 +63,50 @@
   </v-footer>
 </template>
 
-<script>
-export default {
-  name: 'TheWalletFooter',
-  components: {},
-  props: {
-    isOfflineApp: {
-      type: Boolean,
-      default: false
-    }
-  },
-  data: () => ({
-    onLanguage: null,
-    languages: [
-      {
-        name: 'English',
-        value: 'en',
-        flag: require('@/assets/images/flags/uk.png')
-      },
-      {
-        name: 'Russian',
-        value: 'ru',
-        flag: require('@/assets/images/flags/russia.png')
-      },
-      {
-        name: 'Germany',
-        value: 'ge',
-        flag: require('@/assets/images/flags/germany.png')
-      },
-      {
-        name: 'China',
-        value: 'ch',
-        flag: require('@/assets/images/flags/china.png')
-      },
-      {
-        name: 'Korean',
-        value: 'kr',
-        flag: require('@/assets/images/flags/korea.png')
-      },
-      {
-        name: 'Japanese',
-        value: 'jp',
-        flag: require('@/assets/images/flags/japan.png')
-      }
-    ]
-  }),
-  mounted() {
-    this.onLanguage = this.languages[0].value;
+<script setup lang="ts">
+import { reactive, onMounted } from 'vue';
+defineProps({
+  isOfflineApp: {
+    type: Boolean,
+    default: false
   }
-};
+});
+const languages = [
+  {
+    name: 'English',
+    value: 'en',
+    flag: require('@/assets/images/flags/uk.png')
+  },
+  {
+    name: 'Russian',
+    value: 'ru',
+    flag: require('@/assets/images/flags/russia.png')
+  },
+  {
+    name: 'Germany',
+    value: 'ge',
+    flag: require('@/assets/images/flags/germany.png')
+  },
+  {
+    name: 'China',
+    value: 'ch',
+    flag: require('@/assets/images/flags/china.png')
+  },
+  {
+    name: 'Korean',
+    value: 'kr',
+    flag: require('@/assets/images/flags/korea.png')
+  },
+  {
+    name: 'Japanese',
+    value: 'jp',
+    flag: require('@/assets/images/flags/japan.png')
+  }
+];
+const state = reactive({ onLanguage: languages[0].value });
+onMounted(() => {
+  state.onLanguage = languages[0].value;
+});
 </script>
 
 <style lang="scss">
