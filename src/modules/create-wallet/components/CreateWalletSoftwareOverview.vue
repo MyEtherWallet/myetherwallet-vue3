@@ -90,7 +90,7 @@
 <script setup lang="ts">
 import { onMounted, reactive } from 'vue';
 import WALLET_TYPES from '@/modules/access-wallet/common/walletTypes';
-import eventBus from '@/plugins/eventBus';
+import { EventBus } from '@/plugins/eventBus';
 
 const state = reactive({
   walletTypes: WALLET_TYPES,
@@ -117,7 +117,7 @@ const state = reactive({
  * function is void
  */
 const selectWalletType = (type: string) => {
-  eventBus.$emit('typeSelect', type);
+  EventBus.$emit('typeSelect', type);
 };
 </script>
 

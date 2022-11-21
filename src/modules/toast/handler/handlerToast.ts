@@ -1,7 +1,7 @@
 import ToastEvents from './toastEvents';
 import * as Sentry from '@sentry/browser';
 import { ToastLink } from '../types';
-import eventBus from '@/plugins/eventBus';
+import { EventBus } from '@/plugins/eventBus';
 import { useI18n } from 'vue-i18n';
 
 const SUCCESS = 'success';
@@ -75,7 +75,7 @@ const Toast = (
   const { t } = useI18n();
   let extractedText: string;
   if (!type && !acceptableTypes.includes(type)) {
-    eventBus.$emit(
+    EventBus.$emit(
       ToastEvents[type],
       'Provided type is empty or not valid. Please provide one of the following as type: ' +
         acceptableTypes.join(','),
@@ -93,7 +93,7 @@ const Toast = (
     extractedText = text.toString();
   }
   if (!extractedText) {
-    eventBus.$emit(
+    EventBus.$emit(
       ToastEvents[type],
       'Please provide text to display!',
       link,
@@ -104,7 +104,7 @@ const Toast = (
 
   if (type === SENTRY) {
     if (foundGlobalError(extractedText) || foundGlobalWarning(extractedText)) {
-      eventBus.$emit(
+      EventBus.$emit(
         ToastEvents[ERROR],
         t(GLOBAL_ERRORS[extractedText]),
         link,
@@ -118,7 +118,7 @@ const Toast = (
     }
     return;
   }
-  eventBus.$emit(ToastEvents[type], text, link, duration);
+  EventBus.$emit(ToastEvents[type], text, link, duration);
 };
 
 export { SUCCESS, ERROR, WARNING, INFO, Toast, SENTRY };

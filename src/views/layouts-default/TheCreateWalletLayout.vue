@@ -114,10 +114,9 @@ import { Toast, ERROR } from '@/modules/toast/handler/handlerToast';
 import { ROUTES_HOME } from '@/core/configs/configRoutes';
 import ModuleCreateWalletSoftware from '@/modules/create-wallet/ModuleCreateWalletSoftware.vue';
 import { usePopupStore } from '@/stores/popups';
-import { computed, reactive } from 'vue';
+import { reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import TheLayoutHeader from '../components-default/TheLayoutHeader.vue';
-import { useDisplay } from 'vuetify/lib/framework.mjs';
 import { useEnkryptMarketing } from '@/core/Common/enkryptMarketing';
 import MewButton from '@/tempComponents/MewButton.vue';
 
@@ -125,7 +124,7 @@ const popupStore = usePopupStore();
 popupStore.showEnkryptPromo = true;
 
 const router = useRouter();
-const props = defineProps({
+defineProps({
   showSoftwareModule: {
     type: Boolean
   },
@@ -144,7 +143,7 @@ const state = reactive({
     routeName: 'AccessWallet'
   }
 });
-const { openEnkrypt, openMewWallet } = useEnkryptMarketing();
+const { isMobile, openEnkrypt, openMewWallet } = useEnkryptMarketing();
 const buttons = [
   /* Enkrypt */
   {
@@ -222,10 +221,6 @@ const closeSoftwareModule = () => {
     Toast(e, {}, ERROR);
   }
 };
-
-const isMobile = computed(() => {
-  return useDisplay().smAndDown.value;
-});
 </script>
 
 <style lang="scss" scoped>

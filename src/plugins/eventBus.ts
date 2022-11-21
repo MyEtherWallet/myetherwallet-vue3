@@ -2,7 +2,7 @@ import { TinyEmitter } from 'tiny-emitter';
 
 const emitter = new TinyEmitter();
 
-const eventBus = {
+export const EventBus = {
   $on: (
     event: string,
     callback: (...args: unknown[]) => unknown,
@@ -18,5 +18,3 @@ const eventBus = {
   $off: (event: string, callback?: (...args: unknown[]) => unknown) =>
     emitter.off(event, callback)
 };
-
-export default eventBus;
