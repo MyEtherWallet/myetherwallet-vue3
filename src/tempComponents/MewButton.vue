@@ -351,13 +351,13 @@ const isBackground = computed(() => {
     &.greenPrimary--text.btn-light:hover,
     //&.greenPrimary--text.btn-outline:hover,
     &.greenPrimary--text.btn-transparent:hover {
-      background: var(--v-greenLight-base) !important;
+      background: RGB(var(--v-theme-greenLight)) !important;
     }
 
     &.greenPrimary--text.btn-light:active,
     &.greenPrimary--text.btn-outline:active,
     &.greenPrimary--text.btn-transparent:active {
-      background: var(--v-greenMedium-base) !important;
+      background: RGB(var(--v-theme-greenMedium)) !important;
     }
 
     /**
@@ -386,13 +386,13 @@ const isBackground = computed(() => {
     &.bluePrimary--text.btn-light:active,
     &.bluePrimary--text.btn-outline:active,
     &.bluePrimary--text.btn-transparent:active {
-      background: var(--v-blueMedium-base) !important;
+      background: RGB(var(--v-theme-blueMedium)) !important;
     }
 
     &.bluePrimary--text.btn-light:hover,
     &.bluePrimary--text.btn-outline:hover,
     &.bluePrimary--text.btn-transparent:hover {
-      background: var(--v-blueLight-base) !important;
+      background: RGB(var(--v-theme-blueLight)) !important;
     }
 
     /**
@@ -420,7 +420,7 @@ const isBackground = computed(() => {
     // btn style: outline, light, transparent - active & hover state
     &.greyPrimary--text.btn-light:hover,
     &.greyPrimary--text.btn-transparent:hover {
-      background: var(--v-greyLight-base) !important;
+      background: RGB(var(--v-theme-greyLight)) !important;
     }
 
     &.greyPrimary--text.btn-outline:hover {
@@ -430,7 +430,7 @@ const isBackground = computed(() => {
     &.greyPrimary--text.btn-light:active,
     &.greyPrimary--text.btn-outline:active,
     &.greyPrimary--text.btn-transparent:active {
-      background: var(--v-greyMedium-base) !important;
+      background: RGB(var(--v-theme-greyMedium)) !important;
     }
 
     /**
@@ -459,13 +459,13 @@ const isBackground = computed(() => {
     &.redPrimary--text.btn-light:hover,
     &.redPrimary--text.btn-outline:hover,
     &.redPrimary--text.btn-transparent:hover {
-      background: var(--v-redLight-base) !important;
+      background: RGB(var(--v-theme-redLight)) !important;
     }
 
     &.redPrimary--text.btn-light:active,
     &.redPrimary--text.btn-outline:active,
     &.redPrimary--text.btn-transparent:active {
-      background: var(--v-redMedium-base) !important;
+      background: RGB(var(--v-theme-redMedium)) !important;
     }
 
     /**
@@ -473,22 +473,22 @@ const isBackground = computed(() => {
     */
     // btn style: outline
     &.disabled-outline {
-      border: thin solid var(--v-disabledPrimary-base);
-      color: var(--v-disabledPrimary-base) !important;
+      border: thin solid RGB(var(--v-theme-disabledPrimary));
+      color: RGB(var(--v-theme-disabledPrimary)) !important;
     }
     // btn style: transparent
     &.disabled-transparent {
-      color: var(--v-disabledPrimary-base) !important;
+      color: RGB(var(--v-theme-disabledPrimary)) !important;
     }
     // btn style: light
     &.disabled-light {
-      background-color: var(--v-disabledLight-base) !important;
-      color: var(--v-disabledPrimary-base) !important;
+      background-color: RGB(var(--v-theme-disabledLight)) !important;
+      color: RGB(var(--v-theme-disabledPrimary)) !important;
     }
     // btn style: default bg
     &.disabled-background {
-      background-color: var(--v-disabledMedium-base) !important;
-      color: var(--v-white-base) !important;
+      background-color: RGB(var(--v-theme-disabledMedium)) !important;
+      color: RGB(var(--v-theme-white)) !important;
     }
   }
 }

@@ -112,7 +112,7 @@
 <script setup lang="ts">
 import { Toast, ERROR } from '@/modules/toast/handler/handlerToast';
 import { ROUTES_HOME } from '@/core/configs/configRoutes';
-//import ModuleCreateWalletSoftware from '@/modules/create-wallet/ModuleCreateWalletSoftware.vue';
+import ModuleCreateWalletSoftware from '@/modules/create-wallet/ModuleCreateWalletSoftware.vue';
 import { usePopupStore } from '@/stores/popups';
 import { computed, reactive } from 'vue';
 import { useRouter } from 'vue-router';
@@ -234,7 +234,7 @@ const isMobile = computed(() => {
 }
 
 .chip-official {
-  background-color: var(--v-greenPrimary-base);
+  background-color: RGB(var(--v-theme-greenPrimary));
   color: white;
   padding: 6px 10px;
   border-radius: 30px;
@@ -245,6 +245,7 @@ const isMobile = computed(() => {
   position: absolute;
   top: 14px;
   right: 16px;
+  z-index: 1;
 }
 
 .note-position-mobile {
