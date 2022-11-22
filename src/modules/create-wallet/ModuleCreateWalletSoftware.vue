@@ -53,6 +53,7 @@ import WALLET_TYPES from '@/modules/access-wallet/common/walletTypes';
 import handlerCreateWallet from './handlers/handlerCreateWallet';
 import { computed, onMounted, onUnmounted, reactive } from 'vue';
 import { useRouter } from 'vue-router';
+import MewOverlay from '@/tempComponents/MewOverlay.vue';
 
 const props = defineProps({
   open: {
