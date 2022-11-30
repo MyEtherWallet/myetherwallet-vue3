@@ -12,10 +12,10 @@
   * Autocomplete menu styles (mainly used for mew-address)
   */
   .v-autocomplete__content.v-menu__content {
-    border-bottom: 1px solid var(--v-dropdownBorder-base);
-    border-left: 1px solid var(--v-dropdownBorder-base);
+    border-bottom: 1px solid RGB(var(--v-theme-dropdownBorder));
+    border-left: 1px solid RGB(var(--v-theme-dropdownBorder));
     border-radius: 4px;
-    border-right: 1px solid var(--v-dropdownBorder-base);
+    border-right: 1px solid RGB(var(--v-theme-dropdownBorder));
     box-shadow: 0px 5px 5px -3px RGB(13 41 66 / 20%), 0px 8px 10px 1px RGB(13 41 66 / 14%), 0px 3px 14px 2px RGB(13 41 66 / 12%);
   }
 /**
@@ -32,20 +32,20 @@
   * Text Fieldset Disabled State
   */
   .theme--light.v-text-field--outlined:not(.v-input--is-focused).v-input--is-disabled > .v-input__control > .v-input__slot fieldset, .theme--dark.v-text-field--outlined:not(.v-input--is-focused).v-input--is-disabled > .v-input__control > .v-input__slot fieldset { 
-    color: var(--v-inputDisabled-base) !important;
+    color: RGB(var(--v-theme-inputDIsabled)) !important;
   }
 /**
   * Text Field Border Color
   */
   .v-text-field--outlined:not(.v-input--is-focused):not(.v-input--has-state) > .v-input__control > .v-input__slot fieldset {
-    color: var(--v-inputBorder-base) !important;
+    color: RGB(var(--v-theme-inputBorder)) !important;
   }
 
 /**
   * Text Field Border Hover Color
   */
   .v-text-field--outlined:not(.v-input--is-focused):not(.v-input--has-state)>.v-input__control>.v-input__slot:hover > fieldset {
-    border: 1px solid var(--v-greyPrimary-base) !important;
+    border: 1px solid RGB(var(--v-theme-greyPrimary)) !important;
   }
 
   /**
@@ -63,7 +63,7 @@
   * Dropdown menu content styles (mainly used for mew-select)
   */
   .v-menu__content {
-    border: 1px solid var(--v-dropdownBorder-base);
+    border: 1px solid RGB(var(--v-theme-dropdownBorder));
     box-shadow: 0px 5px 5px -3px RGB(13 41 66 / 20%), 0px 8px 10px 1px RGB(13 41 66 / 14%), 0px 3px 14px 2px RGB(13 41 66 / 12%);
     .v-select-list {
     /**
@@ -71,15 +71,15 @@
       */
       .v-subheader {
         align-items: center;
-        background-color: var(--v-selectHeaderBg-base);
-        border: 1px solid var(--v-selectBorder-base);
-        color: var(--v-textSecondary-base);
+        background-color: RGB(var(--v-theme-selectHeaderBg));
+        border: 1px solid RGB(var(--v-theme-selectBorder));
+        color: RGB(var(--v-theme-textSecondary));
         display: flex;
         height: 32px;
         padding: 8px 22px 8px 48px;
       }
       .v-list-item {
-        border-bottom: 1px solid var(--v-selectBorder-base);
+        border-bottom: 1px solid RGB(var(--v-theme-selectBorder));
       }
     }
   }
@@ -88,38 +88,38 @@
   */
   .v-input {
     input {
-      color: var(--v-textDark-base) !important;
+      color: RGB(var(--v-theme-textDark)) !important;
       font-size: 14px;
     }
     &.v-input--is-disabled {
       input {
-        color: var(--v-inputDisabled-base) !important;
+        color: RGB(var(--v-theme-inputDIsabled)) !important;
       }
     }
     /**
     * Input label
     */
     .v-label {
-      color: var(--v-textMedium-base);   
+      color: RGB(var(--v-theme-textMedium));   
       font-weight: 400;
       font-size: 1rem;
       
       &.v-label--is-disabled {
-        color: var(--v-inputDisabled-base); 
+        color: RGB(var(--v-theme-inputDIsabled)); 
       }
     }
   /**
     * Input placeholder
     */
     input::placeholder {
-      color: var(--v-textLight-base);
+      color: RGB(var(--v-theme-textLight));
       font-weight: 400;
     }
   /**
     * Input suffix color
     */
     .v-text-field__suffix {
-      color: var(--v-searchText-base) !important;
+      color: RGB(var(--v-theme-searchText)) !important;
     }
   /**
     * Disabled icon

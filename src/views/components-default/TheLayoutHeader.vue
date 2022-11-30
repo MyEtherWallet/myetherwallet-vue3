@@ -1,6 +1,6 @@
 <template>
   <v-sheet tile class="page-title-container pt-5 pb-11" color="expandHeader">
-    <v-container class="text-center white--text">
+    <v-container class="text-center text-white">
       <h1 class="mb-3">{{ title }}</h1>
       <div style="max-width: 550px" class="mx-auto">
         <h4>{{ subtitleLineOne }}</h4>

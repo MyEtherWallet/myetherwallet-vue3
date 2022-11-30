@@ -6,7 +6,7 @@
       =====================================================================================
       -->
     <template v-if="state.step === 1" #stepperContent1>
-      <div class="subtitle-1 font-weight-bold grey--text">STEP 1.</div>
+      <div class="subtitle-1 font-weight-bold text-grey">STEP 1.</div>
       <div class="headline font-weight-bold mb-5">Create password</div>
       <!--
           =====================================================================================
@@ -81,7 +81,7 @@
       =====================================================================================
       -->
     <template v-if="state.step === 2" #stepperContent2>
-      <div class="subtitle-1 font-weight-bold grey--text step-two-header">
+      <div class="subtitle-1 font-weight-bold text-grey step-two-header">
         STEP 2.
       </div>
       <div class="headline font-weight-bold">Download keystore file</div>
@@ -141,7 +141,7 @@
     <template v-if="state.step === 3" #stepperContent3>
       <div class="d-flex align-center">
         <div>
-          <div class="subtitle-1 font-weight-bold grey--text step-three-header">
+          <div class="subtitle-1 font-weight-bold text-grey step-three-header">
             STEP 3.
           </div>
           <div class="headline font-weight-bold mb-3">You are done!</div>

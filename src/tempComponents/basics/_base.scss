@@ -7,7 +7,7 @@ a {
 }
 
 .bg-white {
-  background-color: var(--v-white-base) !important;
+  background-color: RGB(var(--v-theme-white)) !important;
 }
 
 .break-word {
@@ -58,8 +58,8 @@ a {
 }
 
 .tooltip-inner {
-  background-color: var(--v-white-base) !important;
-  border: 1px solid var(--v-inputBorder-base) !important;
+  background-color: RGB(var(--v-theme-white)) !important;
+  border: 1px solid RGB(var(--v-theme-inputBorder)) !important;
   opacity: 1 !important;
 
   &:after {
@@ -73,7 +73,7 @@ a {
     z-index: 15;
     border-left: 10px solid transparent;
     border-right: 10px solid transparent;
-    border-top: 10px solid var(--v-inputBorder-base);
+    border-top: 10px solid RGB(var(--v-theme-inputBorder));
   }
 
   &:before {
@@ -87,7 +87,7 @@ a {
     z-index: 20;
     border-left: 8px solid transparent;
     border-right: 8px solid transparent;
-    border-top: 8px solid var(--v-white-base);
+    border-top: 8px solid RGB(var(--v-theme-white));
   }
 }
 

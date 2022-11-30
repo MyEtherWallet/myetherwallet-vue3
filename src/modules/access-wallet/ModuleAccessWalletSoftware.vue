@@ -35,7 +35,7 @@
             class="text-left d-flex align-center justify-space-between px-2"
             style="width: 100%"
           >
-            <div class="mew-heading-2 textDark--text">
+            <div class="mew-heading-2 text-textDark">
               {{ btn.label }}
             </div>
             <img width="80" class="mr-4 d-none d-sm-block" :src="btn.icon" />
@@ -105,6 +105,7 @@ import { useAnalytics } from '@/core/Common/handlerAnalytics';
 import { computed, onMounted, onUnmounted, reactive, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import MewOverlay from '@/tempComponents/MewOverlay.vue';
+import MewWarningSheet from '@/tempComponents/MewWarningSheet.vue';
 
 const props = defineProps({
   open: {

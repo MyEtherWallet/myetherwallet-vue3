@@ -19,10 +19,10 @@ defineProps({
 
 <style lang="scss" scoped>
 .phrase {
-  border-bottom: 1px solid var(--v-greenPrimary-base);
+  border-bottom: 1px solid RGB(var(--v-theme-greenPrimary));
   line-height: 30px;
   span {
-    color: var(--v-greenPrimary-base);
+    color: RGB(var(--v-theme-greenPrimary));
   }
 }
 </style>

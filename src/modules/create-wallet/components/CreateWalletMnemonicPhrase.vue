@@ -5,7 +5,7 @@
       <!-- Step 1: Write Down Words -->
       <!-- ===================================================================================== -->
       <template v-if="state.step === 1" #stepperContent1>
-        <div class="subtitle-1 font-weight-bold grey--text">STEP 1.</div>
+        <div class="subtitle-1 font-weight-bold text-grey">STEP 1.</div>
         <div class="headline font-weight-bold mb-5">Write down these words</div>
 
         <!-- ===================================================================================== -->
@@ -13,7 +13,7 @@
         <!-- ===================================================================================== -->
         <div class="d-flex align-center justify-end pb-4">
           <div
-            class="greenPrimary--text cursor--pointer d-flex align-center mr-2 pa-2"
+            class="text-greenPrimary cursor--pointer d-flex align-center mr-2 pa-2"
             @click="setPhrase"
           >
             <v-icon small color="greenPrimary" class="mr-1">mdi-sync</v-icon>
@@ -85,7 +85,7 @@
       <!-- Step 2: Verification -->
       <!-- ===================================================================================== -->
       <template v-if="state.step === 2" #stepperContent2>
-        <div class="subtitle-1 font-weight-bold grey--text">STEP 2.</div>
+        <div class="subtitle-1 font-weight-bold text-grey">STEP 2.</div>
         <div class="headline font-weight-bold">Verification</div>
         <div class="mb-5">
           {{ stepTwoText }}
@@ -166,7 +166,7 @@
       <template v-if="state.step === 3" #stepperContent3>
         <div class="d-flex align-center">
           <div>
-            <div class="subtitle-1 font-weight-bold grey--text">STEP 3.</div>
+            <div class="subtitle-1 font-weight-bold text-grey">STEP 3.</div>
             <div class="headline font-weight-bold mb-3">Well done!</div>
             <p class="mb-6">
               You are now ready to take advantage of all that Ethereum has to
@@ -369,8 +369,8 @@ const createAnotherWallet = () => {
 }
 
 .radio-group {
-  box-shadow: 0 0px 10px var(--v-greyMedium-base) !important;
-  border: 1px solid var(--v-greyMedium-base);
+  box-shadow: 0 0px 10px RGB(var(--v-theme-greyMedium)) !important;
+  border: 1px solid RGB(var(--v-theme-greyMedium));
   border-radius: 5px;
 }
 </style>

@@ -13,7 +13,7 @@
       ]"
       @click="toggleBanner()"
     >
-      <p class="greenPrimary--text">
+      <p class="text-greenPrimary">
         {{
           state.isExpanded
             ? $t('home.mew-wallet-modal.less')

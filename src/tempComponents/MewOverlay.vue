@@ -23,7 +23,7 @@
           </v-btn>
         </div>
         <h3
-          class="titlePrimary--text mx-4 text-center"
+          class="text-titlePrimary mx-4 text-center"
           style="line-height: 21px"
         >
           {{ title }}
@@ -94,7 +94,7 @@
               <!-- ===================================================================================== -->
               <div
                 :class="[
-                  'titlePrimary--text',
+                  'text-titlePrimary',
                   isMobile
                     ? 'mew-heading-2 ml-3'
                     : isMobile && !back
@@ -272,8 +272,8 @@ const sheetWidth = computed(() => {
 
 .mew-overlay {
   .mobile-title-block {
-    background-color: var(--v-greyLight-base);
-    border-bottom: 1px solid var(--v-greyLight-base);
+    background-color: RGB(var(--v-theme-greyLight));
+    border-bottom: 1px solid RGB(var(--v-theme-greyLight));
   }
 }
 </style>
