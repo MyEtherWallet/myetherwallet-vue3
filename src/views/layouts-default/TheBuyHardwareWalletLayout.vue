@@ -82,7 +82,6 @@
 
 <script setup lang="ts">
 import TheLayoutHeader from '../components-default/TheLayoutHeader.vue';
-import MewButton from '@/tempComponents/MewButton.vue';
 const buttons = [
   {
     logoImg: require('@/assets/images/hardware-wallets/logo-ledger.svg'),

@@ -215,7 +215,6 @@ import WALLET_TYPES from '@/modules/access-wallet/common/walletTypes';
 import { computed, onMounted, reactive, watch } from 'vue';
 import { useAnalytics } from '@/core/Common/handlerAnalytics';
 import { useRouter } from 'vue-router';
-import MewButton from '@/tempComponents/MewButton.vue';
 
 const props = defineProps({
   handlerCreateWallet: {

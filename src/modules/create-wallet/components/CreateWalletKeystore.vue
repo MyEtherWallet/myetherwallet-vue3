@@ -190,7 +190,6 @@ import { computed, reactive, ref } from 'vue';
 import { GeneratedKeyStore } from '../handlers/handlerCreateWallet';
 import { useAnalytics } from '@/core/Common/handlerAnalytics';
 import { useRouter } from 'vue-router';
-import MewButton from '@/tempComponents/MewButton.vue';
 
 const props = defineProps({
   handlerCreateWallet: {

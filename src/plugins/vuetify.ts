@@ -7,9 +7,8 @@ import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 
 // Theme
-import vuetifyTheme from '@/vuetifyTheme';
+import { vuetifyThemes } from '@myetherwallet/mew-components-vue3';
 
-console.log(vuetifyTheme);
 // Vuetify
 import { createVuetify } from 'vuetify';
 
@@ -18,15 +17,6 @@ export default createVuetify({
   directives,
   theme: {
     defaultTheme: 'light',
-    themes: {
-      light: {
-        dark: false,
-        colors: vuetifyTheme.theme.themes.light
-      },
-      dark: {
-        dark: true,
-        colors: vuetifyTheme.theme.themes.dark
-      }
-    }
+    themes: vuetifyThemes
   }
 });

@@ -136,7 +136,6 @@ import { useAnalytics } from '@/core/Common/handlerAnalytics';
 import { ROUTES_HOME } from '@/core/configs/configRoutes';
 import { usePopupStore } from '@/stores/popups';
 import { tryOnMounted } from '@vueuse/shared';
-import MewButton from '@/tempComponents/MewButton.vue';
 
 const { browserLogoComputed, openMewWallet } = useEnkryptMarketing();
 const { trackLandingPage } = useAnalytics();

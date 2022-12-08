@@ -133,7 +133,6 @@ import { ROUTES_HOME, ROUTES_WALLET } from '@/core/configs/configRoutes';
 // import ModuleAccessWalletMobile from '@/modules/access-wallet/ModuleAccessWalletMobile.vue';
 //import EnkryptMissingSnackbar from '@/views/components-default/EnkryptMissingSnackbar.vue';
 import TheLayoutHeader from '../components-default/TheLayoutHeader.vue';
-import MewButton from '@/tempComponents/MewButton.vue';
 import { computed, reactive } from 'vue';
 
 import { useExternalStore } from '@/stores/external';

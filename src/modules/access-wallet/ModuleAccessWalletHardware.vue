@@ -241,7 +241,6 @@ import AccessWalletBitbox from './hardware/components/AccessWalletBitbox';
 
 import { useAnalytics } from '@/core/Common/handlerAnalytics';
 
-import MewOverlay from '@/tempComponents/MewOverlay.vue';
 import { useRouter } from 'vue-router';
 import { useDisplay } from 'vuetify/lib/framework.mjs';
 

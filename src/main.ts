@@ -10,6 +10,7 @@ import { createPinia } from 'pinia';
 import lokalise from './filters/lokalise';
 import { MatomoOptions } from './main/matomo';
 import apolloProvider from './main/apolloProvider';
+import mewComponentsLibrary from '@myetherwallet/mew-components-vue3';
 loadFonts();
 
 const app = createApp(App);
@@ -27,4 +28,5 @@ app
   .use(pinia)
   .use(VueMatomo, MatomoOptions)
   .use(apolloProvider)
+  .use(mewComponentsLibrary)
   .mount('#app');

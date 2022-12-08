@@ -104,8 +104,6 @@ import AccessWalletPrivateKey from './software/components/AccessWalletPrivateKey
 import { useAnalytics } from '@/core/Common/handlerAnalytics';
 import { computed, onMounted, onUnmounted, reactive, watch } from 'vue';
 import { useRouter } from 'vue-router';
-import MewOverlay from '@/tempComponents/MewOverlay.vue';
-import MewWarningSheet from '@/tempComponents/MewWarningSheet.vue';
 
 const props = defineProps({
   open: {

@@ -60,7 +60,6 @@ import WALLET_TYPES from './common/walletTypes';
 
 import { useAnalytics } from '@/core/Common/handlerAnalytics';
 
-import MewOverlay from '@/tempComponents/MewOverlay.vue';
 import { reactive } from 'vue';
 import { useRouter } from 'vue-router';
 

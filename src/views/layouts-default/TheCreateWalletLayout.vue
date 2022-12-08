@@ -118,7 +118,6 @@ import { reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import TheLayoutHeader from '../components-default/TheLayoutHeader.vue';
 import { useEnkryptMarketing } from '@/core/Common/enkryptMarketing';
-import MewButton from '@/tempComponents/MewButton.vue';
 
 const popupStore = usePopupStore();
 popupStore.showEnkryptPromo = true;
