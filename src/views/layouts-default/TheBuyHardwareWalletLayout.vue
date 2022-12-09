@@ -1,10 +1,10 @@
 <template>
-  <div class="expandHeader pb-12">
+  <div class="bg-expandHeader pb-12">
     <v-container>
       <the-layout-header title="Get a hardware wallet today!" />
       <v-sheet
         color="transparent"
-        :max-width="!$vuetify.display.smAndDown ? '900px' : '470px'"
+        :max-width="!isMobile ? '900px' : '470px'"
         class="mx-auto"
       >
         <v-row>
@@ -81,6 +81,8 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue';
+import { useDisplay } from 'vuetify/lib/framework.mjs';
 import TheLayoutHeader from '../components-default/TheLayoutHeader.vue';
 const buttons = [
   {
@@ -159,6 +161,10 @@ const buttons = [
     link: 'https://www.coolwallet.io/mew/?ref=myetherwallet1'
   }
 ];
+
+const isMobile = computed(() => {
+  return useDisplay().smAndDown.value;
+});
 </script>
 
 <style lang="scss" scoped>

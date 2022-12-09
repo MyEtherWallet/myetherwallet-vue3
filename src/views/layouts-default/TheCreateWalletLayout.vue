@@ -1,5 +1,5 @@
 <template>
-  <div class="expandHeader">
+  <div class="bg-expandHeader">
     <v-container>
       <!--
     =====================================================================================

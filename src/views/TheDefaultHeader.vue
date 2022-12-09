@@ -1,5 +1,5 @@
 <template>
-  <div class="default-header expandHeader">
+  <div class="default-header bg-expandHeader">
     <v-container class="pl-4 pr-4 d-flex align-center pt-8">
       <v-row align="center" no-gutters>
         <v-col class="d-md-none" cols="2" md="4">
@@ -7,7 +7,7 @@
         </v-col>
         <v-col cols="8" md="8" class="d-flex align-center">
           <v-img
-            :class="$vuetify.display.smAndDown ? 'mx-auto' : ''"
+            :class="isMobile ? 'mx-auto' : ''"
             class="cursor--pointer mr-md-14"
             :src="Logo"
             max-height="36"
@@ -48,6 +48,8 @@ import Logo from '@/assets/images/icons/logo-mew.svg';
 import TheDefaultMobileNavigation from './components-default/TheDefaultMobileNavigation.vue';
 import { ROUTES_HOME, ROUTES_WALLET } from '@/core/configs/configRoutes';
 import { useRouter } from 'vue-router';
+import { computed } from 'vue';
+import { useDisplay } from 'vuetify/lib/framework.mjs';
 //import buyMore from '@/core/mixins/buyMore.mixin.js';
 const router = useRouter();
 const menuObj = {
@@ -97,9 +99,13 @@ const menuObj = {
     }
   ]
 };
-const routeTo = function (route: string) {
+const routeTo = (route: string) => {
   router.push(route);
 };
+
+const isMobile = computed(() => {
+  return useDisplay().smAndDown.value;
+});
 </script>
 
 <style lang="scss" scoped>
