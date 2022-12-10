@@ -45,6 +45,7 @@ export default class CreateWallet {
       }
     });
   }
+
   // Generate new mnemonic wallet
   generateMnemonic(length: number): Promise<string[]> {
     return new Promise((resolve, reject) => {

@@ -24,7 +24,7 @@
             style="max-width: 150px"
             hide-details
             dense
-            item-text="name"
+            item-title="name"
             item-value="value"
             :items="state.mnemonicOptions"
             label=""
@@ -95,7 +95,7 @@
            Words Radio Group
           =====================================================================================
           -->
-        <v-sheet max-width="600px" class="MnemonicRadioOptions mx-auto">
+        <v-sheet max-width="600px" class="bg-white MnemonicRadioOptions mx-auto">
           <v-radio-group
             v-for="(item, idx) in state.generatedVerification"
             :key="`${idx}verification`"
@@ -207,8 +207,8 @@
 </template>
 
 <script setup lang="ts">
-// import MnemonicPhraseTable from '@/components/MnemonicPhraseTable'
-// import PhraseBlock from'@/components/PhraseBlock'
+import MnemonicPhraseTable from '@/components/MnemonicPhraseTable'
+import PhraseBlock from'@/components/PhraseBlock'
 import { Toast, ERROR } from '@/modules/toast/handler/handlerToast';
 import { ROUTES_HOME } from '@/core/configs/configRoutes';
 import WALLET_TYPES from '@/modules/access-wallet/common/walletTypes';
@@ -262,7 +262,7 @@ const state = reactive({
 });
 
 const canVerify = computed(() => {
-  return isValidMnemonic.value && extraWordMatch.value;
+  return (isValidMnemonic.value && extraWordMatch.value && Object.keys(state.validateMnemonicValues).length === 3);
 });
 const isValidMnemonic = computed(() => {
   return state.phrase.length === state.phraseSize;
@@ -303,6 +303,10 @@ const getEntries = (obj: Record<number, string>) => {
   return Object.values(obj[getOnlyKey(obj)]);
 };
 const setPhrase = () => {
+  if (!props.handlerCreateWallet) {
+    return;
+  }
+
   props.handlerCreateWallet
     .generateMnemonic(state.phraseSize)
     .then((res: Array<unknown>) => {
@@ -316,6 +320,7 @@ const setPhrase = () => {
 };
 const { trackCreateWallet } = useAnalytics();
 const verify = () => {
+  console.log('wowwowww', state.validateMnemonicValues)
   props.handlerCreateWallet
     .validateMnemonic(state.validateMnemonicValues)
     .then(() => {

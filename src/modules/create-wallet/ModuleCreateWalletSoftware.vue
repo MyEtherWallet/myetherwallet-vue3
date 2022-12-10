@@ -115,7 +115,7 @@ onMounted(() => {
   //     link: ''
   //   };
   // }
-  // state.walletHandler = new handlerCreateWallet();
+  state.walletHandler = new handlerCreateWallet();
 });
 onUnmounted(() => {
   state.walletHandler = {};
