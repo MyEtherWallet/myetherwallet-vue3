@@ -14,6 +14,7 @@
   "dependencies": {
     "@aave/protocol-js": "^4.3.0",
     "@apollo/client": "^3.7.1",
+    "@ethereumjs/common": "^3.0.1",
     "@ethereumjs/tx": "^4.0.1",
     "@lokalise/node-api": "^9.0.0",
     "@mdi/font": "5.9.55",
@@ -60,10 +61,10 @@
     "vuetify": "^3.0.0-beta.0",
     "vuex": "^4.0.0-0",
     "web": "^0.0.2",
-    "web3": "4.0.1-alpha.0",
-    "web3-core": "4.0.1-alpha.0",
-    "web3-eth-contract": "4.0.1-alpha.0",
-    "web3-utils": "4.0.1-alpha.0",
+    "web3": "1.8.1",
+    "web3-core": "1.8.1",
+    "web3-eth-contract": "1.8.1",
+    "web3-utils": "1.8.1",
     "webfontloader": "^1.0.0",
     "webpack": "^5.74.0",
     "xss": "^1.0.14"
