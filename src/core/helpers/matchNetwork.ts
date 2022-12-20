@@ -1,4 +1,4 @@
-//import { ERROR, Toast } from '@/modules/toast/handler/handlerToast';
+import { ERROR, Toast } from '@/modules/toast/handler/handlerToast';
 import { toHex } from 'web3-utils';
 import wallets from '@/modules/access-wallet/common/walletTypes';
 
@@ -65,7 +65,7 @@ export default async (
               'There was a problem processing your request to MetaMask';
           }
           setTimeout(() => {
-            //Toast(toastMsg, toastLink, ERROR, 5000);
+            Toast(toastMsg, toastLink, ERROR, 5000);
           }, 100);
         }
         return false;

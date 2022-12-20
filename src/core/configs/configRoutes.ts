@@ -9,7 +9,7 @@ const ROUTES_HOME: ROUTE = {
   DAPP_SUBMISSION: { NAME: 'DappSubmission', PATH: 'dapp-submission' },
   HOW_IT_WORKS: { NAME: 'HowItWorks', PATH: 'how-it-works' },
   JOBS: { NAME: 'Careers', PATH: 'careers' },
-  PAGE_NOT_FOUND: { NAME: 'PageNotFound', PATH: '*' },
+  PAGE_NOT_FOUND: { NAME: 'PageNotFound', PATH: '/:pathMatch(.*)*' },
   PRESS_KIT: { NAME: 'PressKit', PATH: 'presskit' },
   PRIVACY_POLICY: { NAME: 'PrivacyPolicy', PATH: 'privacy-policy' },
   QR_CODE: { NAME: 'QrCode', PATH: 'qr-code' },
