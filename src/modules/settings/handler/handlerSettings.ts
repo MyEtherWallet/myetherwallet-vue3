@@ -1,25 +1,18 @@
-import vuexStore from '@/core/store';
-import { mapActions } from 'vuex';
 import { toWei } from 'web3-utils';
 import { includes, isString, keys } from 'lodash';
 import xss from 'xss';
 import { Toast, ERROR } from '@/modules/toast/handler/handlerToast';
 
 export default class Settings {
-  constructor() {
-    this.$store = vuexStore;
-    this.validFields = Object.keys(this.$store.state.global);
-    Object.assign(this, mapActions('global', ['setImportedState']));
-  }
-
   // Receives object from file read in module
   // Returns a promise so the module can react accordingly
+
   importStore(file) {
     return new Promise((resolve, reject) => {
       const _this = this;
       try {
         const reader = new FileReader();
-        reader.onerror = e => {
+        reader.onerror = (e: Error) => {
           Toast(e.message, {}, ERROR);
         };
         reader.onloadend = evt => {

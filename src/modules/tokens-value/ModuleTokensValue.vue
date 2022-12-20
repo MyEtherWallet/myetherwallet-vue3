@@ -8,40 +8,42 @@
           <img :src="img" height="32px" />
         </v-col>
         <v-col cols="2">
-          <div class="circled-total">+{{ tokensList.length }}</div>
+          <div class="circled-total">+{{ walletStore.tokensList.length }}</div>
         </v-col>
       </v-row>
     </div>
   </mew6-white-sheet>
 </template>
 
-<script>
-import { mapGetters } from 'vuex';
-import BigNumber from 'bignumber.js';
-export default {
-  name: 'ModuleTokensValue',
-  computed: {
-    ...mapGetters('wallet', ['tokensList']),
-    ...mapGetters('global', ['getFiatValue']),
-    tokenTitle() {
-      return `My Token${this.tokensList.length > 1 ? 's' : ''} Value`;
-    },
-    totalTokenValues() {
-      let total = BigNumber(0);
-      this.tokensList.forEach(token => {
-        const value = token.usdBalance ? token.usdBalance : 0;
-        total = total.plus(value);
-      });
-      return this.getFiatValue(total);
-    },
-    tokenImages() {
-      const firstFive = this.tokensList.slice(0, 5);
-      return firstFive.map(item => {
-        return item.img;
-      });
-    }
-  }
-};
+<script setup lang="ts">
+import { computed } from 'vue';
+import BigNumber from 'bignumber.js/bignumber';
+import { useWalletStore } from '@/stores/wallet';
+import { useGlobalStore } from '@/stores/global';
+// ...mapGetters('wallet', ['tokensList']),
+// ...mapGetters('global', ['getFiatValue']),
+const walletStore = useWalletStore();
+const globalStore = useGlobalStore();
+
+const tokenTitle = computed(() => {
+  return `My Token${walletStore.tokensList.length > 1 ? 's' : ''} Value`;
+});
+
+const totalTokenValues = computed(() => {
+  let total = BigNumber(0);
+  walletStore.tokensList.forEach(token => {
+    const value = token.usdBalance ? token.usdBalance : 0;
+    total = total.plus(value);
+  });
+  return globalStore.getFiatValue()(total);
+});
+
+const tokenImages = computed(() => {
+  const firstFive = walletStore.tokensList.slice(0, 5);
+  return firstFive.map(item => {
+    return item.img;
+  });
+});
 </script>
 <style lang="scss" scoped>
 .circled-total {

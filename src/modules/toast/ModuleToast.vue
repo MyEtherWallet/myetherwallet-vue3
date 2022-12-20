@@ -5,79 +5,84 @@
       :ref="getName(toast)"
       :key="getName(toast) + getRef(toast)"
       :persistent="false"
-      :duration="duration"
+      :duration="state.duration"
       :toast-type="getRef(toast)"
-      :text="text"
-      :link-obj="linkObj"
+      :text="state.text"
+      :link-obj="state.linkObj"
       @closed="onClose"
     />
   </div>
 </template>
-<script>
-import ToastEvents from './handler/toastEvents.js';
-import { EventBus } from '@/core/plugins/eventBus.js';
-export default {
-  name: 'ModuleToast',
-  data() {
+<script setup lang="ts">
+import ToastEvents from './handler/toastEvents';
+import { EventBus } from '@/plugins/eventBus';
+import { reactive, computed, watch, ref } from 'vue';
+import { tryOnBeforeMount, tryOnBeforeUnmount } from '@vueuse/shared';
+import { ToastLink } from './types';
+
+const state = reactive({
+  text: '',
+  linkObj: {},
+  duration: 6000
+});
+type ToastObject = {
+  [key: string]: string;
+};
+const toastGenerator = computed(() => {
+  const initialArray = Object.keys(ToastEvents);
+  return initialArray.map(item => {
     return {
-      text: '',
-      linkObj: {},
-      duration: 6000
+      [item]: ToastEvents[item],
+      ref: ref(ToastEvents[item])
     };
+  });
+});
+
+watch(
+  () => state.linkObj,
+  newVal => {
+    state.linkObj = newVal;
   },
-  computed: {
-    toastGenerator() {
-      const initialArray = Object.keys(ToastEvents);
-      return initialArray.map(item => {
-        return {
-          [item]: ToastEvents[item]
-        };
-      });
-    }
-  },
-  watch: {
-    linkObj: {
-      handler: function (newVal) {
-        this.linkObj = newVal;
-      },
-      deep: true
-    }
-  },
-  beforeMount() {
-    Object.keys(ToastEvents).forEach(item => {
-      EventBus.$on(ToastEvents[item], (text, obj, duration) => {
-        this.text = text;
-        this.linkObj = obj;
-        this.duration = duration ? duration : 6000;
-        this.callToast(ToastEvents[item]);
-      });
+  { deep: true }
+);
+
+tryOnBeforeMount(() => {
+  Object.keys(ToastEvents).forEach(item => {
+    EventBus.$on(ToastEvents[item], (text, obj, duration) => {
+      state.text = text as string;
+      state.linkObj = obj as ToastLink;
+      state.duration = duration ? (duration as number) : 6000;
+      callToast(ToastEvents[item]);
     });
-  },
-  beforeDestroy() {
-    Object.keys(ToastEvents).forEach(item => {
-      EventBus.$off(ToastEvents[item], () => {
-        this.text = '';
-        this.linkObj = {};
-        this.duration = 6000;
-      });
+  });
+});
+
+tryOnBeforeUnmount(() => {
+  Object.keys(ToastEvents).forEach(item => {
+    EventBus.$off(ToastEvents[item], () => {
+      state.text = '';
+      state.linkObj = {};
+      state.duration = 6000;
     });
-  },
-  methods: {
-    onClose() {
-      this.text = '';
-      this.linkObj = {};
-      this.duration = 6000;
-    },
-    getRef(obj) {
-      return Object.keys(obj)[0];
-    },
-    getName(obj) {
-      return Object.values(obj)[0];
-    },
-    callToast(ref) {
-      if (this.$refs[ref] && this.$refs[ref].length > 0)
-        this.$refs[ref][0].showToast();
-    }
-  }
+  });
+});
+
+const onClose = () => {
+  state.text = '';
+  state.linkObj = {};
+  state.duration = 6000;
+};
+
+const getRef = (obj: ToastObject) => {
+  return Object.keys(obj)[0];
+};
+
+const getName = (obj: ToastObject) => {
+  return Object.values(obj)[0];
+};
+
+const callToast = (ref: string) => {
+  if (this.$refs[ref] && this.$refs[ref].length > 0)
+    this.$refs[ref][0].showToast();
 };
 </script>

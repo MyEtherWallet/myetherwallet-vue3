@@ -1,13 +1,15 @@
+import { ToastEventType } from '../types';
 import ToastEvents from './toastEvents';
-import { EventBus } from '@/plugins/eventBus';
 import * as Sentry from '@sentry/browser';
-import Vue from 'vue';
+import { ToastLink } from '../types';
+import { EventBus } from '@/plugins/eventBus';
+import { useI18n } from 'vue-i18n';
 const SUCCESS = 'success';
 const ERROR = 'error';
 const WARNING = 'warning';
 const INFO = 'info';
 const SENTRY = 'sentry';
-const GLOBAL_ERRORS = {
+const GLOBAL_ERRORS: Record<string, string> = {
   "Returned values aren't valid": 'errorsGlobal.invalid-returned-values',
   'Invalid message type': 'errorsGlobal.invalid-message-type',
   'Device is used in another window':
@@ -44,19 +46,34 @@ const GLOBAL_WARNING = {
   'ENS is not supported on network private':
     'errorsGlobal.ens-not-supported-on-network-private'
 };
-const foundGlobalError = text => {
+const foundGlobalError = (text: Error | Record<string, unknown> | string) => {
   const errorValues = Object.keys(GLOBAL_ERRORS);
-  return errorValues.find(item => {
-    return text.includes(item);
-  });
+  return (
+    typeof text === 'string' &&
+    errorValues.find(item => {
+      return text.includes(item);
+    })
+  );
 };
 
-const foundGlobalWarning = text => {
+const foundGlobalWarning = (text: Error | string) => {
   const errorValues = Object.values(GLOBAL_WARNING);
-  return errorValues.includes(text);
+  return (
+    typeof text === 'string' &&
+    errorValues.find(item => {
+      return text.includes(item);
+    })
+  );
 };
-const Toast = (text, link, type, duration) => {
+const Toast = (
+  text: Error | Record<string, unknown> | string,
+  link: ToastLink,
+  type: ToastEventType,
+  duration?: number
+) => {
   const acceptableTypes = [SUCCESS, ERROR, WARNING, INFO, SENTRY];
+  const { t } = useI18n();
+  let extractedText: string;
   if (!type && !acceptableTypes.includes(type)) {
     EventBus.$emit(
       ToastEvents[type],
@@ -67,10 +84,15 @@ const Toast = (text, link, type, duration) => {
     );
     return;
   }
-  if (text instanceof Error || (text && text.hasOwnProperty('message'))) {
-    text = text.message;
+  if (
+    text instanceof Error ||
+    (text && typeof text !== 'string' && Object.hasOwn(text, 'message'))
+  ) {
+    extractedText = text.message as string;
+  } else {
+    extractedText = text.toString();
   }
-  if (!text) {
+  if (!extractedText) {
     EventBus.$emit(
       ToastEvents[type],
       'Please provide text to display!',
@@ -81,15 +103,18 @@ const Toast = (text, link, type, duration) => {
   }
 
   if (type === SENTRY) {
-    if (foundGlobalError(text) || foundGlobalWarning(text)) {
+    if (foundGlobalError(extractedText) || foundGlobalWarning(extractedText)) {
       EventBus.$emit(
         ToastEvents[ERROR],
-        Vue.$i18n.t(GLOBAL_ERRORS[text]),
+        t(GLOBAL_ERRORS[extractedText]),
         link,
         duration
       );
     } else {
-      Sentry.captureException(text.originalError || text.error || text);
+      const errorObject = text as Record<string, unknown>;
+      Sentry.captureException(
+        errorObject.originalError || errorObject.error || errorObject
+      );
     }
     return;
   }

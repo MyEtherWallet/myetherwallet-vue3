@@ -4,6 +4,7 @@ import ABI from './abi/abiNft';
 import BigNumber from 'bignumber.js';
 
 export default class NFT {
+  
   constructor({ network, address, web3 }) {
     this.network = network;
     this.address = address;
