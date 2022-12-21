@@ -158,10 +158,13 @@ interface FooterItem {
   title: string;
   data: Array<FooterData>;
 }
-watch(select, select => {
-  if (select.value === 'en_US' || select.value === 'ru_RU')
-    loadLanguageAsync(select.value);
-});
+watch(
+  () => select,
+  newVal => {
+    if (newVal.value.value === 'en_US' || newVal.value.value === 'ru_RU')
+      loadLanguageAsync(newVal.value.value);
+  }
+);
 </script>
 
 <template>
@@ -312,8 +315,6 @@ watch(select, select => {
                 v-model="select"
                 append-icon="mdi-chevron-down"
                 :items="languages"
-                item-text="name"
-                item-value="value"
                 return-object
                 single-line
                 dark

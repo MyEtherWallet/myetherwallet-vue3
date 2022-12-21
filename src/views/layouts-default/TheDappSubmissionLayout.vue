@@ -644,7 +644,7 @@
               :title="$t('dappsSubmission.submit')"
               btn-size="xlarge"
               class="d-block mx-auto mt-10"
-              @click.native="submitForm"
+              @click="submitForm"
             ></mew-button>
 
             <div
@@ -789,7 +789,7 @@
         <mew-button
           class="ml-auto d-block mt-5"
           :title="$t('dappsSubmission.okay')"
-          @click.native="$router.push({ name: 'Home' })"
+          @click="$router.push({ name: 'Home' })"
         >
         </mew-button>
       </div>
@@ -817,7 +817,7 @@
         <mew-button
           class="ml-auto d-block mt-5"
           :title="$t('dappsSubmission.okay')"
-          @click.native="state.formSubmissionFailed = false"
+          @click="state.formSubmissionFailed = false"
         >
         </mew-button>
       </div>
@@ -925,19 +925,19 @@ const state: State = reactive({
   ],
   tagsList: ['Games', 'Defi', 'Lending', 'Social', 'Finance', 'Wallet'],
   rules: {
-    noEmptyString: (value: any) => {
+    noEmptyString: (value: string) => {
       return value != '' || 'This field is required';
     },
-    noEmptyArray: (value: any) => {
+    noEmptyArray: (value: any[]) => {
       return value.length != 0 || 'This field is required';
     },
     noNull: (value: any) => {
       return value != null || 'This field is required';
     },
-    requireValidEthAddress: (value: any) => {
+    requireValidEthAddress: (value: string) => {
       return web3.utils.isAddress(value) || 'Invalid address';
     },
-    email: (value: any) => {
+    email: (value: string) => {
       return /.+@.+/.test(value) || 'Invalid email';
     }
   }

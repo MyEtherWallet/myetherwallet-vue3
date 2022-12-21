@@ -119,6 +119,7 @@ import { useRouter } from 'vue-router';
 import TheLayoutHeader from '../components-default/TheLayoutHeader.vue';
 import { useEnkryptMarketing } from '@/core/Common/enkryptMarketing';
 
+const { isMobile, openEnkrypt, openMewWallet } = useEnkryptMarketing();
 const popupStore = usePopupStore();
 popupStore.showEnkryptPromo = true;
 
@@ -142,7 +143,7 @@ const state = reactive({
     routeName: 'AccessWallet'
   }
 });
-const { isMobile, openEnkrypt, openMewWallet } = useEnkryptMarketing();
+
 const buttons = [
   /* Enkrypt */
   {

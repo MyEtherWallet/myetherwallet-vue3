@@ -1,9 +1,9 @@
+import { ToastEventType } from '../types';
 import ToastEvents from './toastEvents';
 import * as Sentry from '@sentry/browser';
 import { ToastLink } from '../types';
 import { EventBus } from '@/plugins/eventBus';
 import { useI18n } from 'vue-i18n';
-
 const SUCCESS = 'success';
 const ERROR = 'error';
 const WARNING = 'warning';
@@ -68,7 +68,7 @@ const foundGlobalWarning = (text: Error | string) => {
 const Toast = (
   text: Error | Record<string, unknown> | string,
   link: ToastLink,
-  type: string,
+  type: ToastEventType,
   duration?: number
 ) => {
   const acceptableTypes = [SUCCESS, ERROR, WARNING, INFO, SENTRY];

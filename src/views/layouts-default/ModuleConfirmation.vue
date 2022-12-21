@@ -282,7 +282,7 @@ import EventNames from '@/utils/web3-provider/events.js';
 
 //import { Toast, SUCCESS } from '@/modules/toast/handler/handlerToast';
 //import parseTokenData from './handlers/parseTokenData';
-//import { EventBus } from '@/core/plugins/eventBus';
+//import { EventBus } from '@/plugins/eventBus';
 import { setEvents } from '@/utils/web3-provider/methods/utils';
 //import { sanitizeHex } from '@/modules/access-wallet/common/helpers';
 //import dataToAction from './handlers/dataToAction';
@@ -334,7 +334,7 @@ const { network, getFiatValue } = useGlobalStore();
 const {} = useArticleStore();
 const addressStore = useAddressBookStore();
 const txTo = computed(() => {
-  if (!isBatch)
+  if (!isBatch.value)
     return state.tx.hasOwnProperty('toTxData')
       ? state.tx.toTxData.to
       : state.tx.to;
@@ -361,7 +361,7 @@ const isNotSoftware = computed(() => {
   return this.isHardware || isWeb3Wallet || isOtherWallet;
 });
 const showConfirmWithWallet = computed(() => {
-  return isNotSoftware && (state.signing || state.error !== '');
+  return isNotSoftware.value && (state.signing || state.error !== '');
 });
 const transactions = computed(() => {
   const newArr =
@@ -383,7 +383,7 @@ const allToDetails = computed(() => {
   };
 });
 const gasPrice = computed(() => {
-  if (!isBatch) {
+  if (!isBatch.value) {
     const gasPrice = state.tx.gasPrice ? state.tx.gasPrice : '0x';
     return fromWei(hexToNumberString(gasPrice), 'gwei');
   }
@@ -392,7 +392,7 @@ const gasPrice = computed(() => {
   return fromWei(hexToNumberString(batchGasPrice), 'gwei');
 });
 const gasLimit = computed(() => {
-  if (!isBatch) {
+  if (!isBatch.value) {
     const gasLimit = state.tx.gasLimit
       ? state.tx.gasLimit
       : state.tx.gas
@@ -417,7 +417,7 @@ const txFeeUSD = computed(() => {
   );
 });
 const value = computed(() => {
-  if (!isBatch) {
+  if (!isBatch.value) {
     const parsedValue = state.tx.value
       ? state.tx.hasOwnProperty('toTxData')
         ? state.tx.toTxData.amount
@@ -433,7 +433,7 @@ const disableBtn = computed(() => {
   return state.txSigned;
 });
 const txSigned = computed(() => {
-  return isBatch
+  return isBatch.value
     ? state.signedTxArray.length > 0 &&
         state.signedTxArray.length === state.unsignedTxArr.length
     : !isEmpty(state.signedTxObject);
@@ -450,7 +450,7 @@ const isBatch = computed(() => {
   return state.unsignedTxArr.length > 0;
 });
 const signingPending = computed(() => {
-  if (isBatch) {
+  if (isBatch.value) {
     return state.unsignedTxArr.length === state.signedTxArray.length;
   }
   return !isEmpty(state.signedTxObject);
@@ -767,10 +767,10 @@ const showSuccess = param => {
 };
 const signTx = async () => {
   state.error = '';
-  if (isNotSoftware) {
+  if (isNotSoftware.value) {
     state.signing = true;
   }
-  if (isWeb3Wallet) {
+  if (isWeb3Wallet.value) {
     const event = walletStore.instance.signTransaction(state.tx);
     event
       .on('transactionHash', res => {
@@ -808,7 +808,7 @@ const signBatchTx = async () => {
   state.error = '';
   const signed = [];
   const batchTxEvents = [];
-  if (isNotSoftware) {
+  if (isNotSoftware.value) {
     state.signing = true;
   }
   for (let i = 0; i < state.unsignedTxArr.length; i++) {
@@ -818,7 +818,7 @@ const signBatchTx = async () => {
     delete objClone['currency'];
     delete objClone['confirmInfo'];
     try {
-      if (!isWeb3Wallet) {
+      if (!isWeb3Wallet.value) {
         const _signedTx = await walletStore.instance.signTransaction(objClone);
         if (state.unsignedTxArr[i].hasOwnProperty('handleNotification')) {
           _signedTx.tx['handleNotification'] =
@@ -846,14 +846,14 @@ const signBatchTx = async () => {
           });
       }
       state.signedTxArray = signed;
-      if (isWeb3Wallet) state.resolver(batchTxEvents);
+      if (isWeb3Wallet.value) state.resolver(batchTxEvents);
     } catch (err) {
       state.error = errorHandler(err);
       state.signedTxArray = [];
       return;
     }
   }
-  if (!isWeb3Wallet && !this.isHardware && !isOtherWallet) {
+  if (!isWeb3Wallet.value && !this.isHardware && !isOtherWallet.value) {
     state.signing = false;
   }
 };
@@ -861,19 +861,19 @@ const btnAction = () => {
   if (isSwap.value) {
     trackSwap('swapTransactionSend');
   }
-  if (!isWeb3Wallet) {
+  if (!isWeb3Wallet.value) {
     if (
       (state.signedTxArray.length === 0 ||
         state.signedTxArray.length < state.unsignedTxArr.length) &&
       isEmpty(state.signedTxObject)
     ) {
-      isBatch ? signBatchTx() : signTx();
+      isBatch.value ? signBatchTx() : signTx();
       return;
     }
-    isBatch ? sendBatchTransaction() : sendSignedTx();
+    isBatch.value ? sendBatchTransaction() : sendSignedTx();
     return;
   }
-  isBatch ? signBatchTx() : signTx();
+  isBatch.value ? signBatchTx() : signTx();
 };
 const copyToClipboard = () => {
   this.$refs.messageConfirmationContainer.$refs.signatureContent.$refs.input.select();
@@ -896,7 +896,7 @@ const arrayParser = arr => {
       : state.sendCurrency.symbol;
     const value =
       data !== '0x'
-        ? !isSwap.value && !isBatch
+        ? !isSwap.value && !isBatch.value
           ? `${this.value} ${symbol}`
           : `0 ${network.type.currencyName}`
         : `${this.value} ${symbol}`;
@@ -917,7 +917,9 @@ const arrayParser = arr => {
       },
       {
         title:
-          data !== '0x' && !isBatch ? 'Via Contract Address' : 'To address',
+          data !== '0x' && !isBatch.value
+            ? 'Via Contract Address'
+            : 'To address',
         value: toAdd
       },
       {

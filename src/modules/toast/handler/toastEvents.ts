@@ -1,8 +1,10 @@
-const eventTypes: Record<string, string> = {
+export default <ToastEvents>{
   success: 'toastSuccess',
   warning: 'toastWarning',
   error: 'toastError',
   info: 'toastInfo'
 };
 
-export default eventTypes;
+type ToastEvents = {
+  [key: string]: string;
+};

@@ -20,7 +20,7 @@ import { PWA_EVENTS } from '@/core/helpers/common';
 //   INFO
 // } from '@/modules/toast/handler/handlerToast';
 // import { MOONPAY_EVENT } from '@/modules/moon-pay/helpers';
-// import { EventBus } from '@/core/plugins/eventBus';
+import { EventBus } from '@/plugins/eventBus';
 // import handlerAnalyticsMixin from '@/modules/analytics-opt-in/handlers/handlerAnalytics.mixin.js';
 import { ROUTES_WALLET } from '@/core/configs/configRoutes';
 // import ModuleToast from '@/modules/toast/ModuleToast.vue';

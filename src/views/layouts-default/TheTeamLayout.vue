@@ -4,7 +4,7 @@
     <div class="py-7" />
     <v-container>
       <v-sheet max-width="700px" class="mx-auto">
-        <!-- <app-block-title no-page-title :data="titleData" /> -->
+        <app-block-title no-page-title :data="titleData" />
       </v-sheet>
     </v-container>
     <div class="py-5" />
@@ -31,14 +31,14 @@
 <script setup lang="ts">
 import axios from 'axios';
 import TheLayoutHeader from '../components-default/TheLayoutHeader.vue';
-//import AppBlockTitle from '@/core/components/AppBlockTitle.vue';
+import AppBlockTitle from '@/core/components/AppBlockTitle.vue';
 import { reactive } from 'vue';
 import { tryOnMounted } from '@vueuse/shared';
 import { useI18n } from 'vue-i18n';
 const { t } = useI18n({ useScope: 'global' });
 const titleData = {
   textProps: '',
-  toptitle: '',
+  topTitle: '',
   title: t('team.title'),
   description: t('team.description'),
   centered: true

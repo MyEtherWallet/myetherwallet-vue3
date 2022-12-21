@@ -146,7 +146,7 @@ export type Getters = {
   currencyConfig: { currency: any; rate: any };
   getFiatValue: () => (
     value: string | number | BigNumber,
-    options: FiatValueOptions
+    options?: FiatValueOptions
   ) => string;
   isTestNetwork: any;
   hasSwap: boolean;

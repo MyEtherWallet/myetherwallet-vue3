@@ -1,7 +1,6 @@
 import { Manager as Web3RequestManager } from 'web3-core-requestmanager';
 import MiddleWare from '../middleware';
-//import { EventBus } from '@/core/plugins/eventBus';
-//import VuexStore from '@/core/store';
+import { EventBus } from '@/plugins/eventBus';
 import {
   ethSendTransaction,
   ethSendRawTransaction,
@@ -66,8 +65,8 @@ class GivenProvider {
         const req = {
           payload,
           // store: VuexStore,
-          requestManager
-          // eventHub: EventBus
+          requestManager,
+          eventHub: EventBus
         };
         const middleware = new MiddleWare();
         middleware.use(ethSendTransaction);
