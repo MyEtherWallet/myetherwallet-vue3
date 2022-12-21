@@ -8,6 +8,6 @@
 
 <style lang="scss" scoped>
 .phrase-block {
-  border: 1px solid var(--v-greenPrimary-base);
+  border: 1px solid RGB(var(--v-theme-greenPrimary));
 }
 </style>

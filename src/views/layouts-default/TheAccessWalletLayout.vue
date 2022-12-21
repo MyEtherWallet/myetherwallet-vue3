@@ -1,5 +1,5 @@
 <template>
-  <div class="expandHeader">
+  <div class="bg-expandHeader">
     <v-container>
       <!--
       =====================================================================================
@@ -40,7 +40,7 @@
           </div>
           <div
             v-if="!btn.recommended"
-            class="orangePrimary--text mew-label note-position d-flex align-center"
+            class="text-orangePrimary mew-label note-position d-flex align-center"
           >
             <v-icon color="orangePrimary" size="18px" class="mr-1">
               mdi-shield-alert
@@ -116,12 +116,12 @@
 <script setup lang="ts">
 import Web3 from 'web3';
 
-// import {
-//   Toast,
-//   ERROR,
-//   WARNING,
-//   SENTRY
-// } from '@/modules/toast/handler/handlerToast';
+import {
+  Toast,
+  ERROR,
+  WARNING,
+  SENTRY
+} from '@/modules/toast/handler/handlerToast';
 import { ACCESS_VALID_OVERLAYS } from '@/core/router/helpers';
 //import { Web3Wallet, MewConnectWallet } from '@/modules/access-wallet/common';
 import { ROUTES_HOME, ROUTES_WALLET } from '@/core/configs/configRoutes';
@@ -132,7 +132,7 @@ import { ROUTES_HOME, ROUTES_WALLET } from '@/core/configs/configRoutes';
 // import ModuleAccessWalletSoftware from '@/modules/access-wallet/ModuleAccessWalletSoftware.vue';
 // import ModuleAccessWalletMobile from '@/modules/access-wallet/ModuleAccessWalletMobile.vue';
 //import EnkryptMissingSnackbar from '@/views/components-default/EnkryptMissingSnackbar.vue';
-import TheLayoutHeader from '../TheDefaultHeader.vue';
+import TheLayoutHeader from '../components-default/TheLayoutHeader.vue';
 import { computed, reactive } from 'vue';
 
 import { useExternalStore } from '@/stores/external';
@@ -219,7 +219,7 @@ const buttons = computed((): Button[] => {
         icon: require('@/assets/images/icons/icon-enkrypt-block.svg'),
         alt: 'Enkrypt',
         fn: () => {
-          //this.checkEnkrypt();
+          checkEnkrypt();
         }
       },
       /* MEW wallet Button */
@@ -232,7 +232,7 @@ const buttons = computed((): Button[] => {
         icon: require('@/assets/images/icons/icon-mew-wallet.png'),
         alt: 'MEW wallet',
         fn: () => {
-          //this.openMEWconnect();
+          openMEWconnect();
         }
       },
       /* Browser extension */
@@ -245,7 +245,7 @@ const buttons = computed((): Button[] => {
         icon: require('@/assets/images/icons/icon-extensions.png'),
         alt: 'Hardware Wallets',
         fn: () => {
-          //this.openWeb3Wallet();
+          openWeb3Wallet();
         }
       },
       /* Mobile Apps */
@@ -301,7 +301,7 @@ const buttons = computed((): Button[] => {
 });
 
 const isMobile = computed(() => {
-  return useDisplay().smAndDown;
+  return useDisplay().smAndDown.value;
 });
 /**
  * Used to set the MEWconnect instance as the wallet
@@ -318,7 +318,7 @@ const close = () => {
       name: ROUTES_HOME.ACCESS_WALLET.NAME
     });
   } catch (e) {
-    //Toast(e, {}, ERROR);
+    Toast(e, {}, ERROR);
   }
 };
 /**
@@ -334,7 +334,7 @@ const openOverlay = (type: string) => {
       query: { type: 'overview' }
     });
   } catch (e) {
-    //Toast(e, {}, ERROR);
+    Toast(e, {}, ERROR);
   }
   //this[type] = true;
 };
@@ -409,7 +409,7 @@ const openMEWconnect = () => {
 }
 
 .chip-official {
-  background-color: var(--v-greenPrimary-base);
+  background-color: RGB(var(--v-theme-greenPrimary));
   color: white;
   padding: 6px 10px;
   border-radius: 30px;
@@ -420,6 +420,7 @@ const openMEWconnect = () => {
   position: absolute;
   top: 14px;
   right: 16px;
+  z-index: 1;
 }
 
 .note-position-mobile {

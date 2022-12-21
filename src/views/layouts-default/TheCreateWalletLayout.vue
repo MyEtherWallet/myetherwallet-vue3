@@ -1,5 +1,5 @@
 <template>
-  <div class="expandHeader">
+  <div class="bg-expandHeader">
     <v-container>
       <!--
     =====================================================================================
@@ -40,7 +40,7 @@
           </div>
           <div
             v-if="!btn.recommended"
-            class="orangePrimary--text mew-label note-position d-flex align-center"
+            class="text-orangePrimary mew-label note-position d-flex align-center"
           >
             <v-icon color="orangePrimary" size="18px" class="mr-1">
               mdi-shield-alert
@@ -110,14 +110,15 @@
 </template>
 
 <script setup lang="ts">
-//import { Toast, ERROR } from '@/modules/toast/handler/handlerToast';
-import { useEnkryptMarketing } from '@/core/Common/enkryptMarketing';
+import { Toast, ERROR } from '@/modules/toast/handler/handlerToast';
 import { ROUTES_HOME } from '@/core/configs/configRoutes';
-//import ModuleCreateWalletSoftware from '@/modules/create-wallet/ModuleCreateWalletSoftware.vue';
+import ModuleCreateWalletSoftware from '@/modules/create-wallet/ModuleCreateWalletSoftware.vue';
 import { usePopupStore } from '@/stores/popups';
 import { reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import TheLayoutHeader from '../components-default/TheLayoutHeader.vue';
+import { useEnkryptMarketing } from '@/core/Common/enkryptMarketing';
+
 const { isMobile, openEnkrypt, openMewWallet } = useEnkryptMarketing();
 const popupStore = usePopupStore();
 popupStore.showEnkryptPromo = true;
@@ -142,6 +143,7 @@ const state = reactive({
     routeName: 'AccessWallet'
   }
 });
+
 const buttons = [
   /* Enkrypt */
   {
@@ -207,7 +209,7 @@ const openSoftwareModule = () => {
       query: { type: 'overview' }
     });
   } catch (e) {
-    //Toast(e, {}, ERROR);
+    Toast(e, {}, ERROR);
   }
 };
 const closeSoftwareModule = () => {
@@ -216,7 +218,7 @@ const closeSoftwareModule = () => {
       name: ROUTES_HOME.CREATE_WALLET.NAME
     });
   } catch (e) {
-    //Toast(e, {}, ERROR);
+    Toast(e, {}, ERROR);
   }
 };
 </script>
@@ -227,7 +229,7 @@ const closeSoftwareModule = () => {
 }
 
 .chip-official {
-  background-color: var(--v-greenPrimary-base);
+  background-color: RGB(var(--v-theme-greenPrimary));
   color: white;
   padding: 6px 10px;
   border-radius: 30px;
@@ -238,6 +240,7 @@ const closeSoftwareModule = () => {
   position: absolute;
   top: 14px;
   right: 16px;
+  z-index: 1;
 }
 
 .note-position-mobile {

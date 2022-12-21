@@ -1,12 +1,12 @@
-import bip39 from 'bip39/types';
+import { generateMnemonic } from 'bip39';
 
-function phrase12(): Array<string> {
-  return bip39.generateMnemonic(128).split(' ');
-}
+const phrase12 = (): Array<string> => {
+  return generateMnemonic(128).split(' ');
+};
 
-function phrase24(): Array<string> {
-  return bip39.generateMnemonic(256).split(' ');
-}
+const phrase24 = (): Array<string> => {
+  return generateMnemonic(256).split(' ');
+};
 
 export default {
   phrase12,

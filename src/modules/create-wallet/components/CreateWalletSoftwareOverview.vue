@@ -13,15 +13,15 @@
           color-theme="greyMedium"
           btn-style="outline"
           style="height: 160px"
-          @click.native="selectWalletType(walletTypes.KEYSTORE)"
+          @click="selectWalletType(state.walletTypes.KEYSTORE)"
         >
           <div
             class="text-left d-flex align-center justify-space-between px-2"
             style="width: 100%"
           >
             <div>
-              <div class="mew-heading-2 textDark--text mb-2">Keystore File</div>
-              <div class="break-word textDark--text">
+              <div class="mew-heading-2 text-textDark mb-2">Keystore File</div>
+              <div class="break-word text-textDark">
                 Using a keystore file online makes your wallet more vulnerable
                 to loss of funds. We don’t recommend this method of wallet
                 creation.
@@ -47,17 +47,17 @@
           color-theme="greyMedium"
           btn-style="outline"
           style="height: 160px"
-          @click.native="selectWalletType(walletTypes.MNEMONIC)"
+          @click="selectWalletType(state.walletTypes.MNEMONIC)"
         >
           <div
             class="text-left d-flex align-center justify-space-between px-2"
             style="width: 100%"
           >
             <div>
-              <div class="mew-heading-2 textDark--text mb-2">
+              <div class="mew-heading-2 text-textDark mb-2">
                 Mnemonic Phrase
               </div>
-              <div class="break-word textDark--text">
+              <div class="break-word text-textDark">
                 Using a Mnemonic Phrase online makes your wallet more vulnerable
                 to loss of funds. We don’t recommend this method of wallet
                 creation.
@@ -80,44 +80,45 @@
       <mew-warning-sheet
         class="mt-3"
         title="NOT RECOMMENDED"
-        :link-obj="linkToLearnMore"
+        :link-obj="state.linkToLearnMore"
         description="This information is sensitive, and these options should only be used in offline settings by experienced crypto users."
       />
     </div>
   </div>
 </template>
 
-<script>
-import { mapGetters, mapState } from 'vuex';
+<script setup lang="ts">
+import { onMounted, reactive } from 'vue';
 import WALLET_TYPES from '@/modules/access-wallet/common/walletTypes';
-export default {
-  name: 'CreateWalletSoftwareOverview',
-  data: () => ({
-    walletTypes: WALLET_TYPES,
-    linkToLearnMore: {
-      url: '',
-      title: 'Learn more'
-    }
-  }),
-  computed: {
-    ...mapGetters('article', ['getArticle']),
-    ...mapState('wallet', ['isOfflineApp'])
-  },
-  mounted() {
-    if (this.isOfflineApp) this.linkToLearnMore = {};
-    else
-      this.linkToLearnMore.url = this.getArticle('not-rec-when-access-wallet');
-  },
-  methods: {
-    /**
-     * Emit wallet type creation.
-     * @type - is part of WALLET_TYPES
-     * function is void
-     */
-    selectWalletType(type) {
-      this.$emit('typeSelect', type);
-    }
+
+const emit = defineEmits(['typeSelect']);
+
+const state = reactive({
+  walletTypes: WALLET_TYPES,
+  linkToLearnMore: {
+    url: '',
+    title: 'Learn more'
   }
+});
+
+// TODO enable after getting values from pinia store
+// computed: {
+//   ...mapGetters('article', ['getArticle']),
+//   ...mapState('wallet', ['isOfflineApp'])
+
+// TODO enable after getting values from pinia store
+// onMounted(() => {
+//   if (isOfflineApp) state.linkToLearnMore = {};
+//   else state.linkToLearnMore.url = getArticle('not-rec-when-access-wallet');
+// });
+
+/**
+ * Emit wallet type creation.
+ * @type - is part of WALLET_TYPES
+ * function is void
+ */
+const selectWalletType = (type: string) => {
+  emit('typeSelect', type);
 };
 </script>
 

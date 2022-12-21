@@ -1,11 +1,11 @@
 <template>
   <div class="mew-component--create--mnemonic-phrase" style="max-width: 800px">
-    <mew-stepper class="mx-md-0" :items="steppers" :on-step="step">
+    <mew-stepper class="mx-md-0" :items="state.steppers" :on-step="state.step">
       <!-- ===================================================================================== -->
       <!-- Step 1: Write Down Words -->
       <!-- ===================================================================================== -->
-      <template v-if="step === 1" #stepperContent1>
-        <div class="subtitle-1 font-weight-bold grey--text">STEP 1.</div>
+      <template v-if="state.step === 1" #stepperContent1>
+        <div class="subtitle-1 font-weight-bold text-grey">STEP 1.</div>
         <div class="headline font-weight-bold mb-5">Write down these words</div>
 
         <!-- ===================================================================================== -->
@@ -13,20 +13,20 @@
         <!-- ===================================================================================== -->
         <div class="d-flex align-center justify-end pb-4">
           <div
-            class="greenPrimary--text cursor--pointer d-flex align-center mr-2 pa-2"
+            class="text-greenPrimary cursor--pointer d-flex align-center mr-2 pa-2"
             @click="setPhrase"
           >
             <v-icon small color="greenPrimary" class="mr-1">mdi-sync</v-icon>
             <div class="font-weight-medium">Update</div>
           </div>
           <v-select
-            v-model="phraseSize"
+            v-model="state.phraseSize"
             style="max-width: 150px"
             hide-details
             dense
-            item-text="name"
+            item-title="name"
             item-value="value"
-            :items="mnemonicOptions"
+            :items="state.mnemonicOptions"
             label=""
             outlined
           ></v-select>
@@ -37,7 +37,7 @@
           =====================================================================================
           -->
         <phrase-block class="mb-8 CreateWalletMnemonicTable">
-          <mnemonic-phrase-table :data="phrase" />
+          <mnemonic-phrase-table :data="state.phrase" />
         </phrase-block>
 
         <!-- ===================================================================================== -->
@@ -53,7 +53,7 @@
             <template #panelBody1>
               <div class="px-5">
                 <mew-input
-                  v-model="extraWord"
+                  v-model="state.extraWord"
                   label="Extra word"
                   placeholder="Extra word"
                 />
@@ -71,7 +71,7 @@
             title="I wrote them down"
             btn-size="xlarge"
             :has-full-width="false"
-            @click.native="updateStep(2)"
+            @click="updateStep(2)"
           />
         </div>
         <mew-warning-sheet
@@ -84,8 +84,8 @@
       <!-- ===================================================================================== -->
       <!-- Step 2: Verification -->
       <!-- ===================================================================================== -->
-      <template v-if="step === 2" #stepperContent2>
-        <div class="subtitle-1 font-weight-bold grey--text">STEP 2.</div>
+      <template v-if="state.step === 2" #stepperContent2>
+        <div class="subtitle-1 font-weight-bold text-grey">STEP 2.</div>
         <div class="headline font-weight-bold">Verification</div>
         <div class="mb-5">
           {{ stepTwoText }}
@@ -95,11 +95,11 @@
            Words Radio Group
           =====================================================================================
           -->
-        <v-sheet max-width="600px" class="MnemonicRadioOptions mx-auto">
+        <v-sheet max-width="600px" class="bg-white MnemonicRadioOptions mx-auto">
           <v-radio-group
-            v-for="(item, idx) in generatedVerification"
+            v-for="(item, idx) in state.generatedVerification"
             :key="`${idx}verification`"
-            v-model="validateMnemonicValues[getOnlyKey(item)]"
+            v-model="(state.validateMnemonicValues as Record<number, string>)[getOnlyKey(item as Record<number, string>)]"
             hide-details
             mandatory
             row
@@ -110,12 +110,12 @@
                 class="mew-heading-3 mb-3 mb-sm-0"
                 style="min-width: 30px; line-height: 25px"
               >
-                {{ getOnlyKey(item) + 1 }}.
+                {{ getOnlyKey(item as Record<number, string>) + 1 }}.
               </div>
             </template>
             <v-row>
               <v-col
-                v-for="(entries, id) in getEntries(item)"
+                v-for="(entries, id) in getEntries(item as Record<number, string>)"
                 :key="entries + id"
                 class="Options"
                 cols="12"
@@ -126,8 +126,8 @@
             </v-row>
           </v-radio-group>
           <mew-input
-            v-if="extraWord && extraWord !== ''"
-            v-model="extraWordVerification"
+            v-if="state.extraWord && state.extraWord !== ''"
+            v-model="state.extraWordVerification"
             label="Confirm extra word"
             placeholder="Please confirm your extra word"
             class="mt-10 mb-3"
@@ -143,14 +143,14 @@
             btn-size="xlarge"
             btn-style="outline"
             class="mx-md-1 my-1"
-            @click.native="updateStep(1)"
+            @click="updateStep(1)"
           />
           <mew-button
             title="Verify"
             btn-size="xlarge"
             :disabled="!canVerify"
             class="CreateMnemonicVerify mx-md-1 my-1"
-            @click.native="verify"
+            @click="verify"
           />
         </div>
         <mew-warning-sheet
@@ -163,10 +163,10 @@
       <!-- ===================================================================================== -->
       <!-- Step 3: Done -->
       <!-- ===================================================================================== -->
-      <template v-if="step === 3" #stepperContent3>
+      <template v-if="state.step === 3" #stepperContent3>
         <div class="d-flex align-center">
           <div>
-            <div class="subtitle-1 font-weight-bold grey--text">STEP 3.</div>
+            <div class="subtitle-1 font-weight-bold text-grey">STEP 3.</div>
             <div class="headline font-weight-bold mb-3">Well done!</div>
             <p class="mb-6">
               You are now ready to take advantage of all that Ethereum has to
@@ -185,13 +185,13 @@
                 btn-size="xlarge"
                 :has-full-width="false"
                 class="CreateMnemonicAccessWallet mb-5"
-                @click.native="goToAccess"
+                @click="goToAccess"
               />
               <mew-button
                 title="Create Another Wallet"
                 :has-full-width="false"
                 btn-style="transparent"
-                @click.native="createAnotherWallet()"
+                @click="createAnotherWallet()"
               />
             </div>
           </div>
@@ -206,159 +206,158 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
+import MnemonicPhraseTable from '@/components/MnemonicPhraseTable'
+import PhraseBlock from'@/components/PhraseBlock'
 import { Toast, ERROR } from '@/modules/toast/handler/handlerToast';
 import { ROUTES_HOME } from '@/core/configs/configRoutes';
-import handlerAnalytics from '@/modules/analytics-opt-in/handlers/handlerAnalytics.mixin';
 import WALLET_TYPES from '@/modules/access-wallet/common/walletTypes';
+import { computed, onMounted, reactive, watch } from 'vue';
+import { useAnalytics } from '@/core/Common/handlerAnalytics';
+import { useRouter } from 'vue-router';
 
-export default {
-  name: 'CreateWalletMnemonicPhrase',
-  components: {
-    mnemonicPhraseTable: () => import('@/components/MnemonicPhraseTable'),
-    phraseBlock: () => import('@/components/PhraseBlock')
-  },
-  mixins: [handlerAnalytics],
-  props: {
-    handlerCreateWallet: {
-      type: Object,
-      default: () => {
-        return {};
-      }
-    }
-  },
-  data: () => ({
-    step: 1,
-    validateMnemonicValues: {},
-    extraWord: '',
-    extraWordVerification: '',
-    steppers: [
-      {
-        step: 1,
-        name: 'STEP 1. Write down the words'
-      },
-      {
-        step: 2,
-        name: 'STEP 2. Verification'
-      },
-      {
-        step: 3,
-        name: 'STEP 3. Well done'
-      }
-    ],
-    mnemonicOptions: [
-      {
-        name: '12 words',
-        value: 12
-      },
-      {
-        name: '24 words',
-        value: 24
-      }
-    ],
-    phraseSize: 12,
-    phrase: [],
-    generatedVerification: []
-  }),
-  computed: {
-    canVerify() {
-      return this.isValidMnemonic && this.extraWordMatch;
-    },
-    isValidMnemonic() {
-      return this.phrase.length === this.phraseSize;
-    },
-    extraWordMatch() {
-      return this.extraWord
-        ? this.extraWord === this.extraWordVerification
-        : true;
-    },
-    stepTwoText() {
-      return this.extraWord === ''
-        ? 'Please select correct words based on their numbers.'
-        : 'Please select correct words based on their numbers, and enter your extra word.';
-    }
-  },
-  watch: {
-    phraseSize: {
-      deep: true,
-      handler: function (newVal) {
-        this.phraseSize = newVal;
-        this.setPhrase();
-      }
-    },
-    phrase: {
-      deep: true,
-      handler: function () {}
-    }
-  },
-  mounted() {
-    this.setPhrase();
-  },
-  methods: {
-    generateVerification() {
-      this.generatedVerification = this.handlerCreateWallet.getVerification();
-      this.generatedVerification.sort(function (a, b) {
-        return a.itemNumber - b.itemNumber;
-      });
-    },
-    getOnlyKey(obj) {
-      return Number(Object.keys(obj)[0]);
-    },
-    getEntries(obj) {
-      return Object.values(obj[this.getOnlyKey(obj)]);
-    },
-    setPhrase() {
-      this.handlerCreateWallet
-        .generateMnemonic(this.phraseSize)
-        .then(res => {
-          this.phrase = res;
-          this.generateVerification();
-        })
-        .catch(e => {
-          this.generateVerification();
-          Toast(e, {}, ERROR);
-        });
-    },
-    verify() {
-      this.handlerCreateWallet
-        .validateMnemonic(this.validateMnemonicValues)
-        .then(() => {
-          this.trackCreateWallet(WALLET_TYPES.MNEMONIC);
-          this.updateStep(3);
-        })
-        .catch(e => {
-          Toast(e, {}, ERROR);
-        });
-    },
-    /**
-     * Reroutes to access wallet
-     * Used in Step 3
-     */
-    goToAccess() {
-      this.$router.push({ name: ROUTES_HOME.ACCESS_WALLET.NAME });
-    },
-
-    /**
-     * Updates Step
-     * Resets phrase if step is reset to 1 from step 3 ( user is creating a new wallet)
-     */
-    updateStep(newStep) {
-      if (this.step === 3 && newStep === 1) {
-        this.validateMnemonicValues = {};
-        this.setPhrase();
-      }
-      this.step = newStep;
-    },
-    /**
-     * Go back to step 1 to create another wallet
-     * and reset extra word
-     */
-    createAnotherWallet() {
-      this.extraWord = '';
-      this.extraWordVerification = '';
-      this.updateStep(1);
+const props = defineProps({
+  handlerCreateWallet: {
+    type: Object,
+    default: () => {
+      return {};
     }
   }
+});
+
+const router = useRouter();
+
+const state = reactive({
+  step: 1,
+  validateMnemonicValues: {},
+  extraWord: '',
+  extraWordVerification: '',
+  steppers: [
+    {
+      step: 1,
+      name: 'STEP 1. Write down the words'
+    },
+    {
+      step: 2,
+      name: 'STEP 2. Verification'
+    },
+    {
+      step: 3,
+      name: 'STEP 3. Well done'
+    }
+  ],
+  mnemonicOptions: [
+    {
+      name: '12 words',
+      value: 12
+    },
+    {
+      name: '24 words',
+      value: 24
+    }
+  ],
+  phraseSize: 12,
+  phrase: [] as Array<unknown>,
+  generatedVerification: [] as Record<string | number, unknown>[]
+});
+
+const canVerify = computed(() => {
+  return (isValidMnemonic.value && extraWordMatch.value && Object.keys(state.validateMnemonicValues).length === 3);
+});
+const isValidMnemonic = computed(() => {
+  return state.phrase.length === state.phraseSize;
+});
+const extraWordMatch = computed(() => {
+  return state.extraWord
+    ? state.extraWord === state.extraWordVerification
+    : true;
+});
+const stepTwoText = computed(() => {
+  return state.extraWord === ''
+    ? 'Please select correct words based on their numbers.'
+    : 'Please select correct words based on their numbers, and enter your extra word.';
+});
+
+watch(
+  () => state.phraseSize,
+  () => {
+    setPhrase();
+  },
+  { deep: true }
+);
+
+onMounted(() => {
+  setPhrase();
+});
+
+const generateVerification = () => {
+  state.generatedVerification = props.handlerCreateWallet.getVerification();
+  state.generatedVerification.sort((a, b) => {
+    return (a.itemNumber as number) - (b.itemNumber as number);
+  });
+};
+const getOnlyKey = (obj: Record<number, string>) => {
+  return Number(Object.keys(obj)[0]);
+};
+const getEntries = (obj: Record<number, string>) => {
+  return Object.values(obj[getOnlyKey(obj)]);
+};
+const setPhrase = () => {
+  if (!props.handlerCreateWallet) {
+    return;
+  }
+
+  props.handlerCreateWallet
+    .generateMnemonic(state.phraseSize)
+    .then((res: Array<unknown>) => {
+      state.phrase = res;
+      generateVerification();
+    })
+    .catch(e => {
+      generateVerification();
+      Toast(e, {}, ERROR);
+    });
+};
+const { trackCreateWallet } = useAnalytics();
+const verify = () => {
+  console.log('wowwowww', state.validateMnemonicValues)
+  props.handlerCreateWallet
+    .validateMnemonic(state.validateMnemonicValues)
+    .then(() => {
+      trackCreateWallet(WALLET_TYPES.MNEMONIC);
+      updateStep(3);
+    })
+    .catch(e => {
+      Toast(e, {}, ERROR);
+    });
+};
+/**
+ * Reroutes to access wallet
+ * Used in Step 3
+ */
+const goToAccess = () => {
+  router.push({ name: ROUTES_HOME.ACCESS_WALLET.NAME });
+};
+
+/**
+ * Updates Step
+ * Resets phrase if step is reset to 1 from step 3 ( user is creating a new wallet)
+ */
+const updateStep = (newStep: number) => {
+  if (state.step === 3 && newStep === 1) {
+    state.validateMnemonicValues = {};
+    setPhrase();
+  }
+  state.step = newStep;
+};
+/**
+ * Go back to step 1 to create another wallet
+ * and reset extra word
+ */
+const createAnotherWallet = () => {
+  state.extraWord = '';
+  state.extraWordVerification = '';
+  updateStep(1);
 };
 </script>
 
@@ -374,8 +373,8 @@ export default {
 }
 
 .radio-group {
-  box-shadow: 0 0px 10px var(--v-greyMedium-base) !important;
-  border: 1px solid var(--v-greyMedium-base);
+  box-shadow: 0 0px 10px RGB(var(--v-theme-greyMedium)) !important;
+  border: 1px solid RGB(var(--v-theme-greyMedium));
   border-radius: 5px;
 }
 </style>

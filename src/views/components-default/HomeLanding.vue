@@ -1,6 +1,6 @@
 <template>
   <div class="mew-component--landing">
-    <div class="desktop-content d-none d-lg-block expandHeader">
+    <div class="desktop-content d-none d-lg-block bg-expandHeader">
       <v-container
         class="banner-content-container d-flex align-center justify-space-between"
       >
@@ -80,7 +80,7 @@
         />
       </v-container>
     </div>
-    <div class="mobile-content d-block d-lg-none expandHeader pt-5">
+    <div class="mobile-content d-block d-lg-none bg-expandHeader pt-5">
       <v-container>
         <v-card color="transparent" flat tile max-width="400px" class="mx-auto">
           <div

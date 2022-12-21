@@ -8,6 +8,6 @@
 
 <style lang="scss" scoped>
 .border-block {
-  border: 1px solid var(--v-greyMedium-base);
+  border: 1px solid RGB(var(--v-theme-greyMedium));
 }
 </style>

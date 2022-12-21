@@ -4,10 +4,11 @@ const keystoreConfig = {
   n: 131072
 };
 
-const createBlob = (str: string, mime: string) => {
-  const string = typeof str === 'object' ? JSON.stringify(str) : str;
-  if (string === null) return '';
-  const blob = new Blob([string], {
+const createBlob = (str: unknown, mime?: string) => {
+  const auxString =
+    typeof str === 'object' ? JSON.stringify(str) : (str as string);
+  if (auxString === null) return '';
+  const blob = new Blob([auxString], {
     type: mime
   });
   return window.URL.createObjectURL(blob);
@@ -17,7 +18,7 @@ const generateRandomNumber = (max: number) => {
   return Math.floor(Math.random() * max);
 };
 
-const knuthShuffle = (array: any[]) => {
+const knuthShuffle = (array: Array<unknown>) => {
   let currentIndex = array.length,
     temporaryValue,
     randomIndex;

@@ -512,7 +512,7 @@ a {
 <style lang="scss">
 .mew-component--home-footer {
   a {
-    color: var(--v-textDark-base) !important;
+    color: RGB(var(--v-theme-textDark)) !important;
   }
   .v-select__selection {
     color: #80deea !important;

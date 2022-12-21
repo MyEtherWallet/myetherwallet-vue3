@@ -21,14 +21,14 @@
     =====================================================================================
     -->
     <div style="max-width: 650px; width: 100%" class="mx-auto mb-n5">
-      <div v-for="(btn, key) in buttons" :key="key">
+      <div v-for="(btn, key) in state.buttons" :key="key">
         <mew-button
           has-full-width
           color-theme="greyMedium"
           btn-style="outline"
           style="height: 160px"
           class="mb-5"
-          @click.native="btn.fn"
+          @click="btn.fn"
         >
           <div
             class="d-flex align-center justify-space-between px-2"
@@ -49,9 +49,7 @@
   </mew-overlay>
 </template>
 
-<script>
-import { mapActions } from 'vuex';
-
+<script setup lang="ts">
 import { Toast, SENTRY } from '@/modules/toast/handler/handlerToast';
 import {
   WalletConnectWallet,
@@ -60,75 +58,76 @@ import {
 import { ROUTES_WALLET } from '@/core/configs/configRoutes';
 import WALLET_TYPES from './common/walletTypes';
 
-import handlerAnalytics from '@/modules/analytics-opt-in/handlers/handlerAnalytics.mixin';
+import { useAnalytics } from '@/core/Common/handlerAnalytics';
 
-export default {
-  name: 'ModuleAccessWalletMobile',
-  mixins: [handlerAnalytics],
-  props: {
-    open: {
-      type: Boolean,
-      default: false
-    },
-    close: {
-      type: Function,
-      default: () => {}
-    }
+import { reactive } from 'vue';
+import { useRouter } from 'vue-router';
+
+const props = defineProps({
+  open: {
+    type: Boolean,
+    default: false
   },
-  data() {
-    return {
-      buttons: [
-        {
-          label: 'WalletConnect',
-          icon: require('@/assets/images/icons/icon-wallet-connect.svg'),
-          fn: () => {
-            this.openWalletConnect();
-          }
-        },
-        {
-          label: 'WalletLink',
-          icon: require('@/assets/images/icons/icon-wallet-link.png'),
-          fn: () => {
-            this.openWalletLink();
-          }
-        }
-      ]
-    };
-  },
-  methods: {
-    ...mapActions('wallet', ['setWallet']),
-    openWalletConnect() {
-      try {
-        WalletConnectWallet()
-          .then(_newWallet => {
-            this.setWallet([_newWallet]).then(() => {
-              this.trackAccessWallet(WALLET_TYPES.WALLET_CONNECT);
-              this.$router.push({ name: ROUTES_WALLET.DASHBOARD.NAME });
-            });
-          })
-          .catch(e => {
-            WalletConnectWallet.errorHandler(e);
-          });
-      } catch (e) {
-        Toast(e.message, {}, SENTRY);
+  close: {
+    type: Function,
+    default: () => {}
+  }
+});
+
+const state = reactive({
+  buttons: [
+    {
+      label: 'WalletConnect',
+      icon: require('@/assets/images/icons/icon-wallet-connect.svg'),
+      fn: () => {
+        openWalletConnect();
       }
     },
-    openWalletLink() {
-      try {
-        WalletLinkWallet()
-          .then(_newWallet => {
-            this.setWallet([_newWallet]).then(() => {
-              this.trackAccessWallet(WALLET_TYPES.WALLET_LINK);
-              this.$router.push({ name: ROUTES_WALLET.DASHBOARD.NAME });
-            });
-          })
-          .catch(e => {
-            WalletLinkWallet.errorHandler(e);
-          });
-      } catch (e) {
-        Toast(e.message, {}, SENTRY);
+    {
+      label: 'WalletLink',
+      icon: require('@/assets/images/icons/icon-wallet-link.png'),
+      fn: () => {
+        openWalletLink();
       }
     }
+  ]
+});
+
+const router = useRouter();
+const { trackAccessWallet } = useAnalytics();
+
+// TODO enable once store data is available
+// ...mapActions('wallet', ['setWallet']),
+const openWalletConnect = () => {
+  try {
+    WalletConnectWallet()
+      .then(_newWallet => {
+        setWallet([_newWallet]).then(() => {
+          trackAccessWallet(WALLET_TYPES.WALLET_CONNECT);
+          router.push({ name: ROUTES_WALLET.DASHBOARD.NAME });
+        });
+      })
+      .catch(e => {
+        WalletConnectWallet.errorHandler(e);
+      });
+  } catch (e) {
+    Toast(e.message, {}, SENTRY);
+  }
+};
+const openWalletLink = () => {
+  try {
+    WalletLinkWallet()
+      .then(_newWallet => {
+        setWallet([_newWallet]).then(() => {
+          trackAccessWallet(WALLET_TYPES.WALLET_LINK);
+          router.push({ name: ROUTES_WALLET.DASHBOARD.NAME });
+        });
+      })
+      .catch(e => {
+        WalletLinkWallet.errorHandler(e);
+      });
+  } catch (e) {
+    Toast(e.message, {}, SENTRY);
   }
 };
 </script>

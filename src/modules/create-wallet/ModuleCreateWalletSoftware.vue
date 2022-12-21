@@ -6,7 +6,7 @@
     =====================================================================================
     -->
     <mew-overlay
-      :footer="footer"
+      :footer="state.footer"
       :show-overlay="open"
       :title="typeTitle"
       :close="close"
@@ -29,7 +29,7 @@
         -->
       <create-wallet-keystore
         v-else-if="isKeystore"
-        :handler-create-wallet="walletHandler"
+        :handler-create-wallet="state.walletHandler"
       />
       <!--
         =====================================================================================
@@ -38,103 +38,100 @@
         -->
       <create-wallet-mnemonic-phrase
         v-else-if="isMnemonic"
-        :handler-create-wallet="walletHandler"
+        :handler-create-wallet="state.walletHandler"
       />
     </mew-overlay>
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
+import CreateWalletSoftwareOverview from './components/CreateWalletSoftwareOverview.vue';
+import CreateWalletKeystore from './components/CreateWalletKeystore.vue';
+import CreateWalletMnemonicPhrase from './components/CreateWalletMnemonicPhrase.vue';
 import { Toast, ERROR } from '@/modules/toast/handler/handlerToast';
 import WALLET_TYPES from '@/modules/access-wallet/common/walletTypes';
 import handlerCreateWallet from './handlers/handlerCreateWallet';
-import { mapState } from 'vuex';
+import { computed, onMounted, onUnmounted, reactive } from 'vue';
+import { useRouter } from 'vue-router';
 
-export default {
-  name: 'ModuleCreateWalletSoftware',
-  components: {
-    CreateWalletSoftwareOverview: () =>
-      import('./components/CreateWalletSoftwareOverview'),
-    CreateWalletKeystore: () => import('./components/CreateWalletKeystore'),
-    CreateWalletMnemonicPhrase: () =>
-      import('./components/CreateWalletMnemonicPhrase')
+const props = defineProps({
+  open: {
+    type: Boolean,
+    default: false
   },
-  props: {
-    open: {
-      type: Boolean,
-      default: false
+  close: {
+    default: function () {
+      return {};
     },
-    close: {
-      default: function () {
-        return {};
-      },
-      type: Function
-    },
-    walletType: {
-      type: String,
-      default: ''
-    }
+    type: Function
   },
-  data: () => ({
-    types: WALLET_TYPES,
-    walletHandler: {},
-    footer: {
-      text: 'Need help?',
-      linkTitle: 'Contact support',
-      link: 'mailto:support@myetherwallet.com'
-    }
-  }),
-  computed: {
-    ...mapState('wallet', ['isOfflineApp']),
-    isOverview() {
-      return (
-        this.walletType !== this.types.MNEMONIC &&
-        this.walletType !== this.types.KEYSTORE
-      );
-    },
-    isKeystore() {
-      return this.walletType === this.types.KEYSTORE;
-    },
-    isMnemonic() {
-      return this.walletType === this.types.MNEMONIC;
-    },
-    /**
-     * @returns correct title of the overlay according to the wallet type selected
-     */
-    typeTitle() {
-      return this.walletType === this.types.MNEMONIC
-        ? 'Create Wallet with Mnemonic Phrase'
-        : this.walletType === this.types.KEYSTORE
-        ? 'Create Wallet with Keystore File'
-        : 'Create wallet using software';
-    }
-  },
-  mounted() {
-    if (this.isOfflineApp) {
-      this.footer = {
-        text: 'Need help? Email us at support@myetherwallet.com',
-        linkTitle: '',
-        link: ''
-      };
-    }
-    this.walletHandler = new handlerCreateWallet();
-  },
-  destroyed() {
-    this.walletHandler = {};
-  },
-  methods: {
-    /**
-     * Directs user back to software overview
-     * Pushes new route query param
-     * Used in overlay back button
-     */
-    goBack() {
-      /**
-       * Make back button to go back to previous url
-       */
-      this.$router.go(-1);
+  walletType: {
+    type: String,
+    default: ''
+  }
+});
 
-      /*
+const router = useRouter();
+
+const state = reactive({
+  types: WALLET_TYPES,
+  walletHandler: {},
+  footer: {
+    text: 'Need help?',
+    linkTitle: 'Contact support',
+    link: 'mailto:support@myetherwallet.com'
+  }
+});
+// TODO enable once we can get store state from pinia
+// ...mapState('wallet', ['isOfflineApp']),
+const isOverview = computed(() => {
+  return (
+    props.walletType !== state.types.MNEMONIC &&
+    props.walletType !== state.types.KEYSTORE
+  );
+});
+const isKeystore = computed(() => {
+  return props.walletType === state.types.KEYSTORE;
+});
+const isMnemonic = computed(() => {
+  return props.walletType === state.types.MNEMONIC;
+});
+/**
+ * @returns correct title of the overlay according to the wallet type selected
+ */
+const typeTitle = computed(() => {
+  return props.walletType === state.types.MNEMONIC
+    ? 'Create Wallet with Mnemonic Phrase'
+    : props.walletType === state.types.KEYSTORE
+    ? 'Create Wallet with Keystore File'
+    : 'Create wallet using software';
+});
+onMounted(() => {
+  // TODO enable after we can get store state from pinia
+  // if (isOfflineApp) {
+  //   state.footer = {
+  //     text: 'Need help? Email us at support@myetherwallet.com',
+  //     linkTitle: '',
+  //     link: ''
+  //   };
+  // }
+  state.walletHandler = new handlerCreateWallet();
+});
+onUnmounted(() => {
+  state.walletHandler = {};
+});
+/**
+ * Directs user back to software overview
+ * Pushes new route query param
+ * Used in overlay back button
+ */
+const goBack = () => {
+  /**
+   * Make back button to go back to previous url
+   */
+  router.go(-1);
+
+  /*
       if (this.isOverview) {
         try {
           this.$router.go(-1);
@@ -143,21 +140,19 @@ export default {
         }
       }
       */
-    },
-    /**
-     * Sets a wallet type and the step according to the provided wallet type
-     * This method is used in create overview component
-     * @type - must be one of the this.types or an empty string (this will reset step to 0)
-     */
-    setType(newType) {
-      try {
-        this.$router.push({
-          query: { type: newType }
-        });
-      } catch (e) {
-        Toast(e, {}, ERROR);
-      }
-    }
+};
+/**
+ * Sets a wallet type and the step according to the provided wallet type
+ * This method is used in create overview component
+ * @type - must be one of the this.types or an empty string (this will reset step to 0)
+ */
+const setType = (newType: string) => {
+  try {
+    router.push({
+      query: { type: newType }
+    });
+  } catch (e) {
+    Toast(e, {}, ERROR);
   }
 };
 </script>

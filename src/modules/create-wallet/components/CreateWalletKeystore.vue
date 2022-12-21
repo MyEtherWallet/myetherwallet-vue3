@@ -1,12 +1,12 @@
 <template>
-  <mew-stepper :items="items" :on-step="step" class="mx-md-0">
+  <mew-stepper :items="state.items" :on-step="state.step" class="mx-md-0">
     <!--
       =====================================================================================
         Step 1: Create Password
       =====================================================================================
       -->
-    <template v-if="step === 1" #stepperContent1>
-      <div class="subtitle-1 font-weight-bold grey--text">STEP 1.</div>
+    <template v-if="state.step === 1" #stepperContent1>
+      <div class="subtitle-1 font-weight-bold text-grey">STEP 1.</div>
       <div class="headline font-weight-bold mb-5">Create password</div>
       <!--
           =====================================================================================
@@ -14,13 +14,13 @@
           =====================================================================================
           -->
       <mew-input
-        v-model="password"
+        v-model="state.password"
         hint="Password must be 8 or more characters"
         label="Password"
         placeholder="Enter Password"
         :has-clear-btn="true"
         class="flex-grow-1 mb-2 CreateWalletKeystorePasswordInput"
-        :rules="passwordRulles"
+        :rules="state.passwordRulles"
         type="password"
       />
       <!--
@@ -29,7 +29,7 @@
           =====================================================================================
           -->
       <mew-input
-        v-model="cofirmPassword"
+        v-model="state.cofirmPassword"
         hint=""
         label="Confirm Password"
         placeholder="Confirm password"
@@ -42,14 +42,14 @@
             Creat Wallet Button
           =====================================================================================
           -->
-      <div v-if="!isGeneratingKeystore" class="d-flex justify-center">
+      <div v-if="!state.isGeneratingKeystore" class="d-flex justify-center">
         <mew-button
           class="CreateWalletKeystoreSubmitButton"
           title="Create Wallet"
           btn-size="xlarge"
           :has-full-width="false"
           :disabled="!enableCreateButton"
-          @click.native="createWallet"
+          @click="createWallet"
         />
       </div>
       <!--
@@ -80,8 +80,8 @@
         Step 2: Download Keystore
       =====================================================================================
       -->
-    <template v-if="step === 2" #stepperContent2>
-      <div class="subtitle-1 font-weight-bold grey--text step-two-header">
+    <template v-if="state.step === 2" #stepperContent2>
+      <div class="subtitle-1 font-weight-bold text-grey step-two-header">
         STEP 2.
       </div>
       <div class="headline font-weight-bold">Download keystore file</div>
@@ -89,7 +89,12 @@
         Important things to know before downloading your keystore file.
       </div>
       <v-row class="align-stretch">
-        <v-col v-for="(d, key) in warningData" :key="key" cols="12" sm="4">
+        <v-col
+          v-for="(d, key) in state.warningData"
+          :key="key"
+          cols="12"
+          sm="4"
+        >
           <div class="pa-6 border-container">
             <div class="d-flex justify-center py-3">
               <mew-icon :icon-name="d.icon" :img-height="70" />
@@ -105,21 +110,21 @@
           btn-style="outline"
           btn-size="xlarge"
           class="mx-md-1 my-1"
-          @click.native="updateStep(1)"
+          @click="updateStep(1)"
         />
         <mew-button
           title="Acknowledge & Download"
           btn-size="xlarge"
           :has-full-width="false"
           class="mx-md-1 my-1 CreateWalletKeystoreAccept"
-          @click.native="downloadWallet"
+          @click="downloadWallet"
         />
       </div>
       <a
         ref="downloadLink"
-        :href="walletFile"
+        :href="state.walletFile"
         rel="noopener noreferrer"
-        :download="name"
+        :download="state.name"
         class="link"
       />
       <mew-warning-sheet
@@ -133,10 +138,10 @@
         Step 3: Done
       =====================================================================================
       -->
-    <template v-if="step === 3" #stepperContent3>
+    <template v-if="state.step === 3" #stepperContent3>
       <div class="d-flex align-center">
         <div>
-          <div class="subtitle-1 font-weight-bold grey--text step-three-header">
+          <div class="subtitle-1 font-weight-bold text-grey step-three-header">
             STEP 3.
           </div>
           <div class="headline font-weight-bold mb-3">You are done!</div>
@@ -156,13 +161,13 @@
               btn-size="xlarge"
               :has-full-width="false"
               class="mb-3 CreateWalletKeystoreAccess"
-              @click.native="goToAccess"
+              @click="goToAccess"
             />
             <mew-button
               title="Create Another Wallet"
               :has-full-width="false"
               btn-style="transparent"
-              @click.native="restart"
+              @click="restart"
             />
           </div>
         </div>
@@ -175,123 +180,125 @@
   </mew-stepper>
 </template>
 
-<script>
+<script setup lang="ts">
 import { isEmpty } from 'lodash';
 
 import { Toast, ERROR } from '@/modules/toast/handler/handlerToast';
 import { ROUTES_HOME } from '@/core/configs/configRoutes';
-import handlerAnalytics from '@/modules/analytics-opt-in/handlers/handlerAnalytics.mixin';
 import WALLET_TYPES from '@/modules/access-wallet/common/walletTypes';
+import { computed, reactive, ref } from 'vue';
+import { GeneratedKeyStore } from '../handlers/handlerCreateWallet';
+import { useAnalytics } from '@/core/Common/handlerAnalytics';
+import { useRouter } from 'vue-router';
 
-export default {
-  name: 'CreateWalletKeystore',
-  mixins: [handlerAnalytics],
-  props: {
-    handlerCreateWallet: {
-      type: Object,
-      default: () => {
-        return {};
-      }
-    }
-  },
-  data() {
-    return {
-      step: 1,
-      warningData: [
-        {
-          icon: 'paperPlane',
-          title: "Don't lose it",
-          description: 'Be careful, it can not be recovered if you lose it.'
-        },
-        {
-          icon: 'thief',
-          title: "Don't share it",
-          description:
-            'Your funds will be stolen if you use this file on a malicious phishing site.'
-        },
-        {
-          icon: 'copy',
-          title: 'Make a backup',
-          description:
-            'Secure it like the millions of dollars it may one day be worth.'
-        }
-      ],
-      items: [
-        {
-          step: 1,
-          name: 'STEP 1. Create password'
-        },
-        {
-          step: 2,
-          name: 'STEP 2. Download keystore file'
-        },
-        {
-          step: 3,
-          name: 'STEP 3. Well done'
-        }
-      ],
-      password: '',
-      cofirmPassword: '',
-      passwordRulles: [
-        value => !isEmpty(value) || 'Required',
-        value => value?.length >= 8 || 'Password is less than 8 characters'
-      ],
-
-      walletFile: '',
-      name: '',
-      isGeneratingKeystore: false
-    };
-  },
-  computed: {
-    enableCreateButton() {
-      return (
-        !isEmpty(this.password) &&
-        this.cofirmPassword === this.password &&
-        this.password.length >= 8
-      );
-    },
-    passwordConfirmRulles() {
-      return [
-        value => !!value || 'Required',
-        value => value === this.password || 'Passwords do not match'
-      ];
-    }
-  },
-  methods: {
-    createWallet() {
-      this.isGeneratingKeystore = true;
-      this.handlerCreateWallet
-        .generateKeystore(this.password)
-        .then(res => {
-          this.name = res.name;
-          this.walletFile = res.blobUrl;
-          this.updateStep(2);
-          this.isGeneratingKeystore = false;
-        })
-        .catch(e => {
-          Toast(e, {}, ERROR);
-        });
-    },
-    downloadWallet() {
-      this.$refs.downloadLink.click();
-      this.trackCreateWallet(WALLET_TYPES.KEYSTORE);
-      this.updateStep(3);
-    },
-    goToAccess() {
-      this.$router.push({ name: ROUTES_HOME.ACCESS_WALLET.NAME });
-    },
-    /**
-     * Update step
-     */
-    updateStep(step) {
-      this.step = step ? step : 1;
-    },
-    restart() {
-      this.step = 1;
-      this.password = '';
-      this.cofirmPassword = '';
+const props = defineProps({
+  handlerCreateWallet: {
+    type: Object,
+    default: () => {
+      return {};
     }
   }
+});
+
+const router = useRouter();
+const downloadLink = ref();
+
+const state = reactive({
+  step: 1,
+  warningData: [
+    {
+      icon: 'paperPlane',
+      title: "Don't lose it",
+      description: 'Be careful, it can not be recovered if you lose it.'
+    },
+    {
+      icon: 'thief',
+      title: "Don't share it",
+      description:
+        'Your funds will be stolen if you use this file on a malicious phishing site.'
+    },
+    {
+      icon: 'copy',
+      title: 'Make a backup',
+      description:
+        'Secure it like the millions of dollars it may one day be worth.'
+    }
+  ],
+  items: [
+    {
+      step: 1,
+      name: 'STEP 1. Create password'
+    },
+    {
+      step: 2,
+      name: 'STEP 2. Download keystore file'
+    },
+    {
+      step: 3,
+      name: 'STEP 3. Well done'
+    }
+  ],
+  password: '',
+  cofirmPassword: '',
+  passwordRulles: [
+    (value: string) => !isEmpty(value) || 'Required',
+    (value: string) =>
+      value?.length >= 8 || 'Password is less than 8 characters'
+  ],
+
+  walletFile: '',
+  name: '',
+  isGeneratingKeystore: false
+});
+
+const enableCreateButton = computed(() => {
+  return (
+    !isEmpty(state.password) &&
+    state.cofirmPassword === state.password &&
+    state.password.length >= 8
+  );
+});
+const passwordConfirmRulles = computed(() => {
+  return [
+    (value: string) => !!value || 'Required',
+    (value: string) => value === state.password || 'Passwords do not match'
+  ];
+});
+
+const createWallet = () => {
+  state.isGeneratingKeystore = true;
+  props.handlerCreateWallet
+    .generateKeystore(state.password)
+    .then((res: GeneratedKeyStore) => {
+      state.name = res.name;
+      state.walletFile = res.blobUrl;
+      updateStep(2);
+      state.isGeneratingKeystore = false;
+    })
+    .catch((e: unknown) => {
+      Toast(e, {}, ERROR);
+    });
+};
+
+const { trackCreateWallet } = useAnalytics();
+const downloadWallet = () => {
+  downloadLink.value.click();
+  trackCreateWallet(WALLET_TYPES.KEYSTORE);
+  updateStep(3);
+};
+const goToAccess = () => {
+  router.push({ name: ROUTES_HOME.ACCESS_WALLET.NAME });
+};
+/**
+ * Update step
+ */
+const updateStep = (step: number) => {
+  state.step = step ? step : 1;
+};
+const restart = () => {
+  state.step = 1;
+  state.password = '';
+  state.cofirmPassword = '';
 };
 </script>
 
@@ -306,9 +313,9 @@ export default {
   background: transparent !important;
 }
 .border-container {
-  border: 1px solid var(--v-greenPrimary-base);
+  border: 1px solid RGB(var(--v-theme-greenPrimary));
   border-radius: 7px;
-  box-shadow: 0 8px 15px var(--v-greyLight-base);
+  box-shadow: 0 8px 15px RGB(var(--v-theme-greyLight));
   height: 100%;
 }
 .done-image {

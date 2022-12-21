@@ -48,7 +48,7 @@ export const useEnkryptMarketing = () => {
     return withState.extensionLinks[browser.value].link;
   });
   const isMobile = computed(() => {
-    return mdAndDown;
+    return mdAndDown.value;
   });
 
   const openEnkrypt = () => {
